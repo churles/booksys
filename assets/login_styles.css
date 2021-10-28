@@ -1,0 +1,99 @@
+body {
+    font-family: "Lato", sans-serif;
+}
+
+.sidenav {
+    height: 100%;
+    background-color: #000;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+
+.main {
+    padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+}
+
+@media screen and (max-width: 450px) {
+    .login-form{
+        margin-top: 10%;
+    }
+
+    .register-form{
+        margin-top: 10%;
+    }
+}
+
+@media screen and (min-width: 768px){
+    .main{
+        margin-left: 40%; 
+    }
+
+    .sidenav{
+        width: 40%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+    }
+
+    .login-form{
+        margin-top: 80%;
+    }
+
+    .register-form{
+        margin-top: 20%;
+    }
+}
+
+
+.login-main-text{
+    margin-top: 20%;
+    padding: 60px;
+    color: #fff;
+}
+
+.login-main-text h2{
+    font-weight: 300;
+}
+
+.btn-black{
+    background-color: #000 !important;
+    color: #fff;
+    margin-top: 10px;
+    margin-left: 30px;
+}
+
+form label{
+    font-size: 25px;
+    display:  block;
+
+}
+
+form input[type=text], form input[type=password]{
+    margin-left: 30px;
+    width: 100%;
+    height: 35px;
+    border: 1px solid gray;
+    border-radius: 6px;
+}
+
+form input:focus{
+    border: 2px solid black;
+}
+
+.errorlist li{
+    padding: 10px;
+    list-style-type: none;
+    border: 1px solid #ff5722;
+    color: #ff5722;
+    margin: 10px 0;
+}
+
+.errorlist{
+    padding: 0;
+}

@@ -1,0 +1,13 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+<div>
+	<h2>Leave a Review</h2>
+	<form action="#" method="post">
+		{% csrf_token %}
+		{{form}}
+		<input type="submit" name="" value="POST">
+	</form>
+</div>
+<script src="/static/slugify.js"></script>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+<h1>Book List</h1>
+<div>
+	{% for book in books %}
+		<div>
+			<img class="list-thumb" src="{{ book.thumbnail.url }}">
+			<h2><a href="{% url 'books:detail' slug=book.slug %}">{{ book.title }}</a></h2>
+		</div>
+	{% endfor %}
+</div>
+{% endblock %}

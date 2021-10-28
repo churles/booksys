@@ -1,0 +1,20 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+<div>
+	<img src="{{ book.thumbnail.url }}">
+	<h2>{{ book.title }}</h2>
+	<h2>{{ book.author }}</h2>
+	<h2>{{ book.description }}</h2>
+</div>
+<div>
+	<h1 style="color: red;">Reviews</h1>
+	<li><a href="{% url 'reviews:create' slug=book.slug %}">Leave a Review</a></li>
+	{% for review in reviews %}
+		{% if review.book == book %}
+			<h4>{{ review.title }} - {{ review.author }}</h4>
+			<h5>{{ review.body }}</h5>
+		{% endif %}
+	{% endfor %}
+</div>
+{% endblock %}
