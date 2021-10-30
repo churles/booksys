@@ -24,5 +24,8 @@ class Book(models.Model):
 	#availability = models.CharField(max_length=10, choices=AVAIL_CHOICES, default='rent')
 	#add prices for rent and for sale
 
+	class Meta:
+		ordering = ('title',)
+
 	def __str__(self):
 		return self.title

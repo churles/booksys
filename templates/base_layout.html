@@ -11,22 +11,43 @@
 </head>
 <body>
 	<header>
-		<h1>Book System</h1>
-		<nav>
-			<ul>
-				{% if user.is_authenticated %}
-					<li>
-						<form action="{% url 'accounts:logout' %}" method="post">
-							{% csrf_token %}
-							<button type="submit">Logout</button>
-						</form>
-					</li>
-					<li><a href="{% url 'books:create' %}">New Listing</a></li>
-				{% else %}
-					<li><a href="{% url 'accounts:login' %}">Login</a></li>
-					<li><a href="{% url 'accounts:signup' %}">Signup</a></li>
-				{% endif %}
-			</ul>
+		<nav class="navbar  navbar-dark bg-dark">
+		    <a class="navbar-brand" href="#">
+			    <img src="{% static 'index.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
+			    BookRental.com
+		    </a>
+<!-- 			<div class="navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav">
+					{% if user.is_authenticated %}
+						<li class="nav-item">
+							<form action="{% url 'accounts:logout' %}" method="post">
+								{% csrf_token %}
+								<button type="submit">Logout</button>
+							</form>
+						</li>
+						<li class="nav-item"><a href="{% url 'books:create' %}" class="nav-link">New Listing</a></li>
+					{% else %}
+						<li class="nav-item"><a href="{% url 'accounts:login' %}" class="nav-link">Login</a></li>
+						<li class="nav-item"><a href="{% url 'accounts:signup' %}" class="nav-link">Signup</a></li>
+					{% endif %}
+				</ul>
+			</div> -->
+			<div>
+				<ul>
+					{% if user.is_authenticated %}
+						<li>
+							<form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
+								{% csrf_token %}
+								<button type="submit">Logout</button>
+							</form>
+						</li>
+						<li ><a href="{% url 'books:create' %}">New Listing</a></li>
+					{% else %}
+						<li><a href="{% url 'accounts:login' %}">Login</a></li>
+						<li><a href="{% url 'accounts:signup' %}">Signup</a></li>
+					{% endif %}
+				</ul>
+			</div>
 		</nav>
 	</header>
 	{% block content %}
