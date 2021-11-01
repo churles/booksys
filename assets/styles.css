@@ -36,3 +36,8 @@ nav button{
   border: 0;
   font-size: 1em;
 }
+
+.form-input{
+  margin-top: 10px;
+  width: 100%;
+}

@@ -3,7 +3,9 @@ from .models import Review
 from books.models import Book
 from django.http import HttpResponse
 from . import forms
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url="/accounts/login/")
 def review_create(request, slug):
 	book = Book.objects.get(slug=slug)
 	if request.method == 'POST':

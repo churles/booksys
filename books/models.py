@@ -7,10 +7,10 @@ CONDITION_CHOICES = (
     ('good', 'GOOD'),
     ('used','USED'),
 )
-# AVAIL_CHOICES = (
-# 	('rent','RENT'),
-# 	('sale', 'SALE'),
-# )
+AVAIL_CHOICES = (
+	('rent','RENT'),
+	('sale', 'SALE'),
+)
 
 class Book(models.Model):
 	title = models.CharField(max_length=60)
@@ -20,8 +20,9 @@ class Book(models.Model):
 	date = models.DateTimeField(auto_now_add=True)
 	thumbnail = models.ImageField(default='default.png', blank = True)
 	condition = models.CharField(max_length=10, choices=CONDITION_CHOICES, default='new')
+	availability = models.CharField(max_length=10, choices=AVAIL_CHOICES, default='rent')
+	price = models.CharField(max_length=60, default=None)
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-	#availability = models.CharField(max_length=10, choices=AVAIL_CHOICES, default='rent')
 	#add prices for rent and for sale
 
 	class Meta:

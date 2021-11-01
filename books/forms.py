@@ -4,7 +4,7 @@ from . import models
 class CreateBook(forms.ModelForm):
 	class Meta:
 		model = models.Book
-		fields = ['title','author','description','slug','thumbnail','condition']
+		fields = ['title','author','description','slug','thumbnail','condition', 'availability', 'price']
 
 		widgets = {
 			'title': forms.TextInput(attrs={'class': 'form-control'}),
@@ -13,4 +13,6 @@ class CreateBook(forms.ModelForm):
 			'slug': forms.HiddenInput(),
 			'thumbnail': forms.FileInput(attrs={'class': 'form-control-file'}),
 			'condition': forms.Select(attrs={'class': 'form-control'}),
+			'availability': forms.Select(attrs={'class': 'form-control'}),
+			'price': forms.TextInput(attrs={'class': 'form-control'}),
 		}
