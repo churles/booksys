@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^accounts/', include('accounts.urls')),
     url(r'^books/', include('books.urls')),
     url(r'^reviews/', include('reviews.urls')),
+    # url(r'^genres/', include('genres.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
