@@ -12,11 +12,14 @@ AVAIL_CHOICES = (
 	('sale', 'SALE'),
 )
 
+
+
 class Book(models.Model):
 	title = models.CharField(max_length=60)
 	author = models.CharField(max_length=60, default=None)
 	slug = models.SlugField()
 	description = models.TextField()
+	genre = models.CharField(max_length=60)
 	date = models.DateTimeField(auto_now_add=True)
 	thumbnail = models.ImageField(default='default.png', blank = True)
 	condition = models.CharField(max_length=10, choices=CONDITION_CHOICES, default='new')
@@ -25,6 +28,17 @@ class Book(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 	#add prices for rent and for sale
 
+	class Meta:
+		ordering = ('title',)
+
+	def __str__(self):
+		return self.title
+
+
+class Genre(models.Model):
+	title = models.CharField(max_length=60)
+	slug = models.SlugField()
+	
 	class Meta:
 		ordering = ('title',)
 

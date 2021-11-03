@@ -15,7 +15,6 @@ def books_create(request):
 			instance.owner = request.user
 			instance.save()
 			return redirect('books:create')
-
 	else:
 		form = forms.CreateBook()
 	return render(request, 'books/book_create.html',{
