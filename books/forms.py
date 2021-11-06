@@ -17,3 +17,8 @@ class CreateBook(forms.ModelForm):
 			'availability': forms.Select(attrs={'class': 'form-control'}),
 			'price': forms.TextInput(attrs={'class': 'form-control'}),
 		}
+
+class CreateBookGenre(forms.ModelForm):
+	class Meta:
+		model = models.BookGenre
+		fields = ['book','genre']

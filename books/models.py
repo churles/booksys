@@ -2,6 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User
 from autoslug import AutoSlugField
 
+
+class Genre(models.Model):
+	title = models.CharField(max_length=60)
+	slug = models.SlugField()
+	
+	class Meta:
+		ordering = ('title',)
+
+	def __str__(self):
+		return self.title
+
 CONDITION_CHOICES = (
     ('new','NEW'),
     ('good', 'GOOD'),
@@ -19,7 +30,7 @@ class Book(models.Model):
 	author = models.CharField(max_length=60, default=None)
 	slug = models.SlugField()
 	description = models.TextField()
-	genre = models.CharField(max_length=60)
+	# genre = models.ForeignKey(Genre, on_delete=models.CASCADE, default=None)
 	date = models.DateTimeField(auto_now_add=True)
 	thumbnail = models.ImageField(default='default.png', blank = True)
 	condition = models.CharField(max_length=10, choices=CONDITION_CHOICES, default='new')
@@ -34,13 +45,13 @@ class Book(models.Model):
 	def __str__(self):
 		return self.title
 
+class BookGenre(models.Model):
+	book = models.ForeignKey(Book, on_delete=models.CASCADE, default=None)
+	genre = models.ForeignKey(Genre, on_delete=models.CASCADE, default=None)
 
-class Genre(models.Model):
-	title = models.CharField(max_length=60)
-	slug = models.SlugField()
-	
 	class Meta:
-		ordering = ('title',)
+		ordering = ('book',)
 
 	def __str__(self):
-		return self.title
+		return str(self.book)
+
