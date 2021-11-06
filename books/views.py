@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Book
+from .models import Book, Genre
 from reviews.models import Review
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -16,9 +16,11 @@ def books_create(request):
 			instance.save()
 			return redirect('books:create')
 	else:
+		genre = Genre.objects.all()
 		form = forms.CreateBook()
 	return render(request, 'books/book_create.html',{
-		'form':form
+		'form':form,
+		'genre':genre
 	})
 
 def books_list(request):

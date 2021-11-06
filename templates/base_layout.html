@@ -8,6 +8,8 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/select2-bootstrap4.min.css">
 </head>
 <body>
 	<header>
@@ -16,22 +18,6 @@
 			    <img src="{% static 'index.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
 			    BookRental.com
 		    </a>
-<!-- 			<div class="navbar-collapse" id="navbarNav">
-				<ul class="navbar-nav">
-					{% if user.is_authenticated %}
-						<li class="nav-item">
-							<form action="{% url 'accounts:logout' %}" method="post">
-								{% csrf_token %}
-								<button type="submit">Logout</button>
-							</form>
-						</li>
-						<li class="nav-item"><a href="{% url 'books:create' %}" class="nav-link">New Listing</a></li>
-					{% else %}
-						<li class="nav-item"><a href="{% url 'accounts:login' %}" class="nav-link">Login</a></li>
-						<li class="nav-item"><a href="{% url 'accounts:signup' %}" class="nav-link">Signup</a></li>
-					{% endif %}
-				</ul>
-			</div> -->
 			<div>
 				<ul>
 					{% if user.is_authenticated %}
