@@ -37,3 +37,6 @@ def logout_view(request):
 	if request.method == 'POST':
 		logout(request)
 		return redirect('accounts:login')
+
+def create_view(request):
+	return HttpResponse("Hello")

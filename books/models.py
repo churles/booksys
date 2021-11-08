@@ -37,7 +37,7 @@ class Book(models.Model):
 	availability = models.CharField(max_length=10, choices=AVAIL_CHOICES, default='rent')
 	price = models.CharField(max_length=60, default=None)
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-	#add prices for rent and for sale
+	stock = models.CharField(max_length=60, default=None)
 
 	class Meta:
 		ordering = ('title',)

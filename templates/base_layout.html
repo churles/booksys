@@ -28,6 +28,7 @@
 							</form>
 						</li>
 						<li ><a href="{% url 'books:create' %}">New Listing</a></li>
+						<li><a href="">{{ user.username }}</a></li>
 					{% else %}
 						<li><a href="{% url 'accounts:login' %}">Login</a></li>
 						<li><a href="{% url 'accounts:signup' %}">Signup</a></li>
