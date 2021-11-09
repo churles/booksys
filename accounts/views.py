@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponse
 from django.contrib.auth import login, logout
+from . import forms
+from .models import Profile
 
 def signup_view(request):
 	if request.method == 'POST':
@@ -39,4 +41,25 @@ def logout_view(request):
 		return redirect('accounts:login')
 
 def create_view(request):
-	return HttpResponse("Hello")
+	user = request.user.id
+	profile = Profile.objects.get(account=user)
+	if profile != None:
+		form = forms.CreateProfile()
+		return render(request, 'accounts/profile_create.html',{
+			'form':form,
+			'profile':profile
+		})
+
+
+	# if request.method == 'POST':
+	# 	form = forms.CreateProfile(request.POST, request.FILES)
+	# 	if form.is_valid():
+	# 		instance = form.save(commit=False)
+	# 		instance.account = request.user
+	# 		instance.save()
+	# 		return redirect('accounts:create')
+	# else:
+	# 	form = forms.CreateProfile()
+	# return render(request, 'accounts/profile_create.html',{
+	# 	'form':form
+	# })
