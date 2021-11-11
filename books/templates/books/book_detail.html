@@ -1,20 +1,44 @@
 {% extends 'base_layout.html' %}
 
 {% block content %}
-<div>
+<!-- <div>
 	<img src="{{ book.thumbnail.url }}">
 	<h2>{{ book.title }}</h2>
 	<h2>{{ book.author }}</h2>
 	<h2>{{ book.description }}</h2>
+</div> -->
+<div class="container-book-details">
+	<div class="row">
+		<div class="col">
+			<img class="thumb" src="{{ book.thumbnail.url }}">
+		</div>
+		<div class="col-md-7 book-details">
+			<h1>{{ book.title }}</h1>
+			<a href="#">By {{ book.author }}</a>
+			<hr>
+			<h4>Price: {{ book.price }}</h4>
+			<h4>Description:</h4>
+			<p>{{ book.description }}</p>
+		</div>
+		<div class="col">
+		</div>
+	</div>
+	<hr>
 </div>
-<div>
-	<h1 style="color: red;">Reviews</h1>
-	<li><a href="{% url 'reviews:create' slug=book.slug %}">Leave a Review</a></li>
-	{% for review in reviews %}
-		{% if review.book == book %}
-			<h4>{{ review.title }} - {{ review.author }}</h4>
-			<h5>{{ review.body }}</h5>
-		{% endif %}
-	{% endfor %}
+<div class="container-book-reviews">
+	<div class="review-body">
+		<h3>Reviews</h3>
+		<div class="review">
+			<!-- <li><a href="{% url 'reviews:create' slug=book.slug %}">Leave a Review</a></li> -->
+			{% for review in reviews %}
+				{% if review.book == book %}
+					<p>{{ review.author }}</p>
+					<p class="review-title">{{ review.title }}</p>
+					<p>{{ review.datetime }}</p>
+					<p>{{ review.body }}</p>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
 </div>
 {% endblock %}

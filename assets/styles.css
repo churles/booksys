@@ -41,3 +41,42 @@ nav button{
   margin-top: 10px;
   width: 100%;
 }
+
+.container-book-details{
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-top: 20px;
+}
+
+.thumb{
+  border-radius: 8px;
+}
+
+
+.book-details h1{
+  font-weight: bold;
+}
+
+.container-book-reviews{
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-top: 20px;
+}
+
+.review-body h1{
+  font-weight: bold;
+}
+
+.review{
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.review p{
+  margin: 0%;
+}
+
+.review-title{
+  font-weight: bold;
+}
+
