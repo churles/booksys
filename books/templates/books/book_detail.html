@@ -1,12 +1,6 @@
 {% extends 'base_layout.html' %}
 
 {% block content %}
-<!-- <div>
-	<img src="{{ book.thumbnail.url }}">
-	<h2>{{ book.title }}</h2>
-	<h2>{{ book.author }}</h2>
-	<h2>{{ book.description }}</h2>
-</div> -->
 <div class="container-book-details">
 	<div class="row">
 		<div class="col">
@@ -18,9 +12,26 @@
 			<hr>
 			<h4>Price: {{ book.price }}</h4>
 			<h4>Description:</h4>
-			<p>{{ book.description }}</p>
+			<p>{{ book.snippet }}<span id="dots">...</span><span id="more">{{ book.read_more }}</span><a onClick="return myFunction()" id="myBtn">Read More</a></p>
+			<!-- <button onclick="myFunction()" id="myBtn">Read more</button> -->
 		</div>
-		<div class="col">
+		<div class="col border border-dark">
+			<div class="row book-nav">
+				<div class="col availability">
+					<p>For {{ book.availability }}:</p>
+				</div>
+				<div class="col price">
+					<p>₱{{ book.price }}</p>
+				</div>
+			</div>
+			{% if book.stock != 0 %}
+				<p class="in-stock">{{ book.stock }} in stock</p>
+			{% else %}
+				<p class="out-stock">Out of stock</p>
+			{% endif %}
+			<form>
+				<button type="submit" class="btn btn-black">Message Seller to Rent</button>
+			</form>
 		</div>
 	</div>
 	<hr>
@@ -41,4 +52,5 @@
 		</div>
 	</div>
 </div>
+<script src="/static/read_more.js"></script>
 {% endblock %}

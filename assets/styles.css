@@ -57,6 +57,36 @@ nav button{
   font-weight: bold;
 }
 
+#more{
+  display: none;
+}
+
+#myBtn{
+  color:  blue;
+  cursor:  pointer;
+}
+
+
+.book-nav{
+  padding-top: 10px;
+}
+
+.availability p{
+  font-weight: bold;
+}
+
+.price p{
+  text-align: right;
+}
+
+.in-stock{
+  color: green;
+}
+
+.out-stock{
+  color: red;
+}
+
 .container-book-reviews{
   margin-left: 100px;
   margin-right: 100px;

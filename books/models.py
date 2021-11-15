@@ -35,15 +35,21 @@ class Book(models.Model):
 	thumbnail = models.ImageField(default='default.png', blank = True)
 	condition = models.CharField(max_length=10, choices=CONDITION_CHOICES, default='new')
 	availability = models.CharField(max_length=10, choices=AVAIL_CHOICES, default='rent')
-	price = models.CharField(max_length=60, default=None)
+	price = models.IntegerField(default=None)
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-	stock = models.CharField(max_length=60, default=None)
+	stock = models.IntegerField(default=None)
 
 	class Meta:
 		ordering = ('title',)
 
 	def __str__(self):
 		return self.title
+
+	def snippet(self):
+		return self.description[:500]
+
+	def read_more(self):
+		return self.description[500:]
 
 class BookGenre(models.Model):
 	book = models.ForeignKey(Book, on_delete=models.CASCADE, default=None)

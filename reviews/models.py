@@ -12,3 +12,9 @@ class Review(models.Model):
 
 	def __str__(self):
 		return self.title
+
+	def snippet(self):
+		return self.body[:250]
+
+	def read_more(self):
+		return self.body[250:]
