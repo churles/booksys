@@ -4,10 +4,10 @@
 {% block content %}
 <div class="container-book-details">
 	<div class="row">
-		<div class="col">
-			<img class="thumb" src="{{ book.thumbnail.url }}">
+		<div class="col-xs-2 col-sm-2 col-md-2 thumb">
+			<img id="thumb" src="{{ book.thumbnail.url }}">
 		</div>
-		<div class="col-md-7 book-details">
+		<div class="col-xs-7 col-sm-7 col-md-7 book-details">
 			<h1>{{ book.title }}</h1>
 			<a href="#">By {{ book.author }}</a>
 			<hr>
@@ -16,7 +16,7 @@
 			<p class="descriptions">{{ book.snippet }}<span id="dots">...</span><span id="more">{{ book.read_more }}</span><a onClick="return myFunction()" id="myBtn">Read More</a></p>
 			<!-- <button onclick="myFunction()" id="myBtn">Read more</button> -->
 		</div>
-		<div class="col border border-dark">
+		<div class="col-xs-3 col-sm-3 col-md-3 border border-dark">
 			<div class="row book-nav">
 				<div class="col availability">
 					<p>For {{ book.availability }}:</p>
@@ -51,13 +51,13 @@
 						<input type="text" name="slug" style="display:none" value="{{book.slug}}">
 						<p>{{ review.author }} {{ review.datetime }}</p>
 						<div class="row">
-							<div class="col-md-11">
+							<div class="col-xs-11 col-sm-11 col-md-11">
 								<p class="review-title">{{ review.title }}</p>
 								<p class="descriptions">{{ review.snippet }}</p>
 							</div>
-							<div class="col">
+							<div class="col-xs- 1 col-sm-1 col-md-1">
 								{% checker review.id user as likes%}
-								<button type="submit" name="submit" class="btn btn-black like-btn{{review.id}}" style="width:100%">
+								<button type="submit" name="submit" class="btn btn-black like-btn{{review.id}}">
 									{% if not likes %}
 										Like
 									{% else %}

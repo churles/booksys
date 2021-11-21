@@ -48,10 +48,10 @@ nav button{
   margin-top: 20px;
 }
 
-.thumb{
+#thumb{
   border-radius: 8px;
+  width: 100%;
 }
-
 
 .book-details h1{
   font-weight: bold;
