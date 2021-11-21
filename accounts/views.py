@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login, logout
 from . import forms
 from .models import Profile
+from django.contrib import messages
 
 def signup_view(request):
 	if request.method == 'POST':
@@ -12,6 +13,7 @@ def signup_view(request):
 			user = form.save()
 			#login user
 			login(request, user)
+			messages.success(request, 'Welcome! Thanks for joining.')
 			return redirect('books:list')
 	else:
 		form = UserCreationForm()

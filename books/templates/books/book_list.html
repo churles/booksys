@@ -1,6 +1,15 @@
 {% extends 'base_layout.html' %}
 
 {% block content %}
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12">
+		{% if messages %}
+			{% for message in messages %}
+				<li {% if message.tags == "success" %} class="alert alert-success {{ message.tags }}" {% endif %}>{{ message }}</li>
+			{% endfor %}
+		{% endif %}
+	</div>
+</div>
 <h1>Book List</h1>
 <div>
 	{% for book in books %}

@@ -37,6 +37,12 @@ nav button{
   font-size: 1em;
 }
 
+.success{
+  width: 100%;
+  list-style-type: none;
+  margin-top: 5px;
+}
+
 .form-input{
   margin-top: 10px;
   width: 100%;
