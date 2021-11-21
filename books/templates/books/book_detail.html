@@ -46,18 +46,23 @@
 				{% if review.book == book %}
 					<form action="{% url 'books:reviewlike'%}" method="post"  class="like-form" id={{review.id}}>
 						{% csrf_token %}
-						<input type="text" name="review_id" value="{{review.id}}" style="display:none">
-						<input type="text" name="owner" value="{{user.id}}" style="display:none">
-						<input type="text" name="slug" style="display:none" value="{{book.slug}}">
+						<input type="text" class="hidden-tags" name="review_id" value="{{review.id}}">
+						<input type="text" class="hidden-tags" name="owner" value="{{user.id}}" >
+						<input type="text" class="hidden-tags" name="slug"  value="{{book.slug}}">
 						<p>{{ review.author }} {{ review.datetime }}</p>
 						<div class="row">
 							<div class="col-xs-11 col-sm-11 col-md-11">
 								<p class="review-title">{{ review.title }}</p>
-								<p class="descriptions">{{ review.snippet }}</p>
+								<!-- <p class="descriptions">{{ review.snippet }}</p> -->
+								{% if not review.read_more %}
+									<p class="descriptions">{{ review.body }}</p>
+								{% else %}
+									<p class="descriptions">{{ review.snippet }}<span id="dots{{review.id}}">...</span><span class="review-more" id="more{{review.id}}">{{ review.read_more }}</span><a href="javascript:void()" class="review-btn" id="readMore{{review.id}}">Read More</a></p>
+								{% endif %}
 							</div>
 							<div class="col-xs- 1 col-sm-1 col-md-1">
 								{% checker review.id user as likes%}
-								<button type="submit" name="submit" class="btn btn-black like-btn{{review.id}}">
+								<button type="submit" name="submit" class="btn btn-black like-btn{{review.id}}" style="margin-left: 0;">
 									{% if not likes %}
 										Like
 									{% else %}
@@ -65,10 +70,10 @@
 									{% endif %}
 								</button>
 								<div class="row">
-									<div class="col">
+									<div class="col-xs-6 col-sm-6 col-md-6">
 										<div class="like-count{{review.id}}">{% total_like review.id%}</div>
 									</div>
-									<div class="col">
+									<div class="col-xs-6 col-sm-6 col-md-6">
 										likes
 									</div>
 								</div>
@@ -121,6 +126,25 @@
 					},
 				})
 			})
+			$('.review-btn').on('click', function(e){
+				e.preventDefault()
+				const id = $(this).attr('id')
+				const trim = id.replace('readMore','')
+				
+				const dots = document.getElementById('dots'+trim)
+				const btnText = document.getElementById('readMore'+trim)
+				const moreText = document.getElementById('more'+trim)
+				
+				if (dots.style.display === "none") {
+				    dots.style.display = "inline";
+				    btnText.innerHTML = "Read more";
+				    moreText.style.display = "none";
+				} else {
+				    dots.style.display = "none";
+				    btnText.innerHTML = "Read less";
+				    moreText.style.display = "inline";
+				}
+			});
 		});
 </script>
 {% endblock %}

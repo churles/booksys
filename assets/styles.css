@@ -61,6 +61,13 @@ nav button{
   display: none;
 }
 
+.review-more{
+  display: none;
+}
+.hidden-tags{
+  display: none;
+}
+
 #myBtn{
   color:  blue;
   cursor:  pointer;
