@@ -79,6 +79,10 @@ nav button{
   text-align: right;
 }
 
+.descriptions{
+  white-space: pre-line;
+}
+
 .in-stock{
   color: green;
 }

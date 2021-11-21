@@ -18,3 +18,14 @@ class Review(models.Model):
 
 	def read_more(self):
 		return self.body[250:]
+
+class ReviewLike(models.Model):
+	review = models.ForeignKey(Review, on_delete=models.CASCADE, default=None)
+	datetime = models.DateTimeField(auto_now_add=True)
+	owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+
+	class Meta:
+		ordering = ('review',)
+
+	def __str__(self):
+		return str(self.review)

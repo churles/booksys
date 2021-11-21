@@ -1,5 +1,6 @@
 {% extends 'base_layout.html' %}
 
+{% load post_tags %}
 {% block content %}
 <div class="container-book-details">
 	<div class="row">
@@ -12,7 +13,7 @@
 			<hr>
 			<h4>Price: {{ book.price }}</h4>
 			<h4>Description:</h4>
-			<p>{{ book.snippet }}<span id="dots">...</span><span id="more">{{ book.read_more }}</span><a onClick="return myFunction()" id="myBtn">Read More</a></p>
+			<p class="descriptions">{{ book.snippet }}<span id="dots">...</span><span id="more">{{ book.read_more }}</span><a onClick="return myFunction()" id="myBtn">Read More</a></p>
 			<!-- <button onclick="myFunction()" id="myBtn">Read more</button> -->
 		</div>
 		<div class="col border border-dark">
@@ -43,14 +44,83 @@
 			<!-- <li><a href="{% url 'reviews:create' slug=book.slug %}">Leave a Review</a></li> -->
 			{% for review in reviews %}
 				{% if review.book == book %}
-					<p>{{ review.author }}</p>
-					<p class="review-title">{{ review.title }}</p>
-					<p>{{ review.datetime }}</p>
-					<p>{{ review.body }}</p>
+					<form action="{% url 'books:reviewlike'%}" method="post"  class="like-form" id={{review.id}}>
+						{% csrf_token %}
+						<input type="text" name="review_id" value="{{review.id}}" style="display:none">
+						<input type="text" name="owner" value="{{user.id}}" style="display:none">
+						<input type="text" name="slug" style="display:none" value="{{book.slug}}">
+						<p>{{ review.author }} {{ review.datetime }}</p>
+						<div class="row">
+							<div class="col-md-11">
+								<p class="review-title">{{ review.title }}</p>
+								<p class="descriptions">{{ review.snippet }}</p>
+							</div>
+							<div class="col">
+								{% checker review.id user as likes%}
+								<button type="submit" name="submit" class="btn btn-black like-btn{{review.id}}" style="width:100%">
+									{% if not likes %}
+										Like
+									{% else %}
+										Unlike
+									{% endif %}
+								</button>
+								<div class="row">
+									<div class="col">
+										<div class="like-count{{review.id}}">{% total_like review.id%}</div>
+									</div>
+									<div class="col">
+										likes
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+					<hr>
 				{% endif %}
 			{% endfor %}
 		</div>
 	</div>
 </div>
+{% endblock %}
+
+{% block scripts %}
 <script src="/static/read_more.js"></script>
+<script type="text/javascript">
+		$(document).ready(function(){
+			let display = false
+			$('.like-form').submit(function(e){
+				e.preventDefault();
+				const review_id = $(this).attr('id')
+
+				const likeText = $(`.like-btn${review_id}`).text()
+				const trim = $.trim(likeText)
+
+				const url = $(this).attr('action')
+				let res;
+				const likes = $(`.like-count${review_id}`).text()
+				const trimCount = parseInt(likes)
+				$.ajax({
+					type:'POST',
+					url: url,
+					data:{
+						'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+						'review_id':review_id,
+					},
+					success: function(response){
+						if(trim === 'Unlike'){
+							$(`.like-btn${review_id}`).text('Like')
+							res = trimCount - 1
+						}else{
+							$(`.like-btn${review_id}`).text('Unlike')
+							res = trimCount + 1
+						}
+						$(`.like-count${review_id}`).text(res)
+					},
+					error: function(response){
+						console.log('error', response)
+					},
+				})
+			})
+		});
+</script>
 {% endblock %}

@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from .models import Book, Genre, BookGenre
-from reviews.models import Review
+from reviews.models import Review, ReviewLike
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from . import forms
 from array import array
+from django.http import JsonResponse
 
 @login_required(login_url="/accounts/login/")
 def books_create(request):
@@ -38,9 +39,40 @@ def books_list(request):
 
 def books_detail(request, slug):
 	book = Book.objects.get(slug=slug)
-	reviews = Review.objects.all()
-	
+	reviews = Review.objects.all().order_by('datetime')
+	reviewlike = ReviewLike.objects.all()
+
 	return render(request, 'books/book_detail.html',{
 		'book':book,
-		'reviews':reviews
+		'reviews':reviews,
+		'reviewlike':reviewlike
 	})
+
+def reviewlike(request):
+	if request.method == 'POST':
+		review = request.POST.get('review_id')
+		owner = request.POST.get('owner')
+		slug = request.POST.get('slug')
+		review_instance = Review.objects.get(id=int(review))
+		owner_instance = request.user
+
+		rl = ReviewLike.objects.all()
+
+		if not rl:
+			like = ReviewLike(review=review_instance,owner=owner_instance)
+			like.save()
+		else:
+			rl = ReviewLike.objects.filter(review=review_instance, owner=owner_instance)
+			if not rl:
+				like = ReviewLike(review=review_instance,owner=owner_instance)
+				like.save()
+			else:
+				rl.delete()
+		
+		likes = ReviewLike.objects.filter(review=review_instance).count()
+		data = {
+			'likes': likes,
+		}
+		return JsonResponse(data, safe=False)
+
+	return redirect('books:detail', slug=slug)
