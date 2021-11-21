@@ -1,3 +1,6 @@
 from django.shortcuts import render
+from .models import Message
+from django.http import HttpResponse
 
-# Create your views here.
+def messenger(request):
+	return HttpResponse("hello")
