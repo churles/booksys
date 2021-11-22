@@ -42,10 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'accounts',
     'books',
     'reviews',
-    'messagings'
+    'chats',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +79,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'booksys.wsgi.application'
 
-
+ASGI_APPLICATION = 'booksys.routing.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
