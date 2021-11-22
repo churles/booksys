@@ -1,5 +1,5 @@
-{% extends 'base_layouts.html '%}
-
+{% extends 'base_layout.html' %}
+ 
 {% block content %}
 <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
 <input id="chat-message-input" type="text" size="100"/><br/>
@@ -11,7 +11,7 @@
 
 	var chatSocket = new WebSocket(
 	    'ws://' + window.location.host +
-	    '/ws/chat/' + roomName + '/');
+	    '/ws/chats/' + roomName + '/');
 
 	chatSocket.onmessage = function(e) {
 	    var data = JSON.parse(e.data);
