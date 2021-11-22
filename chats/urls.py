@@ -1,8 +1,9 @@
-from django.conf.urls import url
+from django.conf.urls import url, re_path
 from . import views
 
 app_name = 'chats'
 
 urlpatterns=[
-	url(r'^messenger/$', views.messenger, name="messenger"),
+	url(r'^$', views.index, name="index"),
+	re_path(r'^(?P<room_name>[^/]+)/$', views.room, name="room"),
 ]

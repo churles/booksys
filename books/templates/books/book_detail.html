@@ -30,7 +30,7 @@
 			{% else %}
 				<p class="out-stock">Out of stock</p>
 			{% endif %}
-			<form action="{% url 'chats:messenger' %}" method="post">
+			<form action="{% url 'chats:index' %}" method="post">
 				{% csrf_token %}
 				<input type="text" name="book" value="{{book.id}}" class="hidden-tags">
 				<button type="submit" class="btn btn-black" style="width:100%">Message Seller to Rent</button>
