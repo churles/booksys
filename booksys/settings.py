@@ -13,8 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = str(os.getenv('SECRET_KEY'))
+# SECRET_KEY = str(os.getenv('SECRET_KEY'))
+
+SECRET_KEY = "444bz)=mh_v$hawxiq$s1q=9b+^t$39zozwjsdkgn8kn=xdu_a"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -46,7 +48,7 @@ INSTALLED_APPS = [
     'accounts',
     'books',
     'reviews',
-    'chats',
+    'chat',
     'public_chat',
 ]
 
@@ -84,11 +86,8 @@ ASGI_APPLICATION = 'booksys.routing.application'
 
 CHANNEL_LAYERS = {
     'default':{
-        'BACKEND':'channels_redis.core.RedisChannelLayer',
-        'CONFIG':{
-            'hosts':['127.0.0.1','8000'],
-        },
-    },
+        'BACKEND':'channels.layers.InMemoryChannelLayer'
+    }
 }
 
 # Database
