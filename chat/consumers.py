@@ -3,13 +3,22 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import PublicChatRoom, PublicChatRoomMessage
 from django.contrib.auth.models import User
-
+ 
+messages = []
 @database_sync_to_async
 def update_messages(username, message, room_name):
 	chat_room = PublicChatRoom.objects.get(title=room_name)	
 	user = User.objects.get(username=username)
 	chat_messages = PublicChatRoomMessage(content=message, user=user, room=chat_room)
 	chat_messages.save()
+
+@database_sync_to_async
+def chat_messages(room_name):
+	chat_room = PublicChatRoom.objects.get(title=room_name)
+	messages = PublicChatRoomMessage.objects.filter(room=chat_room).order_by('timestamp')
+	return messages
+
+
 
 class ChatRoomConsumer(AsyncWebsocketConsumer):
 
@@ -32,6 +41,7 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
 
 	async def receive(self, text_data):
 		text_data_json = json.loads(text_data)
+
 		message = text_data_json['message']
 		username = text_data_json['username']
 
