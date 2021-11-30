@@ -50,11 +50,11 @@
 			document.querySelector('#chat-text').value += (data.username +':   ' +data.message +'\n')
 		}
 
-		document.querySelector('#input').addEventListener('keyup', function(e){
-			e.preventDefault();
-			if (e.keyCode === 13){
-				document.querySelector('#submit').click();
-			}
-		});
+		// document.querySelector('#input').addEventListener('keyup', function(e){
+		// 	e.preventDefault();
+		// 	if (e.keyCode === 13){
+		// 		document.querySelector('#submit').click();
+		// 	}
+		// });
 	</script>
 {% endblock %}

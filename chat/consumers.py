@@ -1,7 +1,18 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
+from .models import PublicChatRoom, PublicChatRoomMessage
+from django.contrib.auth.models import User
+
+@database_sync_to_async
+def update_messages(username, message, room_name):
+	chat_room = PublicChatRoom.objects.get(title=room_name)	
+	user = User.objects.get(username=username)
+	chat_messages = PublicChatRoomMessage(content=message, user=user, room=chat_room)
+	chat_messages.save()
 
 class ChatRoomConsumer(AsyncWebsocketConsumer):
+
 	async def connect(self):
 		self.room_name = self.scope['url_route']['kwargs']['room_name']
 		self.room_group_name = 'chat_%s' % self.room_name
@@ -29,9 +40,11 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
 				{
 					'type':'chatroom_message',
 					'message':message,
-					'username':username,
+					'username':username
 				}
 			)
+		
+		await update_messages(username, message, self.room_name)
 
 	async def chatroom_message(self, event):
 		message = event['message']
@@ -39,7 +52,7 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
 
 		await self.send(text_data=json.dumps({
 			'message':message,
-			'username':username,
+			'username':username
 		}))
 
 	pass
