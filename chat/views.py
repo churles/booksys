@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from books.models import Book
 from .models import PublicChatRoom, PublicChatRoomMessage
+from django.contrib.auth.decorators import login_required
 
 def index(request):
 	if request.method == 'POST':
@@ -19,7 +20,13 @@ def index(request):
 		chat_messages.save()
 	return redirect('chat:room', room_name=room_name)
 
+@login_required(login_url="/accounts/login/")
 def room(request, room_name):
+
+	chat_room = PublicChatRoom.objects.get(title=room_name)
+	messages = PublicChatRoomMessage.objects.filter(room=chat_room).order_by('timestamp')
+
 	return render(request, 'chat/chatroom.html',{
-		'room_name':room_name
+		'room_name':room_name,
+		'messages':messages
 	})
