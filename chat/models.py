@@ -51,4 +51,7 @@ class PublicChatRoomMessage(models.Model):
 
 	def __str__(self):
 		return self.content
+
+	def last_10_messages():
+		return PublicChatRoomMessage.objects.order_by('-timestamp').all()[:10]
 	

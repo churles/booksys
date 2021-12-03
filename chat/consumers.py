@@ -1,68 +1,87 @@
+from asgiref.sync import async_to_sync
+from channels.generic.websocket import WebsocketConsumer
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.db import database_sync_to_async
 from .models import PublicChatRoom, PublicChatRoomMessage
-from django.contrib.auth.models import User
- 
-messages = []
-@database_sync_to_async
-def update_messages(username, message, room_name):
-	chat_room = PublicChatRoom.objects.get(title=room_name)	
-	user = User.objects.get(username=username)
-	chat_messages = PublicChatRoomMessage(content=message, user=user, room=chat_room)
-	chat_messages.save()
+from django.contrib.auth import get_user_model
 
-@database_sync_to_async
-def chat_messages(room_name):
-	chat_room = PublicChatRoom.objects.get(title=room_name)
-	messages = PublicChatRoomMessage.objects.filter(room=chat_room).order_by('timestamp')
-	return messages
+User = get_user_model()
 
+class ChatRoomConsumer(WebsocketConsumer):
 
+    def fetch_messages(self, data):
+        room = PublicChatRoom.objects.get(title=self.room_name)
+        messages = PublicChatRoomMessage.objects.filter(room=room).order_by('timestamp')
+        content = {
+            'command':'messages',
+            'messages':self.messages_to_json(messages)
+        }
 
-class ChatRoomConsumer(AsyncWebsocketConsumer):
+    def new_message(self, data):
+        author = data['from']
+        author_user = User.objects.get(username=author)
+        room = PublicChatRoom.objects.get(title=self.room_name)
 
-	async def connect(self):
-		self.room_name = self.scope['url_route']['kwargs']['room_name']
-		self.room_group_name = 'chat_%s' % self.room_name
+        message = PublicChatRoomMessage.objects.create(
+            content=data['message'], 
+            user=author_user, 
+            room=room)
 
-		await self.channel_layer.group_add(
+        content = {
+            'command':'new_message',
+            'message':self.message_to_json(message)
+        }
+        return self.send_chat_message(content)
+    
+    def messages_to_json(self, messages):
+        result = []
+        for message in messages:
+            result.append(self.message_to_json(message))
+        return result
+
+    def message_to_json(self, message):
+        return {
+            'id':message.id,
+            'author':message.user.username,
+            'content':message.content,
+            'timestamp':str(message.timestamp)
+        }
+
+    commands = {
+        'fetch_messages':fetch_messages,
+        'new_message':new_message
+    }
+
+    def connect(self):
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_group_name = 'chat_%s' % self.room_name
+        async_to_sync(self.channel_layer.group_add)(
 			self.room_group_name,
 			self.channel_name
 		)
+        
+        self.accept()
+    def disconnect(self, close_code):
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name,
+            self.channel_name
+        )
 
-		await self.accept()
+    def receive(self, text_data):
+        data = json.loads(text_data)
+        self.commands[data['command']](self, data)
 
-	async def disconnect(self, close_code):
-		await self.channel_layer.group_discard(
-			self.room_group_name,
-			self.channel_name
-		)
+    def send_chat_message(self, message):
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                'type':'chat_message',
+                'message':message
+            }
+        )
 
-	async def receive(self, text_data):
-		text_data_json = json.loads(text_data)
-
-		message = text_data_json['message']
-		username = text_data_json['username']
-
-		await self.channel_layer.group_send(
-			self.room_group_name,
-				{
-					'type':'chatroom_message',
-					'message':message,
-					'username':username
-				}
-			)
-		
-		await update_messages(username, message, self.room_name)
-
-	async def chatroom_message(self, event):
-		message = event['message']
-		username = event['username']
-
-		await self.send(text_data=json.dumps({
-			'message':message,
-			'username':username
-		}))
-
-	pass
+    def send_message(self, message):
+        self.send(text_data=json.dumps(message))
+    
+    def chat_message(self, event):
+        message = event['message']
+        self.send(text_data=json.dumps(message))
