@@ -138,42 +138,42 @@
 			'/'
 		);
 
-		// chatSocket.onopen = function(e){
-		// 	fetchMessages();
-		// }
+		chatSocket.onopen = function(e){
+			fetchMessages();
+		}
 
-		// chatSocket.onmessage = function (e) {
-		// 	const data = JSON.parse(e.data);
-		// 	if(data['command'] === 'messages'){
-		// 		for(let i=0; i<data['messages'].length; i++){
-		// 			createMessage(data['messages'][i]);
-		// 		}
-		// 	}else if( data['command'] === 'new_message'){
-		// 		createMessage(data['message']);
-		// 	}
-		// };
+		chatSocket.onmessage = function (e) {
+			const data = JSON.parse(e.data);
+			if(data['command'] === 'messages'){
+				for(let i=0; i<data['messages'].length; i++){
+					createMessage(data['messages'][i]);
+				}
+			}else if( data['command'] === 'new_message'){
+				createMessage(data['message']);
+			}
+		};
 
-		// function fetchMessages(){
-		// 	chatSocket.send(JSON.stringify({'command':'fetch_messages'}));
-		// }
+		function fetchMessages(){
+			chatSocket.send(JSON.stringify({'command':'fetch_messages'}));
+		}
 
-		// function createMessage(data){
-		// 	var author = data['author'];
-		// 	var msgListTag = document.createElement['li'];
-		// 	var imgTag = document.createElement['img'];
-		// 	var pTag = document.createElement['p'];
-		// 	pTag.textContent = data.content;
-		// 	imgTag.src = '';
+		function createMessage(data){
+			var author = data['author'];
+			var msgListTag = document.createElement('li');
+			var imgTag = document.createElement('img');
+			var pTag = document.createElement('p');
+			pTag.textContent = data.content;
+			imgTag.src = 'http://emilcarlsson.se/assets/harveyspecter.png';
 
-		// 	if(author === user_username){
-		// 		msgListTag.className = 'sent';
-		// 	}else{
-		// 		msgListTag.className = 'replies';
-		// 	}
-		// 	msgListTag.appendChild(imgTag);
-		// 	msgListTag.appendChild(pTag);
-		// 	document.querySelector('#chat-log').appendChild(msgListTag);;
-		// }
+			if(author === user_username){
+				msgListTag.className = 'sent';
+			}else{
+				msgListTag.className = 'replies';
+			}
+			msgListTag.appendChild(imgTag);
+			msgListTag.appendChild(pTag);
+			document.querySelector('#chat-log').appendChild(msgListTag);;
+		}
 
 		chatSocket.onclose = function(e){
 			console.error('Chat socket closed unexpectedly');
