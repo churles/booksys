@@ -20,32 +20,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'chat.css' %}">
 </head>
 <body>
-    
-	<header>
-		<nav class="navbar  navbar-dark bg-dark">
-		    <a class="navbar-brand" href="#">
-			    <img src="{% static 'index.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
-			    BookRental.com
-		    </a>
-			<div>
-				<ul>
-					{% if user.is_authenticated %}
-						<li>
-							<form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
-								{% csrf_token %}
-								<button type="submit">Logout</button>
-							</form>
-						</li>
-						<li ><a href="{% url 'books:create' %}">New Listing</a></li>
-						<li><a href="">{{ user.username }}</a></li>
-					{% else %}
-						<li><a href="{% url 'accounts:login' %}">Login</a></li>
-						<li><a href="{% url 'accounts:signup' %}">Signup</a></li>
-					{% endif %}
-				</ul>
-			</div>
-		</nav>
-	</header>
     {% block content%}
 
     {% endblock %}

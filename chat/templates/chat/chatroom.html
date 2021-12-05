@@ -32,7 +32,19 @@
 		</div> -->
 		<div id="contacts">
 			<ul>
-				<li class="contact">
+				{% for room in rooms %}
+					<li class="contact">
+						<div class="wrap">
+							<span class="contact-status"></span>
+							<img src="" alt="">
+							<div class="meta">
+								<p class="name">{{room.title}}</p>
+								<p class="preview">{{room.users}}</p>
+							</div>
+						</div>
+					</li>
+				{% endfor %}
+				<!-- <li class="contact">
 					<div class="wrap">
 						<span class="contact-status online"></span>
 						<img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
@@ -51,7 +63,7 @@
 							<p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>
 						</div>
 					</div>
-				</li>
+				</li> -->
 			</ul>
 		</div>
 		<!-- <div id="bottom-bar">
