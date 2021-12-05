@@ -33,16 +33,20 @@
 		<div id="contacts">
 			<ul>
 				{% for room in rooms %}
-					<li class="contact">
-						<div class="wrap">
-							<span class="contact-status"></span>
-							<img src="" alt="">
-							<div class="meta">
-								<p class="name">{{room.title}}</p>
-								<p class="preview">{{room.users}}</p>
-							</div>
-						</div>
-					</li>
+					{% for users in room.users.all %}
+						{% if users.username != user.username %}
+							<li class="contact" id="li{{room.title}}">
+								<div class="wrap">
+									<span class="contact-status online"></span>
+									<img src="http://emilcarlsson.se/assets/louislitt.png" alt="">
+									<div class="meta">
+										<p class="name">{{ users.username }}</p>
+										<p class="preview" id="{{room.title}}"></p>
+									</div>
+								</div>
+							</li><br>
+						{% endif %}
+					{% endfor %}
 				{% endfor %}
 				<!-- <li class="contact">
 					<div class="wrap">
@@ -102,7 +106,12 @@
 <script src="/static/chat_main.js"></script>
 <script src="/static/reconnecting-websocket.js"></script>
 	<script type="text/javascript">
+		const user_username = JSON.parse(document.getElementById('user_username').textContent);
+		const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
+
+		const element = document.getElementById("li"+roomName);
+		element.classList.add("active");
 
 		document.querySelector('#chat-message-input').onkeyup = function(e) {
 					if(e.keyCode === 13){
@@ -121,9 +130,6 @@
 					messageInputDom.value = '';
 				};
 
-		const user_username = JSON.parse(document.getElementById('user_username').textContent);
-		const roomName = JSON.parse(document.getElementById('room-name').textContent);
-
 		const chatSocket = new ReconnectingWebSocket(
 			'ws://' + 
 			window.location.host +
@@ -139,12 +145,20 @@
 		chatSocket.onmessage = function (e) {
 			const data = JSON.parse(e.data);
 			if(data['command'] === 'messages'){
+				const len = data['messages'].length;
+				const mes = data['messages'][len-1];
+				document.querySelector('#'+roomName).innerHTML = (mes['content']);
+
+
 				for(let i=0; i<data['messages'].length; i++){
 					createMessage(data['messages'][i]);
 				}
 			}else if( data['command'] === 'new_message'){
+				const mes1 = data['message'];
+				document.querySelector('#'+roomName).innerHTML = (mes1['content']);
+
 				createMessage(data['message']);
-			}
+			}	
 		};
 
 		function fetchMessages(){
@@ -166,7 +180,7 @@
 			}
 			msgListTag.appendChild(imgTag);
 			msgListTag.appendChild(pTag);
-			document.querySelector('#chat-log').appendChild(msgListTag);;
+			document.querySelector('#chat-log').appendChild(msgListTag);
 		}
 
 		chatSocket.onclose = function(e){
