@@ -16,6 +16,22 @@ class ChatRoomConsumer(WebsocketConsumer):
             'messages':self.messages_to_json(messages)
         }
         self.send_message(content)
+    
+    def latest_messages(self, data):
+        author = User.objects.get(username=data['from'])
+        rooms = PublicChatRoom.objects.filter(users=author)
+        latest_message = []
+        for room in rooms:
+            latest = PublicChatRoomMessage.objects.filter(room=room).last()
+            latest_message.append(latest)
+
+        content = {
+            'command':'latest_message',
+            'messages':self.latest_messages_to_json(latest_message)
+        }
+
+        self.send_latest_message(content)
+
 
     def new_message(self, data):
         author = data['from']
@@ -47,9 +63,27 @@ class ChatRoomConsumer(WebsocketConsumer):
             'timestamp':str(message.timestamp)
         }
 
+    def latest_messages_to_json(self, messages):
+        result = []
+        for message in messages:
+            result.append(self.latest_message_to_json(message))
+        return result
+
+    def latest_message_to_json(self, message):
+        return {
+            'id':message.id,
+            'author':message.user.username,
+            'room':message.room.title,
+            'content':message.content,
+            'timestamp':str(message.timestamp)
+        }
+    
+    
+
     commands = {
         'fetch_messages':fetch_messages,
-        'new_message':new_message
+        'new_message':new_message,
+        'latest_messages':latest_messages
     }
 
     def connect(self):
@@ -79,6 +113,9 @@ class ChatRoomConsumer(WebsocketConsumer):
                 'message':message
             }
         )
+
+    def send_latest_message(self, message):
+        self.send(text_data=json.dumps(message))
 
     def send_message(self, message):
         self.send(text_data=json.dumps(message))

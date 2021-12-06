@@ -35,16 +35,18 @@
 				{% for room in rooms %}
 					{% for users in room.users.all %}
 						{% if users.username != user.username %}
-							<li class="contact" id="{{room.title}}" onclick="changeRoom(this.id)">
+							<a href="{% url 'chat:room' room_name=room.title %}" style="text-decoration: none; color:white;">
+							<li class="contact" id="{{room.title}}">
 								<div class="wrap">
 									<span class="contact-status online"></span>
-									<img src="http://emilcarlsson.se/assets/louislitt.png" alt="">
+									<img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
 									<div class="meta">
 										<p class="name">{{ users.username }}</p>
 										<p class="preview" id="p{{room.title}}"></p>
 									</div>
 								</div>
-							</li><br>
+							</li>
+							</a>
 						{% endif %}
 					{% endfor %}
 				{% endfor %}
@@ -144,25 +146,38 @@
 
 		chatSocket.onmessage = function (e) {
 			const data = JSON.parse(e.data);
+			latestMessages();
 			if(data['command'] === 'messages'){
-				const len = data['messages'].length;
-				const mes = data['messages'][len-1];
-				document.querySelector('#p'+roomName).innerHTML = (mes['content']);
+				// const len = data['messages'].length;
+				// const mes = data['messages'][len-1];
+				// document.querySelector('#p'+roomName).innerHTML = (mes['content']);
 
 
 				for(let i=0; i<data['messages'].length; i++){
 					createMessage(data['messages'][i]);
 				}
 			}else if( data['command'] === 'new_message'){
-				const mes1 = data['message'];
-				document.querySelector('#p'+roomName).innerHTML = (mes1['content']);
+				// const mes1 = data['message'];
+				// document.querySelector('#p'+roomName).innerHTML = (mes1['content']);
 
 				createMessage(data['message']);
-			}	
+			}else if(data['command'] === 'latest_message')	{
+				for(let i=0; i<data['messages'].length; i++){
+					
+					var message = data['messages'][i];
+					var content = message['content'];
+					var room = message['room'];
+					document.querySelector('#p'+room).innerHTML = (content);
+				}
+			}
 		};
 
 		function fetchMessages(){
 			chatSocket.send(JSON.stringify({'command':'fetch_messages'}));
+		}
+
+		function latestMessages(){
+			chatSocket.send(JSON.stringify({'command':'latest_messages','from':user_username}));
 		}
 
 		function createMessage(data){
@@ -185,15 +200,6 @@
 
 		chatSocket.onclose = function(e){
 			console.error('Chat socket closed unexpectedly');
-		}
-		
-		function changeRoom(str){
-			const url = $(`{% url 'chat:room' room_name=${str} %}`);
-			$(function(){
-				$.ajax({
-					url:url,
-				});
-			});
 		}
 	</script>
 {% endblock %}
