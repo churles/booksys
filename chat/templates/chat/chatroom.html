@@ -35,13 +35,13 @@
 				{% for room in rooms %}
 					{% for users in room.users.all %}
 						{% if users.username != user.username %}
-							<li class="contact" id="li{{room.title}}">
+							<li class="contact" id="{{room.title}}" onclick="changeRoom(this.id)">
 								<div class="wrap">
 									<span class="contact-status online"></span>
 									<img src="http://emilcarlsson.se/assets/louislitt.png" alt="">
 									<div class="meta">
 										<p class="name">{{ users.username }}</p>
-										<p class="preview" id="{{room.title}}"></p>
+										<p class="preview" id="p{{room.title}}"></p>
 									</div>
 								</div>
 							</li><br>
@@ -110,7 +110,7 @@
 		const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
 
-		const element = document.getElementById("li"+roomName);
+		const element = document.getElementById(roomName);
 		element.classList.add("active");
 
 		document.querySelector('#chat-message-input').onkeyup = function(e) {
@@ -147,7 +147,7 @@
 			if(data['command'] === 'messages'){
 				const len = data['messages'].length;
 				const mes = data['messages'][len-1];
-				document.querySelector('#'+roomName).innerHTML = (mes['content']);
+				document.querySelector('#p'+roomName).innerHTML = (mes['content']);
 
 
 				for(let i=0; i<data['messages'].length; i++){
@@ -155,7 +155,7 @@
 				}
 			}else if( data['command'] === 'new_message'){
 				const mes1 = data['message'];
-				document.querySelector('#'+roomName).innerHTML = (mes1['content']);
+				document.querySelector('#p'+roomName).innerHTML = (mes1['content']);
 
 				createMessage(data['message']);
 			}	
@@ -185,6 +185,15 @@
 
 		chatSocket.onclose = function(e){
 			console.error('Chat socket closed unexpectedly');
+		}
+		
+		function changeRoom(str){
+			const url = $(`{% url 'chat:room' room_name=${str} %}`);
+			$(function(){
+				$.ajax({
+					url:url,
+				});
+			});
 		}
 	</script>
 {% endblock %}
