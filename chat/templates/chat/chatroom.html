@@ -39,7 +39,11 @@
 							<li class="contact" id="{{room.title}}">
 								<div class="wrap">
 									<span class="contact-status online"></span>
-									<img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
+									{% for profile in profiles %}
+										{% if profile.account == users %}
+											<img src="{{ profile.picture.url }}" alt="" />
+										{% endif %}
+									{% endfor %}
 									<div class="meta">
 										<p class="name">{{ users.username }}</p>
 										<p class="preview" id="p{{room.title}}"></p>
@@ -78,15 +82,15 @@
 		</div> -->
 	</div>
 	<div class="content">
-		<div class="contact-profile">
+		<!-- <div class="contact-profile">
 			<img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
 			<p>{{ user.username }}</p>
-			<!-- <div class="social-media">
+			<div class="social-media">
 				<i class="fa fa-facebook" aria-hidden="true"></i>
 				<i class="fa fa-twitter" aria-hidden="true"></i>
 				 <i class="fa fa-instagram" aria-hidden="true"></i>
-			</div> -->
-		</div>
+			</div>
+		</div> -->
 		<div class="messages">
 			<ul id="chat-log">
 			</ul>
@@ -108,6 +112,7 @@
 <script src="/static/chat_main.js"></script>
 <script src="/static/reconnecting-websocket.js"></script>
 	<script type="text/javascript">
+
 		const user_username = JSON.parse(document.getElementById('user_username').textContent);
 		const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
@@ -144,23 +149,22 @@
 			fetchMessages();
 		}
 
+		function scrolltoBottom(){
+			var element = document.querySelector('.messages');
+			element.scrollTop = element.scrollHeight - element.clientHeight;
+		}
+
 		chatSocket.onmessage = function (e) {
 			const data = JSON.parse(e.data);
 			latestMessages();
 			if(data['command'] === 'messages'){
-				// const len = data['messages'].length;
-				// const mes = data['messages'][len-1];
-				// document.querySelector('#p'+roomName).innerHTML = (mes['content']);
-
-
 				for(let i=0; i<data['messages'].length; i++){
 					createMessage(data['messages'][i]);
 				}
+				scrolltoBottom();
 			}else if( data['command'] === 'new_message'){
-				// const mes1 = data['message'];
-				// document.querySelector('#p'+roomName).innerHTML = (mes1['content']);
-
 				createMessage(data['message']);
+				scrolltoBottom();
 			}else if(data['command'] === 'latest_message')	{
 				for(let i=0; i<data['messages'].length; i++){
 					
@@ -186,7 +190,7 @@
 			var imgTag = document.createElement('img');
 			var pTag = document.createElement('p');
 			pTag.textContent = data.content;
-			imgTag.src = 'http://emilcarlsson.se/assets/harveyspecter.png';
+			imgTag.src = data['profile'];
 
 			if(author === user_username){
 				msgListTag.className = 'sent';

@@ -3,6 +3,7 @@ from channels.generic.websocket import WebsocketConsumer
 import json
 from .models import PublicChatRoom, PublicChatRoomMessage
 from django.contrib.auth import get_user_model
+from accounts.models import Profile
 
 User = get_user_model()
 
@@ -56,11 +57,13 @@ class ChatRoomConsumer(WebsocketConsumer):
         return result
 
     def message_to_json(self, message):
+        profile = Profile.objects.filter(account=message.user)[0]
         return {
             'id':message.id,
             'author':message.user.username,
             'content':message.content,
-            'timestamp':str(message.timestamp)
+            'timestamp':str(message.timestamp),
+            'profile':profile.picture.url
         }
 
     def latest_messages_to_json(self, messages):

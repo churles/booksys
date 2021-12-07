@@ -43,14 +43,24 @@ def logout_view(request):
 		return redirect('accounts:login')
 
 def create_view(request):
-	user = request.user.id
-	profile = Profile.objects.get(account=user)
-	if profile != None:
-		form = forms.CreateProfile()
-		return render(request, 'accounts/profile_create.html',{
-			'form':form,
-			'profile':profile
-		})
+	if request.method == 'POST':
+		form = forms.CreateProfile(request.POST, request.FILES)
+		if form.is_valid():
+			instance = form.save(commit=False)
+			instance.account = request.user
+			instance.save()
+			return redirect('accounts:create')
+	else:
+		profile = Profile.objects.filter(account=request.user)
+		if not profile:
+			form = forms.CreateProfile()
+			return render(request, 'accounts/profile_create.html',{
+				'form':form,
+				'profile':profile
+			})
+		else:
+			return HttpResponse('edit')
+	return redirect('books:list')
 
 
 	# if request.method == 'POST':
