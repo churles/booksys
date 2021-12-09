@@ -15,34 +15,35 @@
     </div>
     <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
         <div class="btn-group" role="group">
-            <button type="button" id="stars" class="btn btn-primary" href="#tab1" data-toggle="tab"><span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                <div class="hidden-xs">Stars</div>
+            <button type="button" id="tab1-tab" class="btn btn-primary" onclick="openTab('tab1')" data-toggle="tab"><span class="fas fa-list" aria-hidden="true"> My Listings</span>
             </button>
         </div>
         <div class="btn-group" role="group">
-            <button type="button" id="favorites" class="btn btn-default" href="#tab2" data-toggle="tab"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
-                <div class="hidden-xs">Favorites</div>
+            <button type="button" id="tab2-tab" class="btn btn-default" onclick="openTab('tab2')" data-toggle="tab"><span class="fa fa-book" aria-hidden="true"> Read</span>
             </button>
         </div>
         <div class="btn-group" role="group">
-            <button type="button" id="following" class="btn btn-default" href="#tab3" data-toggle="tab"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            <button type="button" id="tab3-tab" class="btn btn-default" onclick="openTab('tab3')" data-toggle="tab"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                 <div class="hidden-xs">Following</div>
             </button>
         </div>
     </div>
-
-        <div class="well">
-      <div class="tab-content">
-        <div class="tab-pane fade in active" id="tab1">
-          <h3>This is tab 1</h3>
-        </div>
-        <div class="tab-pane fade in" id="tab2">
-          <h3>This is tab 2</h3>
-        </div>
-        <div class="tab-pane fade in" id="tab3">
-          <h3>This is tab 3</h3>
-        </div>
-      </div>
+    <div class="tab-content" id="myTabContent" style="padding-top: 10px;">
+            <div class="tab-pane fade show active" id="tab1"  role="tabpanel" aria-labelledby="tab1-tab">
+                <div class="my-listings-library">
+                    {% for book in my_listings %}
+                        <div>
+                            <a href="{% url 'books:detail' slug=book.slug %}"><img class="list-thumb" src="{{ book.thumbnail.url }}"></a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab2"  role="tabpanel" aria-labelledby="tab2-tab">
+                <h3>This is tab 2</h3>
+            </div>
+            <div class="tab-pane fade" id="tab3"  role="tabpanel" aria-labelledby="tab3-tab">
+                <h3>This is tab 3</h3>
+            </div>
     </div>
     
     </div>
@@ -60,5 +61,15 @@
             $(this).removeClass("btn-default").addClass("btn-primary");   
         });
     });
+    function openTab(name) {
+        var i;
+        var x = document.getElementsByClassName("tab-pane");
+        for (i = 0; i < x.length; i++) {
+            x[i].classList.remove("show");
+            x[i].classList.remove("active");
+        }
+        document.getElementById(name).classList.add("show");
+        document.getElementById(name).classList.add("active");
+    }
 </script>
 {% endblock %}
