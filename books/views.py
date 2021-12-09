@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Book, Genre, BookGenre
 from reviews.models import Review, ReviewLike
+from accounts.models import Profile
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from . import forms
@@ -76,3 +77,13 @@ def reviewlike(request):
 		return JsonResponse(data, safe=False)
 
 	return redirect('books:detail', slug=slug)
+
+def library(request):
+	my_listings = Book.objects.filter(owner=request.user)
+	username = request.user.username
+	profile = Profile.objects.get(account=request.user)
+	return render(request, 'books/book_library.html',{
+		'my_listings':my_listings,
+		'username':username,
+		'profile':profile
+	})

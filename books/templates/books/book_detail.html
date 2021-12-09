@@ -33,7 +33,7 @@
 			<form action="{% url 'chat:index' %}" method="post">
 				{% csrf_token %}
 				<input type="text" name="book" value="{{book.id}}" class="hidden-tags">
-				<button type="submit" class="btn btn-black" style="width:100%">Message Seller to Rent</button>
+				<button type="submit" class="btn btn-black" style="width:100%"  {% if book.owner == user %} disabled {% endif %}>Message Seller to Rent</button>
 			</form>
 		</div>
 	</div>
