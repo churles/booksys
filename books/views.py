@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Book, Genre, BookGenre
+from .models import Book, BookRent, Genre, BookGenre, ReadList
 from reviews.models import Review, ReviewLike
 from accounts.models import Profile
 from django.http import HttpResponse
@@ -78,12 +78,18 @@ def reviewlike(request):
 
 	return redirect('books:detail', slug=slug)
 
+@login_required(login_url="/accounts/login/")
 def library(request):
 	my_listings = Book.objects.filter(owner=request.user)
 	username = request.user.username
 	profile = Profile.objects.get(account=request.user)
+	readlist = ReadList.objects.filter(owner=request.user)
+	bookrent = BookRent.objects.filter(owner=request.user)
+
 	return render(request, 'books/book_library.html',{
 		'my_listings':my_listings,
 		'username':username,
-		'profile':profile
+		'profile':profile,
+		'readlist':readlist,
+		'bookrent':bookrent
 	})

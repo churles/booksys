@@ -61,3 +61,17 @@ class BookGenre(models.Model):
 	def __str__(self):
 		return str(self.book)
 
+class ReadList(models.Model):
+	owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+	books = models.ManyToManyField(Book, blank=True, help_text="books user have read")
+
+	def __str__(self):
+		return str(self.owner)
+
+class BookRent(models.Model):
+	owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+	books = models.ManyToManyField(Book, blank=True, help_text="books user have rented")
+	daterented = models.DateTimeField(blank=False)
+
+	def __str__(self):
+		return str(self.owner)
