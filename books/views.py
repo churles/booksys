@@ -99,3 +99,19 @@ def library(request):
 		'bookrent':bookrent,
 		'tab':tab
 	})
+
+def read(request):
+	if request.method == 'POST':
+		book = Book.objects.get(id=request.POST.get('book'))
+		slug = request.POST.get('slug')
+		read = ReadList.objects.filter(owner=request.user)
+		if not read:
+			new_read = ReadList(owner=request.user)
+			new_read.save()
+			new_read.books.add(book)
+		
+			return redirect('books:detail', slug=slug)
+		else:
+			read = ReadList.objects.get(owner=request.user)
+			read.books.add(book)
+			return redirect('books:detail', slug=slug)

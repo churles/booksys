@@ -49,14 +49,22 @@
 				{% csrf_token %}
 				<input type="text" name="book" value="{{book.id}}" class="hidden-tags">
 				<button type="submit" class="btn btn-black" style="width:100%"  {% if book.owner == user %} disabled {% endif %}>Message Seller to Rent</button>
-				<br>
+			</form>
+			<form action="{% url 'books:read'%}" method="post" style="padding-top: 10px;">
+				{% csrf_token %}
+				<input type="text" name="slug" value="{{book.slug}}" class="hidden-tags">
+				<input type="text" name="book" value="{{book.id}}" class="hidden-tags">
+				<button type="submit" class="btn btn-black" id="control-read-button" style="width:100%" >Add to Have Read</button>
+				
 				{% for read in readlist %}
 					{% for bookread in read.books.all %}
 						{% if book == bookread %}
-							<button type="submit" class="btn btn-black" style="width: 100%;">Add to Have Read</button>
+							<p id="control-read" hidden>true</p>
 						{% endif %}
 					{% endfor %}
 				{% endfor %}
+				{{read_exist_book}}
+
 			</form>
 		</div>
 	</div>
@@ -117,6 +125,13 @@
 <script src="/static/read_more.js"></script>
 <script type="text/javascript">
 		$(document).ready(function(){
+			if(document.getElementById('control-read') != null){
+				const control_read = document.getElementById('control-read').textContent
+				if(control_read == 'true'){
+					document.getElementById('control-read-button').setAttribute("disabled", true)
+				}
+			}
+
 			let display = false
 			$('.like-form').submit(function(e){
 				e.preventDefault();

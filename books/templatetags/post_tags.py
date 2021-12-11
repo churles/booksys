@@ -21,3 +21,4 @@ def checker(args, args1):
 	review = Review.objects.get(id=args)
 	likes = ReviewLike.objects.filter(review=review, owner=args1)
 	return likes
+
