@@ -42,11 +42,13 @@ def books_detail(request, slug):
 	book = Book.objects.get(slug=slug)
 	reviews = Review.objects.all().order_by('datetime')
 	reviewlike = ReviewLike.objects.all()
+	readlist = ReadList.objects.filter(owner=request.user)
 
 	return render(request, 'books/book_detail.html',{
 		'book':book,
 		'reviews':reviews,
-		'reviewlike':reviewlike
+		'reviewlike':reviewlike,
+		'readlist':readlist
 	})
 
 def reviewlike(request):
@@ -80,6 +82,9 @@ def reviewlike(request):
 
 @login_required(login_url="/accounts/login/")
 def library(request):
+	tab = ''
+	if request.method == 'POST':
+		tab = request.POST.get('tab_name')
 	my_listings = Book.objects.filter(owner=request.user)
 	username = request.user.username
 	profile = Profile.objects.get(account=request.user)
@@ -91,5 +96,6 @@ def library(request):
 		'username':username,
 		'profile':profile,
 		'readlist':readlist,
-		'bookrent':bookrent
+		'bookrent':bookrent,
+		'tab':tab
 	})

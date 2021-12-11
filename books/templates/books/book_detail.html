@@ -8,7 +8,22 @@
 			<img id="thumb" src="{{ book.thumbnail.url }}">
 		</div>
 		<div class="col-xs-7 col-sm-7 col-md-7 book-details">
-			<h1>{{ book.title }}</h1>
+			<h1>{{ book.title }}
+				{% for read in readlist %}
+					{% for bookread in read.books.all %}
+						{% if book == bookread %}
+						<form method="post" action="{% url 'books:library' %}" class="inline">
+							{% csrf_token %}
+							<input type="hidden" name="tab_name" value="tab2">
+							<button type="submit" name="submit_param" value="submit_value" class="link-button">
+								<span style="font-size: 50%; color: green;"><i class="fa fa-book-open"></i>Read</span>
+							</button>
+						</form>
+						{% endif %}
+					{% endfor %}
+				{% endfor %}
+			</h1>
+			
 			<a href="#">By {{ book.author }}</a>
 			<hr>
 			<h4>Price: {{ book.price }}</h4>
@@ -34,6 +49,14 @@
 				{% csrf_token %}
 				<input type="text" name="book" value="{{book.id}}" class="hidden-tags">
 				<button type="submit" class="btn btn-black" style="width:100%"  {% if book.owner == user %} disabled {% endif %}>Message Seller to Rent</button>
+				<br>
+				{% for read in readlist %}
+					{% for bookread in read.books.all %}
+						{% if book == bookread %}
+							<button type="submit" class="btn btn-black" style="width: 100%;">Add to Have Read</button>
+						{% endif %}
+					{% endfor %}
+				{% endfor %}
 			</form>
 		</div>
 	</div>
