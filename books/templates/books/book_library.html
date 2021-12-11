@@ -65,15 +65,28 @@
 
 
 
-
+{% if tab != '' %}
+    {{ tab|json_script:"tab-name" }}
+{% else %}
+    {{ 'tab1'|json_script:"tab-name" }}
+{% endif %}
 {% endblock %}
 {% block scripts %}
 <script type="text/javascript">
     $(document).ready(function() {
+        const tab_name = JSON.parse(document.getElementById('tab-name').textContent);
+        if (tab_name === "tab2"){
+            openTab(tab_name);
+            $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
+            $("#tab2-tab").removeClass("btn-default").addClass("btn-primary"); 
+        }
+    });
+
+    $(document).ready(function() {
         $(".btn-pref .btn").click(function () {
             $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
             // $(".tab").addClass("active"); // instead of this do the below 
-            $(this).removeClass("btn-default").addClass("btn-primary");   
+            $(this).removeClass("btn-default").addClass("btn-primary"); 
         });
     });
     function openTab(name) {

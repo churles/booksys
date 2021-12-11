@@ -14,21 +14,26 @@
 <body>
 	<header>
 		<nav class="navbar  navbar-dark bg-dark">
-		    <a class="navbar-brand" href="#">
+		    <a class="navbar-brand" href="{% url 'books:list' %}">
 			    <img src="{% static 'index.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
 			    BookRental.com
 		    </a>
 			<div>
-				<ul>
+				<ul class="nav nav-tabs">
 					{% if user.is_authenticated %}
-						<li>
+						<li class="nav-item">
 							<form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
 								{% csrf_token %}
 								<button type="submit">Logout</button>
 							</form>
 						</li>
-						<li ><a href="{% url 'books:create' %}">New Listing</a></li>
-						<li><a href="{% url 'accounts:create' %}">{{ user.username }}</a></li>
+						<li class="nav-item"><a href="{% url 'books:create' %}">New Listing</a></li>
+						<li class="nav nav-tabs">
+							<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{user.username}}</a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="{% url 'books:library' %}">Library</a>
+							</div>
+						</li>
 					{% else %}
 						<li><a href="{% url 'accounts:login' %}">Login</a></li>
 						<li><a href="{% url 'accounts:signup' %}">Signup</a></li>
