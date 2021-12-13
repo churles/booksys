@@ -18,22 +18,24 @@
 			    <img src="{% static 'index.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
 			    BookRental.com
 		    </a>
+			<input type="text" placeholder="search" style="width: 50%;">	
 			<div>
-				<ul class="nav nav-tabs">
+				<ul class="navi">
 					{% if user.is_authenticated %}
-						<li class="nav-item">
-							<form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
-								{% csrf_token %}
-								<button type="submit">Logout</button>
-							</form>
-						</li>
-						<li class="nav-item"><a href="{% url 'books:create' %}">New Listing</a></li>
-						<li class="nav nav-tabs">
-							<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{user.username}}</a>
-							<div class="dropdown-menu">
-								<a class="dropdown-item" href="{% url 'books:library' %}">Library</a>
+						<li><a href="{% url 'books:create' %}">New Listing</a></li>
+						<div class="dropdown-bar">
+							<button class="dropbtn-bar"><img src="/media/harrypotter.png" alt="" class="super-useravatar"> {{user.username}}
+							  <i class="fa fa-caret-down"></i>
+							</button>
+							<div class="dropdown-content-bar">
+								<a href="{% url 'accounts:create' %}">My Profile</a>
+								<a href="{% url 'books:library' %}">Library</a>
+								<form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
+									{% csrf_token %}
+									<button class="logoutbtn" type="submit">Logout</button>
+								</form>
 							</div>
-						</li>
+						</div>
 					{% else %}
 						<li><a href="{% url 'accounts:login' %}">Login</a></li>
 						<li><a href="{% url 'accounts:signup' %}">Signup</a></li>
