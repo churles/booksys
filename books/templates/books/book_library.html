@@ -50,13 +50,13 @@
             </div>
             <div class="tab-pane fade" id="tab3"  role="tabpanel" aria-labelledby="tab3-tab">
                 <div class="my-listings-library">
-                    {% for rent in bookrent %}
+                    <!-- {% for rent in bookrent %}
                         {% for book in rent.books.all %}
                             <div>
                                 <a href="{% url 'books:detail' slug=book.slug %}"><img class="list-thumb" src="{{ book.thumbnail.url }}"></a>    
                             </div>
                         {% endfor %}
-                    {% endfor %}
+                    {% endfor %} -->
                 </div>
             </div>
     </div>

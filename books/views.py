@@ -43,12 +43,14 @@ def books_detail(request, slug):
 	reviews = Review.objects.all().order_by('datetime')
 	reviewlike = ReviewLike.objects.all()
 	readlist = ReadList.objects.filter(owner=request.user)
+	bookrent = BookRent.objects.filter(owner=request.user)
 
 	return render(request, 'books/book_detail.html',{
 		'book':book,
 		'reviews':reviews,
 		'reviewlike':reviewlike,
-		'readlist':readlist
+		'readlist':readlist,
+		'bookrent':bookrent
 	})
 
 def reviewlike(request):
@@ -89,14 +91,14 @@ def library(request):
 	username = request.user.username
 	profile = Profile.objects.get(account=request.user)
 	readlist = ReadList.objects.filter(owner=request.user)
-	bookrent = BookRent.objects.filter(owner=request.user)
+	# bookrent = BookRent.objects.filter(owner=request.user)
 
 	return render(request, 'books/book_library.html',{
 		'my_listings':my_listings,
 		'username':username,
 		'profile':profile,
 		'readlist':readlist,
-		'bookrent':bookrent,
+		# 'bookrent':bookrent,
 		'tab':tab
 	})
 

@@ -73,8 +73,12 @@
 <div class="container-book-reviews">
 	<div class="review-body">
 		<h3>Reviews</h3>
+		{% for rented in bookrent %}
+			{% if rented.books == book %}
+				<a href="{% url 'reviews:create' slug=book.slug %}" style="float: left;">Leave a Review</a>
+			{% endif %}
+		{% endfor %}
 		<div class="review">
-			<!-- <li><a href="{% url 'reviews:create' slug=book.slug %}">Leave a Review</a></li> -->
 			{% for review in reviews %}
 				{% if review.book == book %}
 					<form action="{% url 'books:reviewlike'%}" method="post"  class="like-form" id={{review.id}}>

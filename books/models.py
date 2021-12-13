@@ -70,7 +70,7 @@ class ReadList(models.Model):
 
 class BookRent(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-	books = models.ManyToManyField(Book, blank=True, help_text="books user have rented")
+	books = models.ForeignKey(Book, on_delete=models.CASCADE, default=None, help_text="books user have rented")
 	daterented = models.DateTimeField(blank=False)
 
 	def __str__(self):
