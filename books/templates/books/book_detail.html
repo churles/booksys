@@ -72,11 +72,20 @@
 </div>
 <div class="container-book-reviews">
 	<div class="review-body">
-		<h3>Reviews</h3>
-		{% if not bookrent %}
-		{% else %}
-			<a href="{% url 'reviews:create' slug=book.slug %}" style="float: left;">Leave a Review</a>
-		{% endif %}
+		<h3>Reviews
+			<span style="float: right;">
+				{% if not bookrent %}
+				{% else %}
+					{% if not review_exist %}
+						<button type="button" href="{% url 'reviews:create' slug=book.slug %}" class="btn btn-primary">Leave a Review</button>
+						<!-- <a href="{% url 'reviews:create' slug=book.slug %}">Leave a Review</a> -->
+					{% else %}
+						<button type="button" href="#" class="btn btn-primary">Edit Review</button>
+						<!-- <a href="">Edit Review</a> -->
+					{% endif %}
+				{% endif %}
+			</span>
+		</h3>
 		<div class="review">
 			{% for review in reviews %}
 				{% if review.book == book %}
