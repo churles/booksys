@@ -44,7 +44,7 @@ def books_detail(request, slug):
 	reviewlike = ReviewLike.objects.all()
 	readlist = ReadList.objects.filter(owner=request.user)
 	bookrent = BookRent.objects.filter(owner=request.user)
-
+	
 	return render(request, 'books/book_detail.html',{
 		'book':book,
 		'reviews':reviews,
@@ -54,6 +54,7 @@ def books_detail(request, slug):
 	})
 
 def reviewlike(request):
+	slug = ''
 	if request.method == 'POST':
 		review = request.POST.get('review_id')
 		owner = request.POST.get('owner')
@@ -85,21 +86,25 @@ def reviewlike(request):
 @login_required(login_url="/accounts/login/")
 def library(request):
 	tab = ''
+	books = []
 	if request.method == 'POST':
 		tab = request.POST.get('tab_name')
 	my_listings = Book.objects.filter(owner=request.user)
 	username = request.user.username
 	profile = Profile.objects.get(account=request.user)
 	readlist = ReadList.objects.filter(owner=request.user)
-	# bookrent = BookRent.objects.filter(owner=request.user)
-
+	bookrent = BookRent.objects.filter(owner=request.user)
+	for rented in bookrent:
+		books.append(rented.books)
+	
 	return render(request, 'books/book_library.html',{
 		'my_listings':my_listings,
 		'username':username,
 		'profile':profile,
 		'readlist':readlist,
-		# 'bookrent':bookrent,
-		'tab':tab
+		'bookrent':bookrent,
+		'tab':tab,
+		'books':books
 	})
 
 def read(request):

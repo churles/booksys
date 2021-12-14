@@ -19,10 +19,10 @@ def review_create(request, slug):
 
 			instance.slug = instance.slug +"-" +str(instance.id)
 			instance.save()
-			return redirect('books:list')
+			return redirect('books:detail', slug=slug)
 	else:
 		form = forms.CreateReview()
 		return render(request, 'reviews/review_create.html',{
 			'form':form,
-			'book': book
+			'book': book,
 		})
