@@ -73,11 +73,10 @@
 <div class="container-book-reviews">
 	<div class="review-body">
 		<h3>Reviews</h3>
-		{% for rented in bookrent %}
-			{% if rented.books == book %}
-				<a href="{% url 'reviews:create' slug=book.slug %}" style="float: left;">Leave a Review</a>
-			{% endif %}
-		{% endfor %}
+		{% if not bookrent %}
+		{% else %}
+			<a href="{% url 'reviews:create' slug=book.slug %}" style="float: left;">Leave a Review</a>
+		{% endif %}
 		<div class="review">
 			{% for review in reviews %}
 				{% if review.book == book %}

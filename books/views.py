@@ -1,3 +1,4 @@
+from django import http
 from django.shortcuts import render, redirect
 from .models import Book, BookRent, Genre, BookGenre, ReadList
 from reviews.models import Review, ReviewLike
@@ -43,14 +44,16 @@ def books_detail(request, slug):
 	reviews = Review.objects.all().order_by('datetime')
 	reviewlike = ReviewLike.objects.all()
 	readlist = ReadList.objects.filter(owner=request.user)
-	bookrent = BookRent.objects.filter(owner=request.user)
+	bookrent = BookRent.objects.filter(owner=request.user, books=book)
+	review_exist = Review.objects.filter(author=request.user, book=book)
 	
 	return render(request, 'books/book_detail.html',{
 		'book':book,
 		'reviews':reviews,
 		'reviewlike':reviewlike,
 		'readlist':readlist,
-		'bookrent':bookrent
+		'bookrent':bookrent,
+		'review_exist':review_exist
 	})
 
 def reviewlike(request):
