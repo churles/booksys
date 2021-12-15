@@ -74,15 +74,17 @@
 	<div class="review-body">
 		<h3>Reviews
 			<span style="float: right;">
-				{% if not bookrent %}
-				{% else %}
-					{% if not review_exist %}
-						<button type="button" href="{% url 'reviews:create' slug=book.slug %}" class="btn btn-primary">Leave a Review</button>
-						<!-- <a href="{% url 'reviews:create' slug=book.slug %}">Leave a Review</a> -->
+				{% if not review_exist %}
+					{% if book.owner == user %}
+						<button type="button" id="reviewBtn" class="btn btn-primary">Leave a Review</button>
 					{% else %}
-						<button type="button" href="#" class="btn btn-primary">Edit Review</button>
-						<!-- <a href="">Edit Review</a> -->
+						{% if not bookrent %}
+						{% else %}
+							<button type="button" id="reviewBtn" class="btn btn-primary">Leave a Review</button>
+						{% endif %}
 					{% endif %}
+				{% else %}
+						<button type="button" id="update-reviewBtn" class="btn btn-primary">Edit Review</button>
 				{% endif %}
 			</span>
 		</h3>
@@ -131,6 +133,9 @@
 		</div>
 	</div>
 </div>
+{{ book.slug|json_script:"slug" }}
+{{ review_id|json_script:"rev_id" }}
+
 {% endblock %}
 
 {% block scripts %}
@@ -197,6 +202,21 @@
 				    moreText.style.display = "inline";
 				}
 			});
+
+			const slug = JSON.parse(document.getElementById('slug').textContent);
+			const rev_id = JSON.parse(document.getElementById('rev_id').textContent)
+
+			if(document.getElementById('reviewBtn') != null){
+				document.getElementById('reviewBtn').onclick = function(){
+					location.href = "../../reviews/" +slug +"/create";
+				};
+			}
+
+			if(document.getElementById('update-reviewBtn') != null){
+				document.getElementById('update-reviewBtn').onclick = function(){
+					location.href = "../../reviews/update/"+rev_id+"/"+slug;
+				};	
+			}
 		});
 </script>
 {% endblock %}

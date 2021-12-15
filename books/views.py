@@ -40,20 +40,24 @@ def books_list(request):
 	})
 
 def books_detail(request, slug):
+	review_id = ''
 	book = Book.objects.get(slug=slug)
 	reviews = Review.objects.all().order_by('datetime')
 	reviewlike = ReviewLike.objects.all()
 	readlist = ReadList.objects.filter(owner=request.user)
 	bookrent = BookRent.objects.filter(owner=request.user, books=book)
 	review_exist = Review.objects.filter(author=request.user, book=book)
-	
+	if review_exist.exists():
+		review_id = Review.objects.get(author=request.user, book=book).id
+
 	return render(request, 'books/book_detail.html',{
 		'book':book,
 		'reviews':reviews,
 		'reviewlike':reviewlike,
 		'readlist':readlist,
 		'bookrent':bookrent,
-		'review_exist':review_exist
+		'review_exist':review_exist,
+		'review_id':review_id
 	})
 
 def reviewlike(request):

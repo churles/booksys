@@ -1,0 +1,14 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+<div class="form-group-first" style="margin-top: 10px;">
+	<h2>Update my Review</h2>
+	<form action="" method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<br>
+		<input type="submit" name="" id="" value="Update" class="btn btn-secondary">
+	</form>
+</div>
+<script src="/static/slugify.js"></script>
+{% endblock %}

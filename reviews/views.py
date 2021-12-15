@@ -26,3 +26,15 @@ def review_create(request, slug):
 			'form':form,
 			'book': book,
 		})
+
+def review_update(request, review_id, slug):
+	review = Review.objects.get(id=review_id)
+	form = forms.CreateReview(request.POST or None, instance=review)
+	if form.is_valid():
+		form.save()
+		return redirect('books:detail', slug=slug)
+
+	return render(request, 'reviews/review_update.html',{
+		'review':review,
+		'form':form
+	})
