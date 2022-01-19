@@ -31,8 +31,12 @@
             <div class="tab-pane fade show active" id="tab1"  role="tabpanel" aria-labelledby="tab1-tab">
                 <div class="my-listings-library">
                     {% for book in my_listings %}
-                        <div>
-                            <a href="{% url 'books:detail' slug=book.slug %}"><img class="list-thumb" src="{{ book.thumbnail.url }}"></a>
+                        <div class="container-library">
+                            <img class="list-thumb " src="{{ book.thumbnail.url }}">
+                            <a class="details-library" href="{% url 'books:detail' slug=book.slug %}">Show Details</a>
+                            <form action="" class="form-library">
+                                <button class="update-btn-library">Update</button>
+                            </form>
                         </div>
                     {% endfor %}
                 </div>

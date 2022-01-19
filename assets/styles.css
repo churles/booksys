@@ -227,3 +227,63 @@ nav li{
 .link-button:active {
   color:red;
 }
+
+.container-library{
+  position: relative;
+}
+
+.form-library{
+  position: absolute;
+  display: none;
+  z-index: 2;
+  top: 50%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
+.update-btn-library{
+  background-color: #555;
+  color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.details-library{
+  position: absolute;
+  display: none;
+  z-index: 2;
+  top: 28%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #555;
+  color: white;
+  font-size: 14px;
+  padding: 12px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.container-library:hover .form-library{
+  display: block;
+}
+
+.container-library:hover .details-library{
+  display: block;
+}
+
+.update-btn-library:hover{
+  background-color: black;
+}
+
+.details-library:hover{
+  background-color: black;
+  color: white;
+  text-decoration: none;
+}
