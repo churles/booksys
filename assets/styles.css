@@ -228,6 +228,8 @@ nav li{
   color:red;
 }
 
+/* buttons in every book in the library */
+
 .container-library{
   position: relative;
 }
@@ -242,7 +244,7 @@ nav li{
   -ms-transform: translate(-50%, -50%);
 }
 
-.update-btn-library{
+.update-btn-library{  
   background-color: #555;
   color: white;
   font-size: 16px;
@@ -272,6 +274,10 @@ nav li{
 
 .container-library:hover .form-library{
   display: block;
+} 
+
+.container-library:hover .update-btn-library{
+  display: block;
 }
 
 .container-library:hover .details-library{
@@ -287,3 +293,5 @@ nav li{
   color: white;
   text-decoration: none;
 }
+
+/* ---------------------------------- */

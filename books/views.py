@@ -129,3 +129,12 @@ def read(request):
 			read = ReadList.objects.get(owner=request.user)
 			read.books.add(book)
 			return redirect('books:detail', slug=slug)
+
+def book_update(request, book_id):
+	book = Book.objects.get(id=book_id)
+	form = forms.CreateBook(request.POST or None, instance=book)
+
+	return render(request, 'reviews/review_update.html',{
+		'book':book,
+		'form':form
+	})

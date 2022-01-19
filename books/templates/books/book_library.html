@@ -34,8 +34,9 @@
                         <div class="container-library">
                             <img class="list-thumb " src="{{ book.thumbnail.url }}">
                             <a class="details-library" href="{% url 'books:detail' slug=book.slug %}">Show Details</a>
-                            <form action="" class="form-library">
-                                <button class="update-btn-library">Update</button>
+                            <form action="{% url 'books:update' book_id=book.id %}" class="form-library" id="{{ book.id }}">
+                                {% csrf_token %}
+                                <button type="submit" class="update-btn-library">Update</button>
                             </form>
                         </div>
                     {% endfor %}
@@ -82,6 +83,25 @@
             $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
             $("#tab2-tab").removeClass("btn-default").addClass("btn-primary"); 
         }
+        $('.form-library').submit(function(e){
+            const book_id = $(this).attr('id')
+            const url = $(this).attr('action')
+			$.ajax({
+				type:'POST',
+					url: url,
+					data:{
+						'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+						'book_id':book_id,
+					},
+					success: function(response){
+						console.log('success', response)
+					},
+					error: function(response){
+						console.log('error', response)
+					},
+				})
+            
+        })
     });
 
     $(document).ready(function() {

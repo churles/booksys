@@ -1,12 +1,20 @@
 {% extends 'base_layout.html' %}
 
 {% block content %}
-
+<div class="form-group-first" style="margin-top: 10px;">
+	<h1>Update bookname</h1>
+	<form action="" method="post">
+		{% csrf_token %}
+		{% form.as_p %}
+		<br>
+		<input type="submit" name="" id="" value="Update" class="btn btn-secondary">
+	</form>
+</div>
 {% endblock %}
 {% block scripts%}
 <script src="/static/slugify.js"></script>
 <script src="/static/select2.full.min.js"></script>
-<script>
+<!-- <script>
   $(function () {
 	    //Initialize Select2 Elements
 	    $('.select2').select2()
@@ -16,5 +24,5 @@
 	      theme: 'bootstrap4'
     })
 	});
-</script>
+</script> -->
 {% endblock%}

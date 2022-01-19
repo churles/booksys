@@ -9,5 +9,6 @@ urlpatterns=[
 	url(r'^reviewlike/$', views.reviewlike, name="reviewlike"),
 	url(r'^library/$', views.library, name="library"),
 	url(r'^read/$', views.read, name="read"),
+    url(r'^update/(?P<book_id>\d{1,10})/$', views.book_update, name="update"),
     url(r'^(?P<slug>[\w-]+)/$', views.books_detail, name="detail"),
 ]
