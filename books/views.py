@@ -133,6 +133,10 @@ def read(request):
 def book_update(request, book_id):
 	book = Book.objects.get(id=book_id)
 	form = forms.CreateBook(request.POST or None, instance=book)
+	
+	if form.is_valid():
+		form.save()
+		return redirect('books:detail', slug=book.slug)
 
 	return render(request, 'reviews/review_update.html',{
 		'book':book,

@@ -238,7 +238,7 @@ nav li{
   position: absolute;
   display: none;
   z-index: 2;
-  top: 50%;
+  top: 41%;
   left: 30%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
@@ -253,34 +253,35 @@ nav li{
   cursor: pointer;
   border-radius: 5px;
 }
-
 .details-library{
+  top: 20%;
+  left: 30%;
+  font-size: 14px;
+  padding: 12px 10px;
+}
+
+.delete-library{
+  top: 63%;
+  left: 30%;
+  font-size: 16px;
+  padding: 12px 22px;
+}
+
+.details-library, .delete-library{
   position: absolute;
   display: none;
   z-index: 2;
-  top: 28%;
-  left: 30%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   background-color: #555;
   color: white;
-  font-size: 14px;
-  padding: 12px 10px;
   border: none;
   cursor: pointer;
   border-radius: 5px;
   text-decoration: none;
 }
 
-.container-library:hover .form-library{
-  display: block;
-} 
-
-.container-library:hover .update-btn-library{
-  display: block;
-}
-
-.container-library:hover .details-library{
+.container-library:hover .details-library, .container-library:hover .delete-library, .container-library:hover .update-btn-library, .container-library:hover .form-library{
   display: block;
 }
 
@@ -288,10 +289,14 @@ nav li{
   background-color: black;
 }
 
-.details-library:hover{
+.details-library:hover, .delete-library:hover{
   background-color: black;
   color: white;
   text-decoration: none;
+}
+
+.delete-library:hover{
+  background-color: red;
 }
 
 /* ---------------------------------- */
