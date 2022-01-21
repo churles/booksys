@@ -142,3 +142,6 @@ def book_update(request, book_id):
 		'book':book,
 		'form':form
 	})
+
+def book_delete(request):
+	return HttpResponse('rest')
