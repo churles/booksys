@@ -370,7 +370,7 @@ nav li{
   color: white;
 }
 
-.modalbtn-delete{
+#modalbtn-delete{
   background-color: #555;
   color: white;
   float: right;
@@ -381,7 +381,7 @@ nav li{
   border-radius: 5px;
 }
 
-.modalbtn-delete:hover{
+#modalbtn-delete:hover{
   background-color: red;
 }
 

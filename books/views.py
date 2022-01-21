@@ -24,7 +24,7 @@ def books_create(request):
 				bg.book = Book.objects.get(id = instance.id)
 				bg.genre = Genre.objects.get(id=int(bookgenres[element]))
 				bg.save()
-			return redirect('books:list')
+			return redirect('books:detail', slug=instance.slug)
 	else:
 		genres = Genre.objects.all()
 		form = forms.CreateBook()
@@ -143,5 +143,7 @@ def book_update(request, book_id):
 		'form':form
 	})
 
-def book_delete(request):
-	return HttpResponse('rest')
+def book_delete(request, book_id):
+	book = Book.objects.get(id=int(book_id))
+	book.delete()
+	return redirect('books:library')
