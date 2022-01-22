@@ -1,3 +1,4 @@
+import profile
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from books.models import Book
@@ -35,3 +36,18 @@ def room(request, room_name):
 		'rooms':rooms,
 		'profiles':profiles
 	})
+
+def user_messages(request):
+	chat_room = PublicChatRoom.objects.filter(users=request.user)
+	if not chat_room:
+		return HttpResponse('test')
+	else:
+		messages = PublicChatRoomMessage.objects.filter(room=chat_room[0]).order_by('timestamp')
+		profiles = Profile.objects.all()
+
+		return render(request, 'chat/chatroom.html',{
+			'room_name':chat_room[0].title,
+			'messages':messages,
+			'rooms':chat_room,
+			'profiles':profiles
+		})

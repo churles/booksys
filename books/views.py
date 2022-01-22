@@ -1,3 +1,5 @@
+from curses.ascii import HT
+from turtle import title
 from django import http
 from django.shortcuts import render, redirect
 from .models import Book, BookRent, Genre, BookGenre, ReadList
@@ -8,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from . import forms
 from array import array
 from django.http import JsonResponse
+from django.contrib import messages
 
 @login_required(login_url="/accounts/login/")
 def books_create(request):
@@ -145,5 +148,16 @@ def book_update(request, book_id):
 
 def book_delete(request, book_id):
 	book = Book.objects.get(id=int(book_id))
+	title = book.title
 	book.delete()
+	messages.success(request, title +'has been deleted from your book listings.')
+	return redirect('books:library')
+
+def read_delete(request, book_id):
+	book = Book.objects.get(id=int(book_id))
+	title = book.title
+	read = ReadList.objects.get(owner=request.user, books=book)
+	read.books.remove(book)
+	messages.success(request, title + ' has been deleted from your Have Read list.')
+	messages.info(request, ' go to tab2')
 	return redirect('books:library')

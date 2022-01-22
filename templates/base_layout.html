@@ -29,6 +29,7 @@
 							</button>
 							<div class="dropdown-content-bar">
 								<a href="{% url 'accounts:create' %}">My Profile</a>
+								<a href="{% url 'chat:usermessages' %}">Messages</a>
 								<a href="{% url 'books:library' %}">Library</a>
 								<form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
 									{% csrf_token %}

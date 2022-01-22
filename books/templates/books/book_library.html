@@ -1,8 +1,16 @@
 {% extends 'base_layout.html' %}
 
 {% block content %}
+
 <div class="col-lg-12 col-sm-12">
     <!-- profile card -->
+    {% if messages %}
+        {% for message in messages %}
+            {% if messaage.tags == "success" %}
+                <li class="alert alert-success {{ message.tags }}">{{ message }}</li>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
     <div class="card hovercard">
         <div class="card-background">
             <img class="card-bkimg" alt="" src="/media/default.png">
@@ -41,7 +49,7 @@
                             {% csrf_token %}
                             <button type="submit" class="update-btn-library">Update</button>
                         </form>
-                        <button class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal({{book.id}})">Remove</button> 
+                        <button name="listing-delete" class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal({{book.id}})">Remove</button> 
                     </div>
                 {% endfor %}
             </div>
@@ -51,8 +59,10 @@
             <div class="my-listings-library">
                 {% for read in readlist %}
                     {% for book in read.books.all %}
-                        <div>
-                            <a href="{% url 'books:detail' slug=book.slug %}"><img class="list-thumb" src="{{ book.thumbnail.url }}"></a>    
+                        <div class="container-library">
+                            <img class="list-thumb" src="{{ book.thumbnail.url }}">    
+                            <a class="details-library" href="{% url 'books:detail' slug=book.slug %}">Show Details</a>
+                            <button name="read-delete" class="delete-library" onclick="show_modalRead({{book.id}})" data-name="{{book.title}}" id="myBtnRead{{book.id}}">Remove</button>
                         </div>
                     {% endfor %}
                 {% endfor %}
@@ -87,15 +97,23 @@
 {% if tab != '' %}
     {{ tab|json_script:"tab-name" }}
 {% else %}
-    {{ 'tab1'|json_script:"tab-name" }}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == "info" %}
+                {{ 'tab2'|json_script:"tab-name" }}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {{ 'tab1'|json_script:"tab-name" }}
+    {% endif %}
 {% endif %}
 {% endblock %}
 {% block scripts %}
 <script type="text/javascript">
     $(document).ready(function() {
         const tab_name = JSON.parse(document.getElementById('tab-name').textContent);
-
         // Jump to Have Read from "Book Detail page"
+        console.log(tab_name)
         if (tab_name === "tab2"){
             openTab(tab_name);
             $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
@@ -126,7 +144,14 @@
         if(document.getElementById('modalbtn-delete') != null){
             document.getElementById('modalbtn-delete').onclick = function(){
                 const book_id = $(this).attr('class')
-                location.href = "../../books/delete/"+book_id;
+                const btnName = $(this).attr('name')
+                if(btnName == "listing-delete"){
+                    location.href = "../../books/delete/"+book_id;
+                }else if(btnName == "read-delete"){
+                    location.href = "../../books/read/delete/"+book_id;
+                }else{
+                    console.log("test")
+                }
             };	
         }
         
@@ -141,18 +166,54 @@
     });
     
     function show_modal(id){
+        var title =''
+        var btnName = ''
         // Get the modal
         var modal = document.getElementById("myModal");
         //get button
         var btn = document.getElementById("myBtn"+id);
-        var title = btn.getAttribute("data-name");
-
-        //add id to modal-form
-        document.getElementById('modalbtn-delete').setAttribute("class",id);
+        title = btn.getAttribute("data-name");
+        btnName = btn.getAttribute("name");
         
+        //add id to modalbtn-delete
+        document.getElementById('modalbtn-delete').setAttribute("class",id);
+        document.getElementById('modalbtn-delete').setAttribute("name", btnName);
         //open modal
         modal.style.display = "block";
-        document.getElementById('modal-p-content').innerHTML = "Are you sure you want remove " +title +" from your book listing?"
+        document.getElementById('modal-p-content').innerHTML = "Are you sure you want to remove " +title +" from your Book Listings?";
+        
+
+        //Get span
+        var span = document.getElementsByClassName("close")[0];
+        //When the user clicks on the button, open the modal
+        span.onclick = function(){
+            modal.style.display = "none";
+        }
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(){
+            if(event.target == modal){
+                modal.style.display = "none";   
+            }
+        }
+    }
+
+    function show_modalRead(id){
+        var title =''
+        var btnName = ''
+        // Get the modal
+        var modal = document.getElementById("myModal");
+        //get button
+        var btn = document.getElementById("myBtnRead"+id);
+        title = btn.getAttribute("data-name");
+        btnName = btn.getAttribute("name");
+        
+        //add id to modalbtn-delete
+        document.getElementById('modalbtn-delete').setAttribute("class",id);
+        document.getElementById('modalbtn-delete').setAttribute("name", btnName);
+        //open modal
+        modal.style.display = "block";
+        document.getElementById('modal-p-content').innerHTML = "Are you sure you want to remove " +title +" from your Have Read list?";
+        
 
         //Get span
         var span = document.getElementsByClassName("close")[0];

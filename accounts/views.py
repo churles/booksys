@@ -61,17 +61,3 @@ def create_view(request):
 		else:
 			return HttpResponse('edit')
 	return redirect('books:list')
-
-
-	# if request.method == 'POST':
-	# 	form = forms.CreateProfile(request.POST, request.FILES)
-	# 	if form.is_valid():
-	# 		instance = form.save(commit=False)
-	# 		instance.account = request.user
-	# 		instance.save()
-	# 		return redirect('accounts:create')
-	# else:
-	# 	form = forms.CreateProfile()
-	# return render(request, 'accounts/profile_create.html',{
-	# 	'form':form
-	# })

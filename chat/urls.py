@@ -6,5 +6,6 @@ app_name='chat'
 
 urlpatterns = [
 	path('', views.index, name='index'),
+	path('usermessages/',views.user_messages, name='usermessages'),
 	path('<str:room_name>/', views.room, name='room'),
 ]
