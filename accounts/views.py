@@ -1,3 +1,4 @@
+from curses.ascii import HT
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponse
@@ -5,6 +6,8 @@ from django.contrib.auth import login, logout
 from . import forms
 from .models import Profile
 from django.contrib import messages
+
+import accounts
 
 def signup_view(request):
 	if request.method == 'POST':
@@ -46,10 +49,13 @@ def create_view(request):
 	if request.method == 'POST':
 		form = forms.CreateProfile(request.POST, request.FILES)
 		if form.is_valid():
-			instance = form.save(commit=False)
-			instance.account = request.user
-			instance.save()
-			return redirect('accounts:create')
+			if request.POST.get('update') == "update":
+				return redirect('accounts:update')
+			else:
+				instance = form.save(commit=False)
+				instance.account = request.user
+				instance.save()
+				return redirect('accounts:create')
 	else:
 		profile = Profile.objects.filter(account=request.user)
 		if not profile:
@@ -59,5 +65,18 @@ def create_view(request):
 				'profile':profile
 			})
 		else:
-			return HttpResponse('edit')
+			return redirect('accounts:update')
+
 	return redirect('books:list')
+
+def update_view(request):
+		profile = Profile.objects.get(account=request.user)
+		form = forms.CreateProfile(request.POST or None, request.FILES or None, instance=profile)
+		if request.method == 'POST':
+			if form.is_valid():
+				form.save()
+				return redirect('books:list')
+			
+		return render(request, 'accounts/profile_update.html',{
+			'form':form,
+		})
