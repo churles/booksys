@@ -46,7 +46,14 @@
 									{% endfor %}
 									<div class="meta">
 										<p class="name">{{ users.username }}</p>
-										<p class="preview" id="p{{room.title}}"></p>
+										<div class="row">
+											<div class="col-xs-7 col-sm-7 col-md-7">
+												<p class="preview" id="p{{room.title}}"></p>
+											</div>
+											<div class="col-xs-5 col-sm-5 col-md-5">
+												<a onclick="showModal()"><i class="fa fa-trash" aria-hidden="true"></i> </a>
+											</div>
+										</div>
 									</div>
 								</div>
 							</li>
@@ -83,6 +90,17 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div class="modal" id="myModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p id="modal-p-content"></p>
+            <button id="modalbtn-delete">Proceed</button>
+        </div>
+    </div>
 </div>
 {{ room_name|json_script:"room-name" }}
 {{ request.user.username|json_script:"user_username" }}
@@ -180,6 +198,29 @@
 			msgListTag.appendChild(imgTag);
 			msgListTag.appendChild(pTag);
 			document.querySelector('#chat-log').appendChild(msgListTag);
+		}
+
+		function showModal(){
+			// Get the modal
+			var modal = document.getElementById("myModal");
+
+			//open modal
+			modal.style.display = "block";
+			document.getElementById('modal-p-content').innerHTML = "Are you sure you want to delete this conversation?";
+			
+
+			//Get span
+			var span = document.getElementsByClassName("close")[0];
+			//When the user clicks on the button, open the modal
+			span.onclick = function(){
+				modal.style.display = "none";
+			}
+			// When the user clicks anywhere outside of the modal, close it
+			window.onclick = function(){
+				if(event.target == modal){
+					modal.style.display = "none";   
+				}
+			}
 		}
 
 		chatSocket.onclose = function(e){
