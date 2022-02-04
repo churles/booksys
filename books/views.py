@@ -11,6 +11,7 @@ from . import forms
 from array import array
 from django.http import JsonResponse
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 @login_required(login_url="/accounts/login/")
 def books_create(request):
@@ -27,7 +28,7 @@ def books_create(request):
 				bg.book = Book.objects.get(id = instance.id)
 				bg.genre = Genre.objects.get(id=int(bookgenres[element]))
 				bg.save()
-			return redirect('books:detail', slug=instance.slug)
+			return redirect('books:detail', slug=instance.slug, page_id=1)
 	else:
 		genres = Genre.objects.all()
 		form = forms.CreateBook()
@@ -42,25 +43,31 @@ def books_list(request):
 		'books':books
 	})
 
-def books_detail(request, slug):
+def books_detail(request, slug, page_id):
 	review_id = ''
 	book = Book.objects.get(slug=slug)
-	reviews = Review.objects.all().order_by('datetime')
+	reviews = Review.objects.filter(book=book).order_by('datetime')
 	reviewlike = ReviewLike.objects.all()
 	readlist = ReadList.objects.filter(owner=request.user)
 	bookrent = BookRent.objects.filter(owner=request.user, books=book)
 	review_exist = Review.objects.filter(author=request.user, book=book)
+
 	if review_exist.exists():
 		review_id = Review.objects.get(author=request.user, book=book).id
 
+	paginator_review = Paginator(reviews, 2)
+	page = paginator_review.get_page(page_id)
+		
 	return render(request, 'books/book_detail.html',{
 		'book':book,
 		'reviews':reviews,
+		'count':paginator_review.count,
 		'reviewlike':reviewlike,
 		'readlist':readlist,
 		'bookrent':bookrent,
 		'review_exist':review_exist,
-		'review_id':review_id
+		'review_id':review_id,
+		'page':page,
 	})
 
 def reviewlike(request):
@@ -127,11 +134,11 @@ def read(request):
 			new_read.save()
 			new_read.books.add(book)
 		
-			return redirect('books:detail', slug=slug)
+			return redirect('books:detail', slug=slug, page_id=1)
 		else:
 			read = ReadList.objects.get(owner=request.user)
 			read.books.add(book)
-			return redirect('books:detail', slug=slug)
+			return redirect('books:detail', slug=slug, page_id=1)
 
 def book_update(request, book_id):
 	book = Book.objects.get(id=book_id)
@@ -139,7 +146,7 @@ def book_update(request, book_id):
 	
 	if form.is_valid():
 		form.save()
-		return redirect('books:detail', slug=book.slug)
+		return redirect('books:detail', slug=book.slug, page_id=1)
 
 	return render(request, 'reviews/review_update.html',{
 		'book':book,

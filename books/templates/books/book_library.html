@@ -44,7 +44,7 @@
                 {% for book in my_listings %}
                     <div class="container-library">
                         <img class="list-thumb " src="{{ book.thumbnail.url }}">
-                        <a class="details-library" href="{% url 'books:detail' slug=book.slug %}">Show Details</a>
+                        <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
                         <form action="{% url 'books:update' book_id=book.id %}" class="form-library" id="{{ book.id }}">
                             {% csrf_token %}
                             <button type="submit" class="update-btn-library">Update</button>
@@ -61,7 +61,7 @@
                     {% for book in read.books.all %}
                         <div class="container-library">
                             <img class="list-thumb" src="{{ book.thumbnail.url }}">    
-                            <a class="details-library" href="{% url 'books:detail' slug=book.slug %}">Show Details</a>
+                            <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
                             <button name="read-delete" class="delete-library" onclick="show_modalRead({{book.id}})" data-name="{{book.title}}" id="myBtnRead{{book.id}}">Remove</button>
                         </div>
                     {% endfor %}

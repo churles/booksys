@@ -39,15 +39,24 @@ def room(request, room_name):
 
 def user_messages(request):
 	chat_room = PublicChatRoom.objects.filter(users=request.user)
-	if not chat_room:
+	room = chat_room.exclude(deleted_by=request.user)
+	if not room:
 		return HttpResponse('test')
 	else:
-		messages = PublicChatRoomMessage.objects.filter(room=chat_room[0]).order_by('timestamp')
+
+		messages = PublicChatRoomMessage.objects.filter(room=room[0]).order_by('timestamp')
 		profiles = Profile.objects.all()
 
 		return render(request, 'chat/chatroom.html',{
-			'room_name':chat_room[0].title,
+			'room_name':room[0].title,
 			'messages':messages,
-			'rooms':chat_room,
+			'rooms':room,
 			'profiles':profiles
 		})
+
+def room_delete(request, room_id):
+	room = PublicChatRoom.objects.get(id=room_id)
+	room.deleted = "true"
+	room.save()
+	room.deleted_by.add(request.user)
+	return redirect('books:list')

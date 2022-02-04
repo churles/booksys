@@ -72,7 +72,11 @@
 </div>
 <div class="container-book-reviews">
 	<div class="review-body">
-		<h3>Reviews
+		<h3>{% if count != 0 %}
+			 	{{ count }} Reviews
+			{% elif count == 0 %}
+				No Reviews
+			{% endif %}
 			<span style="float: right;">
 				{% if not review_exist %}
 					{% if book.owner == user %}
@@ -89,47 +93,76 @@
 			</span>
 		</h3>
 		<div class="review">
-			{% for review in reviews %}
-				{% if review.book == book %}
-					<form action="{% url 'books:reviewlike'%}" method="post"  class="like-form" id={{review.id}}>
-						{% csrf_token %}
-						<input type="text" class="hidden-tags" name="review_id" value="{{review.id}}">
-						<input type="text" class="hidden-tags" name="owner" value="{{user.id}}" >
-						<input type="text" class="hidden-tags" name="slug"  value="{{book.slug}}">
-						<p>{{ review.author }} {{ review.datetime }}</p>
-						<div class="row">
-							<div class="col-xs-11 col-sm-11 col-md-11">
-								<p class="review-title">{{ review.title }}</p>
-								<!-- <p class="descriptions">{{ review.snippet }}</p> -->
-								{% if not review.read_more %}
-									<p class="descriptions">{{ review.body }}</p>
+			{% for review in page.object_list %}
+				<form action="{% url 'books:reviewlike'%}" method="post"  class="like-form" id={{review.id}}>
+					{% csrf_token %}
+					<input type="text" class="hidden-tags" name="review_id" value="{{review.id}}">
+					<input type="text" class="hidden-tags" name="owner" value="{{user.id}}" >
+					<input type="text" class="hidden-tags" name="slug"  value="{{book.slug}}">
+					<p>{{ review.author }} {{ review.datetime }}</p>
+					<div class="row">
+						<div class="col-xs-11 col-sm-11 col-md-11">
+							<p class="review-title">{{ review.title }}</p>
+							<!-- <p class="descriptions">{{ review.snippet }}</p> -->
+							{% if not review.read_more %}
+								<p class="descriptions">{{ review.body }}</p>
+							{% else %}
+								<p class="descriptions">{{ review.snippet }}<span id="dots{{review.id}}">...</span><span class="review-more" id="more{{review.id}}">{{ review.read_more }}</span><a href="javascript:void()" class="review-btn" id="readMore{{review.id}}">Read More</a></p>
+							{% endif %}
+						</div>
+						<div class="col-xs- 1 col-sm-1 col-md-1">
+							{% checker review.id user as likes%}
+							<button type="submit" name="submit" class="btn btn-black like-btn{{review.id}}" style="margin-left: 0;">
+								{% if not likes %}
+									Like
 								{% else %}
-									<p class="descriptions">{{ review.snippet }}<span id="dots{{review.id}}">...</span><span class="review-more" id="more{{review.id}}">{{ review.read_more }}</span><a href="javascript:void()" class="review-btn" id="readMore{{review.id}}">Read More</a></p>
+									Unlike
 								{% endif %}
-							</div>
-							<div class="col-xs- 1 col-sm-1 col-md-1">
-								{% checker review.id user as likes%}
-								<button type="submit" name="submit" class="btn btn-black like-btn{{review.id}}" style="margin-left: 0;">
-									{% if not likes %}
-										Like
-									{% else %}
-										Unlike
-									{% endif %}
-								</button>
-								<div class="row">
-									<div class="col-xs-6 col-sm-6 col-md-6">
-										<div class="like-count{{review.id}}">{% total_like review.id%}</div>
-									</div>
-									<div class="col-xs-6 col-sm-6 col-md-6">
-										likes
-									</div>
+							</button>
+							<div class="row">
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="like-count{{review.id}}">{% total_like review.id%}</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									likes
 								</div>
 							</div>
 						</div>
-					</form>
-					<hr>
-				{% endif %}
+					</div>
+				</form>
+				<hr>	
 			{% endfor %}
+			<nav aria-label="Page navigation example">
+				<ul class="pagination justify-content-end">
+					{% if page.number > 1 %}
+						<li class="page-item">
+							<a class="page-link" href="#" tabindex="-1">Previous</a>
+						</li>
+					{% else %}
+						<li class="page-item disabled">
+							<a class="page-link" href="#" tabindex="-1">Previous</a>
+						</li>
+					{% endif %}
+					{% with ''|center:page.paginator.num_pages as n %}
+						{% for i in n %}
+							{% if page.number == forloop.counter %}
+								<li class="page-item active"><a class="page-link" href="#">{{ forloop.counter }}</a></li>
+							{% else %}
+								<li class="page-item"><a class="page-link" onclick="showPage({{ forloop.counter }})">{{ forloop.counter }}</a></li>
+							{% endif %}
+						{% endfor %}
+					{% endwith %}
+					{% if page.number == page.paginator.num_pages %}
+						<li class="page-item disabled">
+							<a class="page-link" href="#">Next</a>
+						</li>
+					{% else %}
+						<li class="page-item">
+							<a class="page-link" href="#">Next</a>
+						</li>
+				  	{% endif %}
+				</ul>
+			  </nav>
 		</div>
 	</div>
 </div>
@@ -141,82 +174,98 @@
 {% block scripts %}
 <script src="/static/read_more.js"></script>
 <script type="text/javascript">
-		$(document).ready(function(){
-			if(document.getElementById('control-read') != null){
-				const control_read = document.getElementById('control-read').textContent
-				if(control_read == 'true'){
-					document.getElementById('control-read-button').setAttribute("disabled", true)
-				}
+	function showPage(page){
+		$.ajax({
+			type:'POST',
+			url:'../'+page+'/',
+			data:{
+				'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+				'page_id':page,
+			},
+			success: function(response){
+				console.log('success', response)
+			},
+			error: function(response){
+				console.log('error', response)
+			},
+		})
+	}
+	$(document).ready(function(){
+		if(document.getElementById('control-read') != null){
+			const control_read = document.getElementById('control-read').textContent
+			if(control_read == 'true'){
+				document.getElementById('control-read-button').setAttribute("disabled", true)
 			}
+		}
 
-			let display = false
-			$('.like-form').submit(function(e){
-				e.preventDefault();
-				const review_id = $(this).attr('id')
+		let display = false
+		$('.like-form').submit(function(e){
+			e.preventDefault();
+			const review_id = $(this).attr('id')
 
-				const likeText = $(`.like-btn${review_id}`).text()
-				const trim = $.trim(likeText)
+			const likeText = $(`.like-btn${review_id}`).text()
+			const trim = $.trim(likeText)
 
-				const url = $(this).attr('action')
-				let res;
-				const likes = $(`.like-count${review_id}`).text()
-				const trimCount = parseInt(likes)
-				$.ajax({
-					type:'POST',
-					url: url,
-					data:{
-						'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
-						'review_id':review_id,
-					},
-					success: function(response){
-						if(trim === 'Unlike'){
-							$(`.like-btn${review_id}`).text('Like')
-							res = trimCount - 1
-						}else{
-							$(`.like-btn${review_id}`).text('Unlike')
-							res = trimCount + 1
-						}
-						$(`.like-count${review_id}`).text(res)
-					},
-					error: function(response){
-						console.log('error', response)
-					},
-				})
+			const url = $(this).attr('action')
+			let res;
+			const likes = $(`.like-count${review_id}`).text()
+			const trimCount = parseInt(likes)
+			$.ajax({
+				type:'POST',
+				url: url,
+				data:{
+					'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+					'review_id':review_id,
+				},
+				success: function(response){
+					if(trim === 'Unlike'){
+						$(`.like-btn${review_id}`).text('Like')
+						res = trimCount - 1
+					}else{
+						$(`.like-btn${review_id}`).text('Unlike')
+						res = trimCount + 1
+					}
+					$(`.like-count${review_id}`).text(res)
+				},
+				error: function(response){
+					console.log('error', response)
+				},
 			})
-			$('.review-btn').on('click', function(e){
-				e.preventDefault()
-				const id = $(this).attr('id')
-				const trim = id.replace('readMore','')
-				
-				const dots = document.getElementById('dots'+trim)
-				const btnText = document.getElementById('readMore'+trim)
-				const moreText = document.getElementById('more'+trim)
-				
-				if (dots.style.display === "none") {
-				    dots.style.display = "inline";
-				    btnText.innerHTML = "Read more";
-				    moreText.style.display = "none";
-				} else {
-				    dots.style.display = "none";
-				    btnText.innerHTML = "Read less";
-				    moreText.style.display = "inline";
-				}
-			});
-
-			const slug = JSON.parse(document.getElementById('slug').textContent);
-			const rev_id = JSON.parse(document.getElementById('rev_id').textContent)
-
-			if(document.getElementById('reviewBtn') != null){
-				document.getElementById('reviewBtn').onclick = function(){
-					location.href = "../../reviews/" +slug +"/create";
-				};
-			}
-
-			if(document.getElementById('update-reviewBtn') != null){
-				document.getElementById('update-reviewBtn').onclick = function(){
-					location.href = "../../reviews/update/"+rev_id+"/"+slug;
-				};	
+		})
+		$('.review-btn').on('click', function(e){
+			e.preventDefault()
+			const id = $(this).attr('id')
+			const trim = id.replace('readMore','')
+			
+			const dots = document.getElementById('dots'+trim)
+			const btnText = document.getElementById('readMore'+trim)
+			const moreText = document.getElementById('more'+trim)
+			
+			if (dots.style.display === "none") {
+				dots.style.display = "inline";
+				btnText.innerHTML = "Read more";
+				moreText.style.display = "none";
+			} else {
+				dots.style.display = "none";
+				btnText.innerHTML = "Read less";
+				moreText.style.display = "inline";
 			}
 		});
+
+		const slug = JSON.parse(document.getElementById('slug').textContent);
+		const rev_id = JSON.parse(document.getElementById('rev_id').textContent)
+
+		if(document.getElementById('reviewBtn') != null){
+			document.getElementById('reviewBtn').onclick = function(){
+				location.href = "../../reviews/" +slug +"/create";
+			};
+		}
+
+		if(document.getElementById('update-reviewBtn') != null){
+			document.getElementById('update-reviewBtn').onclick = function(){
+				location.href = "../../reviews/update/"+rev_id+"/"+slug;
+			};	
+		}
+	});
 </script>
 {% endblock %}

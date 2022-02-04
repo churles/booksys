@@ -14,7 +14,7 @@
 <div class="my-listings-library">
 	{% for book in books %}
 		<div>
-			<a href="{% url 'books:detail' slug=book.slug %}" >
+			<a href="{% url 'books:detail' slug=book.slug page_id=1 %}" >
 				<img class="list-thumb" src="{{ book.thumbnail.url }}">
 				<p>{{ book.title}}</p>
 			</a>

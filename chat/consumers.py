@@ -38,6 +38,8 @@ class ChatRoomConsumer(WebsocketConsumer):
         author = data['from']
         author_user = User.objects.get(username=author)
         room = PublicChatRoom.objects.get(title=self.room_name)
+        if room.deleted_by.exists():
+            room.deleted_by.clear()
 
         message = PublicChatRoomMessage.objects.create(
             content=data['message'], 
