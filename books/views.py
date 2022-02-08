@@ -28,6 +28,10 @@ def books_create(request):
 				bg.book = Book.objects.get(id = instance.id)
 				bg.genre = Genre.objects.get(id=int(bookgenres[element]))
 				bg.save()
+			
+			instance.slug = instance.slug +"-" +str(instance.id)
+			instance.save()
+			
 			return redirect('books:detail', slug=instance.slug, page_id=1)
 	else:
 		genres = Genre.objects.all()
@@ -55,7 +59,7 @@ def books_detail(request, slug, page_id):
 	if review_exist.exists():
 		review_id = Review.objects.get(author=request.user, book=book).id
 
-	paginator_review = Paginator(reviews, 2)
+	paginator_review = Paginator(reviews, 10)
 	page = paginator_review.get_page(page_id)
 		
 	return render(request, 'books/book_detail.html',{
@@ -69,6 +73,23 @@ def books_detail(request, slug, page_id):
 		'review_id':review_id,
 		'page':page,
 	})
+# pagination with ajax
+# def pageReviews(request):
+# 	slug = ''
+# 	page = ''
+# 	if request.method == 'POST':
+# 		slug = request.POST.get('slug')
+# 		book = Book.objects.get(slug=slug)
+# 		reviews = Review.objects.filter(book=book).order_by('datetime')
+
+# 		paginator_review = Paginator(reviews, 1)
+# 		page = paginator_review.get_page(request.POST.get('page'))
+
+# 		data = {
+# 			'reviews': page.object_list,
+# 		}
+# 		return JsonResponse(data, safe=False)
+# 	return redirect('books:detail', slug=slug, page_id=page)
 
 def reviewlike(request):
 	slug = ''
@@ -98,7 +119,7 @@ def reviewlike(request):
 		}
 		return JsonResponse(data, safe=False)
 
-	return redirect('books:detail', slug=slug)
+	return redirect('books:detail', slug=slug, page_id=1)
 
 @login_required(login_url="/accounts/login/")
 def library(request):
@@ -168,3 +189,13 @@ def read_delete(request, book_id):
 	messages.success(request, title + ' has been deleted from your Have Read list.')
 	messages.info(request, ' go to tab2')
 	return redirect('books:library')
+
+def listings(request):
+	if request.method == 'POST':
+		book = Book.objects.get(id=request.POST.get('id'))
+		similar = Book.objects.filter(title=book.title, author=book.author)
+	return render(request, 'books/book_other_listings.html',{
+		'title':book.title,
+		'original':book,
+		'similar':similar,
+	})

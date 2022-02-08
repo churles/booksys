@@ -1,0 +1,110 @@
+/* ----------------------------------------------------------- */
+/* book-details */
+/* ----------------------------------------------------------- */
+.details, .book-info{
+    margin-top: 1%;
+}
+
+.book-thumbnail{
+    border-radius: 8px;
+    width: 100%;
+}
+
+.book-details h1, .book-availability{
+    font-weight: bold;
+}
+
+.read-link-btn{
+    background: none;
+    border: none;
+    color: green;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 50%;
+    font-family: serif;
+}
+
+.read-link-btn:hover{
+    color: blue;
+}
+
+.book-price, .out-stock{
+    color: red;
+}
+
+.book-price p{
+  text-align: right;
+}
+
+.book-descriptions{
+  white-space: pre-line;
+}
+
+.book-price p, .book-availability, .in-stock, .out-stock{
+    font-size: large;
+}
+
+.in-stock{
+    color: green;
+}
+
+.to-rent, .have-read{
+    display: block;
+    width: 100%;
+    line-height: 2em;
+    padding: 0.2em;
+    margin:0.3em;	
+    border: 1px solid  #ccc ;  
+    border-radius: 8px;
+    -webkit-appearance:normal;
+    font-size: 100%;
+    word-wrap: break-word;
+    min-width: 50%;
+    max-width: 100%;
+}
+
+.to-rent:hover, .have-read:hover{
+    background-color: black;
+    color: white;
+}
+
+.other-listings{
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    /*optional*/
+    font-family: arial, sans-serif;
+    /*input has OS specific font-family*/
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.other-listings:hover{
+    color:#069;
+}
+
+/* ----------------------------------------------------------- */
+/* book_other_listings */
+/* ----------------------------------------------------------- */
+
+.similar-div{
+    position: relative;
+}
+
+.similar-body{
+    margin: -30px;
+}
+.similar-thumb{
+  border: 1px solid #ddd;
+}
+
+.similar-card:hover{
+    box-shadow: 0 0 5px 5px rgba(2, 140, 186, 0.5);
+}
+
+.similar-div p{
+    font-size: larger;
+    font-weight: bold;
+    margin-bottom: 0px;
+}

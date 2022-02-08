@@ -2,10 +2,10 @@
 
 {% load post_tags %}
 {% block content %}
-<div class="container-book-details">
+<div class="container-fluid details">
 	<div class="row">
 		<div class="col-xs-2 col-sm-2 col-md-2 thumb">
-			<img id="thumb" src="{{ book.thumbnail.url }}">
+			<img class="book-thumbnail" src="{{ book.thumbnail.url }}">
 		</div>
 		<div class="col-xs-7 col-sm-7 col-md-7 book-details">
 			<h1>{{ book.title }}
@@ -15,8 +15,8 @@
 						<form method="post" action="{% url 'books:library' %}" class="inline">
 							{% csrf_token %}
 							<input type="hidden" name="tab_name" value="tab2">
-							<button type="submit" name="submit_param" value="submit_value" class="link-button">
-								<span style="font-size: 50%; color: green;"><i class="fa fa-book-open"></i>Read</span>
+							<button type="submit" name="submit_param" value="submit_value" class="read-link-btn">
+								<span><i class="fa fa-book-open"></i> Have Read</span>
 							</button>
 						</form>
 						{% endif %}
@@ -26,17 +26,19 @@
 			
 			<a href="#">By {{ book.author }}</a>
 			<hr>
-			<h4>Price: {{ book.price }}</h4>
-			<h4>Description:</h4>
-			<p class="descriptions">{{ book.snippet }}<span id="dots">...</span><span id="more">{{ book.read_more }}</span><a onClick="return myFunction()" id="myBtn">Read More</a></p>
-			<!-- <button onclick="myFunction()" id="myBtn">Read more</button> -->
+			<h4>Price: <span class="book-price">₱{{ book.price }}</span></h4>
+			{% if not book.read_more %}
+				<p class="book-descriptions">{{book.description}}</p>
+			{% else %}
+				<p class="book-descriptions">{{ book.snippet }}<span id="dots">...</span><span id="more">{{ book.read_more }}</span><a onClick="return myFunction()" id="myBtn">Read More</a></p>
+			{% endif %}
 		</div>
 		<div class="col-xs-3 col-sm-3 col-md-3 border border-dark">
-			<div class="row book-nav">
-				<div class="col availability">
+			<div class="row book-info">
+				<div class="col book-availability">
 					<p>For {{ book.availability }}:</p>
 				</div>
-				<div class="col price">
+				<div class="col book-price">
 					<p>₱{{ book.price }}</p>
 				</div>
 			</div>
@@ -48,13 +50,15 @@
 			<form action="{% url 'chat:index' %}" method="post">
 				{% csrf_token %}
 				<input type="text" name="book" value="{{book.id}}" class="hidden-tags">
-				<button type="submit" class="btn btn-black" style="width:100%"  {% if book.owner == user %} disabled {% endif %}>Message Seller to Rent</button>
+				{% if book.owner != user %}
+					<button type="submit" class="btn to-rent">Message Seller to Rent</button>
+				{% endif %}
 			</form>
 			<form action="{% url 'books:read'%}" method="post" style="padding-top: 10px;">
 				{% csrf_token %}
 				<input type="text" name="slug" value="{{book.slug}}" class="hidden-tags">
 				<input type="text" name="book" value="{{book.id}}" class="hidden-tags">
-				<button type="submit" class="btn btn-black" id="control-read-button" style="width:100%" >Add to Have Read</button>
+				<button type="submit" class="btn have-read" id="control-read-button">Add to Have Read</button>
 				
 				{% for read in readlist %}
 					{% for bookread in read.books.all %}
@@ -66,10 +70,19 @@
 				{{read_exist_book}}
 
 			</form>
+			<form action="{% url 'books:listings' %}" method="post">
+				{% csrf_token %}
+				<input type="text" name="id" value="{{ book.id }}" class="hidden-tags">
+				<button type="submit" class="other-listings">Other Listings</button>
+			</form>
 		</div>
 	</div>
 	<hr>
 </div>
+<!-- <div class="container-book-reviews">
+	<h4>Books you might like</h4>
+	<hr>
+</div> -->
 <div class="container-book-reviews">
 	<div class="review-body">
 		<h3>{% if count != 0 %}
@@ -112,7 +125,13 @@
 						</div>
 						<div class="col-xs- 1 col-sm-1 col-md-1">
 							{% checker review.id user as likes%}
-							<button type="submit" name="submit" class="btn btn-black like-btn{{review.id}}" style="margin-left: 0;">
+							<button type="submit" name="submit" class="btn btn-black like-btn{{review.id}}
+							{% if not likes %}
+								fas fa-thumbs-up like-active
+							{% else %}
+								fas fa-thumbs-down
+							{% endif %}
+							" style="margin-left: 0;"> 
 								{% if not likes %}
 									Like
 								{% else %}
@@ -132,37 +151,39 @@
 				</form>
 				<hr>	
 			{% endfor %}
-			<nav aria-label="Page navigation example">
-				<ul class="pagination justify-content-end">
-					{% if page.number > 1 %}
-						<li class="page-item">
-							<a class="page-link" href="#" tabindex="-1">Previous</a>
-						</li>
-					{% else %}
-						<li class="page-item disabled">
-							<a class="page-link" href="#" tabindex="-1">Previous</a>
-						</li>
-					{% endif %}
-					{% with ''|center:page.paginator.num_pages as n %}
-						{% for i in n %}
-							{% if page.number == forloop.counter %}
-								<li class="page-item active"><a class="page-link" href="#">{{ forloop.counter }}</a></li>
-							{% else %}
-								<li class="page-item"><a class="page-link" onclick="showPage({{ forloop.counter }})">{{ forloop.counter }}</a></li>
-							{% endif %}
-						{% endfor %}
-					{% endwith %}
-					{% if page.number == page.paginator.num_pages %}
-						<li class="page-item disabled">
-							<a class="page-link" href="#">Next</a>
-						</li>
-					{% else %}
-						<li class="page-item">
-							<a class="page-link" href="#">Next</a>
-						</li>
-				  	{% endif %}
-				</ul>
-			  </nav>
+			{% if count != 0 %}
+				<nav aria-label="Page navigation example">
+					<ul class="pagination justify-content-center">
+						{% if page.number > 1 %}
+							<li class="page-item">
+								<a class="page-link" onclick="showPagePrev('{{page.number}}')" tabindex="-1">Previous</a>
+							</li>
+						{% else %}
+							<li class="page-item disabled">
+								<a class="page-link" href="#" tabindex="-1">Previous</a>
+							</li>
+						{% endif %}
+						{% with ''|center:page.paginator.num_pages as n %}
+							{% for i in n %}
+								{% if page.number == forloop.counter %}
+									<li class="page-item active"><a class="page-link" href="#">{{ forloop.counter }}</a></li>
+								{% else %}
+									<li class="page-item"><a class="page-link" onclick="showPage('{{ forloop.counter }}','{{book.slug}}')">{{ forloop.counter }}</a></li>
+								{% endif %}
+							{% endfor %}
+						{% endwith %}
+						{% if page.number == page.paginator.num_pages %}
+							<li class="page-item disabled">
+								<a class="page-link" href="#">Next</a>
+							</li>
+						{% else %}
+							<li class="page-item">
+								<a class="page-link" onclick="showPageNext('{{page.number}}')">Next</a>
+							</li>
+						{% endif %}
+					</ul>
+				</nav>
+			{% endif %}
 		</div>
 	</div>
 </div>
@@ -174,27 +195,41 @@
 {% block scripts %}
 <script src="/static/read_more.js"></script>
 <script type="text/javascript">
-	function showPage(page){
-		$.ajax({
-			type:'POST',
-			url:'../'+page+'/',
-			data:{
-				'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
-				'page_id':page,
-			},
-			success: function(response){
-				console.log('success', response)
-			},
-			error: function(response){
-				console.log('error', response)
-			},
-		})
+	// function showPage(page,slug){
+	// 	$.ajax({
+	// 		type:'POST',
+	// 		url: '../../pageReviews/',
+	// 		data:{
+	// 			'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+	// 			'slug':slug,
+	// 			'page':page,
+	// 		},
+	// 		success: function(response){
+	// 			console.log('success', response)
+	// 		},
+	// 		error: function(response){
+	// 			console.log('error', response)
+	// 		},
+	// 	})
+	// }
+	function showPage(page, slug){
+        location.href = "../"+page +"/";
 	}
+
+	function showPageNext(page){
+		const nextPage = parseInt(page) + 1;
+        location.href = "../"+nextPage +"/";
+	}
+	function showPagePrev(page){
+		const prevPage = parseInt(page) - 1;
+        location.href = "../"+prevPage +"/";
+	}
+
 	$(document).ready(function(){
 		if(document.getElementById('control-read') != null){
 			const control_read = document.getElementById('control-read').textContent
 			if(control_read == 'true'){
-				document.getElementById('control-read-button').setAttribute("disabled", true)
+				document.getElementById('control-read-button').setAttribute("hidden", true)
 			}
 		}
 
@@ -220,9 +255,13 @@
 				success: function(response){
 					if(trim === 'Unlike'){
 						$(`.like-btn${review_id}`).text('Like')
+						$(`.like-btn${review_id}`).removeClass('fa-thumbs-down like-active')
+						$(`.like-btn${review_id}`).addClass('fa-thumbs-up like-active')
 						res = trimCount - 1
 					}else{
 						$(`.like-btn${review_id}`).text('Unlike')
+						$(`.like-btn${review_id}`).removeClass('fa-thumbs-up like-active')
+						$(`.like-btn${review_id}`).addClass('fa-thumbs-down')
 						res = trimCount + 1
 					}
 					$(`.like-count${review_id}`).text(res)
@@ -257,13 +296,13 @@
 
 		if(document.getElementById('reviewBtn') != null){
 			document.getElementById('reviewBtn').onclick = function(){
-				location.href = "../../reviews/" +slug +"/create";
+				location.href = "../../../reviews/" +slug +"/create";
 			};
 		}
 
 		if(document.getElementById('update-reviewBtn') != null){
 			document.getElementById('update-reviewBtn').onclick = function(){
-				location.href = "../../reviews/update/"+rev_id+"/"+slug;
+				location.href = "../../../reviews/update/"+rev_id+"/"+slug;
 			};	
 		}
 	});

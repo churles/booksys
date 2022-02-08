@@ -11,14 +11,20 @@
 	</div>
 </div>
 <h1>Book List</h1>
-<div class="my-listings-library">
-	{% for book in books %}
-		<div>
-			<a href="{% url 'books:detail' slug=book.slug page_id=1 %}" >
-				<img class="list-thumb" src="{{ book.thumbnail.url }}">
-				<p>{{ book.title}}</p>
-			</a>
-		</div>
-	{% endfor %}
+<div class="container-fluid">
+	<div class="my-listings-library">
+		{% for book in books %}
+			<div>
+				<a href="{% url 'books:detail' slug=book.slug page_id=1 %}" >
+					<img class="list-thumb" src="{{ book.thumbnail.url }}">
+					<p>{{ book.title}}</p>
+				</a>
+			</div>
+		{% endfor %}
+	</div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+
 {% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+<h1>Listings for {{title}}</h1>
+<div class="container-fluid">
+    {% for books in similar %}
+        <div class="card similar-card" style="width: 100%;">
+            <div class="card-body similar-body">
+                <div class="row similar-div"> 
+                    <div class="col-4 col-xs-2 col-sm-2 col-md-2">
+                        <img class="book-thumbnail similar-thumb" src="{{ books.thumbnail.url }}">
+                    </div>
+                    <div class="col-8 col-xs-10 col-sm-10 col-md-10">
+                        <h5 class="card-title">{{books.title}}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">by {{books.author}}</h6><br>
+                        <p class="card-text">For <span style="margin-right: 10px;">{{books.availability}}</span>|<span style="margin-left: 10px;">Price: <span class="book-price">₱{{ books.price }}</span></span></p>
+                        <p class="card-text">
+                            {% if books.stock != 0 %}
+                                <span style="color: green;">{{books.stock}} in stock</span>
+                            {% else %}
+                                <span style="color: red;">Out of Stock</span>
+                            {% endif %}
+                        </p>
+                        <p class="card-text">Condition: <span style="color: green;">{{books.condition}}</span></p><br>
+                        <a href="{% url 'books:detail' slug=books.slug page_id=1 %}" class="card-link">Go to Detail Page</a>
+                        <a href="#" class="card-link">Message Seller</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

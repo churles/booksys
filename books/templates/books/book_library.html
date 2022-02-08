@@ -49,7 +49,7 @@
                             {% csrf_token %}
                             <button type="submit" class="update-btn-library">Update</button>
                         </form>
-                        <button name="listing-delete" class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal({{book.id}})">Remove</button> 
+                        <button name="listing-delete" class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal('{{book.id}}')">Remove</button> 
                     </div>
                 {% endfor %}
             </div>
@@ -62,7 +62,7 @@
                         <div class="container-library">
                             <img class="list-thumb" src="{{ book.thumbnail.url }}">    
                             <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
-                            <button name="read-delete" class="delete-library" onclick="show_modalRead({{book.id}})" data-name="{{book.title}}" id="myBtnRead{{book.id}}">Remove</button>
+                            <button name="read-delete" class="delete-library" onclick="show_modalRead('{{book.id}}')" data-name="{{book.title}}" id="myBtnRead{{book.id}}">Remove</button>
                         </div>
                     {% endfor %}
                 {% endfor %}
