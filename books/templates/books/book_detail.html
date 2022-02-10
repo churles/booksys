@@ -28,7 +28,7 @@
 			<hr>
 			<h4>Price: <span class="book-price">₱{{ book.price }}</span></h4>
 			{% if not book.read_more %}
-				<p class="book-descriptions">{{book.description}}</p>
+				<p class="book-descriptions">{{book.synopsis}}</p>
 			{% else %}
 				<p class="book-descriptions">{{ book.snippet }}<span id="dots">...</span><span id="more">{{ book.read_more }}</span><a onClick="return myFunction()" id="myBtn">Read More</a></p>
 			{% endif %}
@@ -101,7 +101,7 @@
 						{% endif %}
 					{% endif %}
 				{% else %}
-						<button type="button" id="update-reviewBtn" class="btn btn-primary">Edit Review</button>
+						<button type="button" id="update-reviewBtn" class="btn btn-primary">Edit my Review</button>
 				{% endif %}
 			</span>
 		</h3>
@@ -114,7 +114,7 @@
 					<input type="text" class="hidden-tags" name="slug"  value="{{book.slug}}">
 					<p>{{ review.author }} {{ review.datetime }}</p>
 					<div class="row">
-						<div class="col-xs-11 col-sm-11 col-md-11">
+						<div class="col-11 col-xs-11 col-sm-11 col-md-11">
 							<p class="review-title">{{ review.title }}</p>
 							<!-- <p class="descriptions">{{ review.snippet }}</p> -->
 							{% if not review.read_more %}
@@ -123,7 +123,7 @@
 								<p class="descriptions">{{ review.snippet }}<span id="dots{{review.id}}">...</span><span class="review-more" id="more{{review.id}}">{{ review.read_more }}</span><a href="javascript:void()" class="review-btn" id="readMore{{review.id}}">Read More</a></p>
 							{% endif %}
 						</div>
-						<div class="col-xs- 1 col-sm-1 col-md-1">
+						<div class="col-1 col-xs-1 col-sm-1 col-md-1">
 							{% checker review.id user as likes%}
 							<button type="submit" name="submit" class="btn btn-black like-btn{{review.id}}
 							{% if not likes %}
@@ -139,10 +139,10 @@
 								{% endif %}
 							</button>
 							<div class="row">
-								<div class="col-xs-6 col-sm-6 col-md-6">
+								<div class="col col-xs-6 col-sm-6 col-md-6">
 									<div class="like-count{{review.id}}">{% total_like review.id%}</div>
 								</div>
-								<div class="col-xs-6 col-sm-6 col-md-6">
+								<div class="col col-xs-6 col-sm-6 col-md-6">
 									likes
 								</div>
 							</div>

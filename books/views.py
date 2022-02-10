@@ -2,7 +2,7 @@ from curses.ascii import HT
 from turtle import title
 from django import http
 from django.shortcuts import render, redirect
-from .models import Book, BookRent, Genre, BookGenre, ReadList
+from .models import Book, BookRent, Genre, BookGenre, ReadList, BookAvailability
 from reviews.models import Review, ReviewLike
 from accounts.models import Profile
 from django.http import HttpResponse
@@ -16,29 +16,61 @@ from django.core.paginator import Paginator
 @login_required(login_url="/accounts/login/")
 def books_create(request):
 	if request.method == 'POST':
-		form = forms.CreateBook(request.POST, request.FILES)
-		if form.is_valid():
-			# save to db
-			instance = form.save(commit=False)
-			instance.owner = request.user
-			instance.save()
-			bookgenres = request.POST.getlist('genre[]')
-			for element in range(len(bookgenres)):
-				bg = BookGenre()
-				bg.book = Book.objects.get(id = instance.id)
-				bg.genre = Genre.objects.get(id=int(bookgenres[element]))
-				bg.save()
-			
-			instance.slug = instance.slug +"-" +str(instance.id)
-			instance.save()
-			
-			return redirect('books:detail', slug=instance.slug, page_id=1)
+		book = Book.objects.create(
+			title=request.POST.get('title'), 
+			author=request.POST.get('author'),
+			synopsis=request.POST.get('synopsis'),
+			note=request.POST.get('note'),
+			thumbnail=request.FILES.get('thumbnail'),
+			condition=request.POST.get('condition'),
+			owner=request.user
+			)
+		book.save()
+		book.slug = request.POST.get('slug') + str(book.id)
+		book.save()
+
+		bookgenres = request.POST.getlist('genre[]')
+		for element in range(len(bookgenres)):
+			bg = BookGenre()
+			bg.book = Book.objects.get(id = book.id)
+			bg.genre = Genre.objects.get(id=int(bookgenres[element]))
+			bg.save()
+		
+		return redirect('books:availability', book_id=book.id)
 	else:
 		genres = Genre.objects.all()
 		form = forms.CreateBook()
 	return render(request, 'books/book_create.html',{
 		'form':form,
 		'genres':genres
+	})
+
+def books_availability(request, book_id):
+	book = Book.objects.get(id=book_id)
+	if request.method == 'POST':
+		book_avail = BookAvailability.objects.create(
+			book=book,
+			availability=request.POST.get('availability'),
+			price=request.POST.get('price'),
+			stock=request.POST.get('stock')
+		)
+		book_avail.save()
+		if(book_avail.availability == "rent"):
+			book_avail.daterange = request.POST.get('daterange')
+			book_avail.save()
+		return redirect('books:finish', book_id=book.id, book_avail_id=book_avail.id)
+
+	return render(request, 'books/book_availability.html',{
+		'book':book,
+	})
+
+def books_finish(request, book_id, book_avail_id):
+	book = Book.objects.get(id=book_id)
+	book_avail = BookAvailability.objects.get(id=book_avail_id)
+
+	return render(request, 'books/book_finish.html',{
+		'book':book,
+		'book_avail':book_avail
 	})
 
 def books_list(request):
@@ -73,23 +105,6 @@ def books_detail(request, slug, page_id):
 		'review_id':review_id,
 		'page':page,
 	})
-# pagination with ajax
-# def pageReviews(request):
-# 	slug = ''
-# 	page = ''
-# 	if request.method == 'POST':
-# 		slug = request.POST.get('slug')
-# 		book = Book.objects.get(slug=slug)
-# 		reviews = Review.objects.filter(book=book).order_by('datetime')
-
-# 		paginator_review = Paginator(reviews, 1)
-# 		page = paginator_review.get_page(request.POST.get('page'))
-
-# 		data = {
-# 			'reviews': page.object_list,
-# 		}
-# 		return JsonResponse(data, safe=False)
-# 	return redirect('books:detail', slug=slug, page_id=page)
 
 def reviewlike(request):
 	slug = ''

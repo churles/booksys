@@ -1,0 +1,72 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+<div class="container-fluid">
+	<h2 style="text-align: center; margin-top: 1%;">Create a New Book Listing</h2>
+    <p style="text-align: center;">Fill up all <span style="color: red;">*</span>required field</p>
+
+    <!-- progressbar -->
+    <div class="progressbar-div">
+        <ul id="progressbar">
+            <li class="active" id="book-details"><strong>Details</strong></li>
+            <li class="active" id="book-avail"><strong>Availability</strong></li>
+            <li id="finish"><strong>Finish</strong></li>
+        </ul> 
+    </div>
+	<div class="form-group">
+		<form action="{% url 'books:availability' book_id=book.id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col">
+                    Availability:<span style="color: red;">*</span> <select name="availability" class="form-control" id="avail" onchange="checkAvail()">
+                        <option value="rent">Rent</option>
+                        <option value="sell">Sell</option>
+                        <option value="barter">Barter</option>
+                    </select>
+                </div>
+                <div class="col">
+                    Date Range (Only for books that are for Rent):<select name="daterange" class="form-control" id="daterange">
+                        <option value="30">30 days</option>
+                        <option value="60">2 months</option>
+                        <option value="90">3 months</option>
+                        <option value="180">6 months</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    Price:<span style="color: red;">*</span><input class="form-control" type="text" name="price" placeholder="Price">
+                </div>
+                <div class="col">
+                    Stock:<span style="color: red;">*</span><input class="form-control" type="text" name="stock" placeholder="Stock">
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-8">
+                </div>
+                <div class="col-2">
+                    <input class="form-control prevBtn" type="button" value="Previous">
+                </div>
+                <div class="col-2">
+                    <input class="form-control nextBtn" type="submit" name="submit" value="Next">
+                </div>
+            </div>
+        </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    $(document).ready(function(){
+    });
+    function checkAvail(){
+        var select_avail = document.getElementById('avail');
+        var avail_text = select_avail.options[select_avail.selectedIndex].value;
+        if(avail_text != "rent"){
+            document.getElementById('daterange').setAttribute("disabled","disabled");
+        }else{
+            document.getElementById('daterange').removeAttribute("disabled","disabled");
+        }
+    }
+</script>
+{% endblock %}
