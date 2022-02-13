@@ -1,12 +1,12 @@
 /* ----------------------------------------------------------- */
 /* book-create */
 /* ----------------------------------------------------------- */
-.nextBtn, .prevBtn{
+.nextBtn, .prevBtn, .listing-deleteBtn{
     color: black;
     background-color: skyblue;
 }
 
-.nextBtn:hover, .prevBtn:hover{
+.nextBtn:hover, .prevBtn:hover, .listing-updateBtn:hover{
     color: white;
     background-color: #009DDB;
 }
@@ -172,7 +172,7 @@
     font-family: arial, sans-serif;
     /*input has OS specific font-family*/
     color: blue;
-    text-decoration: underline;
+    text-decoration: none;
     cursor: pointer;
 }
 
@@ -204,3 +204,19 @@
     font-weight: bold;
     margin-bottom: 0px;
 }
+
+.listing-deleteBtn, .listing-updateBtn{
+    color: black;
+    background-color: skyblue;
+    border-radius: 5px;
+    margin-bottom: 0.5%;
+}
+
+.listing-deleteBtn:hover{
+    color: white;
+    background-color: red;
+}
+
+/* ----------------------------------------------------------- */
+/* book_library */
+/* ----------------------------------------------------------- */

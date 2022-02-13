@@ -54,10 +54,8 @@
                             {% else %}
                                 {% for listing_exist in listings_exist %}
                                     {% if listing_exist.title == book.title and listing_exist.author == book.author %}
-                                        <form action="{% url 'books:listings' %}" method="post">
+                                        <form action="{% url 'books:listings' book_id=book.id owner_id=book.owner.id %}" method="post">
                                             {% csrf_token %}
-                                            <input type="text" name="id" value="{{ book.id }}" class="hidden-tags">
-                                            <input type="text" name="owner" value="{{ book.owner.id }}" class="hidden-tags">
                                             <button type="submit" class="details-library">Show Details</button>
                                         </form>
                                         {% counter 1 as ctr %}

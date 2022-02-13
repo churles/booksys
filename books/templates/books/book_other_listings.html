@@ -28,8 +28,15 @@
                                     {% endif %}
                                 </p>
                                 <p class="card-text">Condition: <span style="color: green;">{{books.condition}}</span></p><br>
-                                <a href="{% url 'books:detail' slug=books.slug page_id=1 %}" class="card-link">Go to Detail Page</a>
-                                <a href="#" class="card-link">Message Seller</a>
+
+                                <a href="{% url 'books:detail' slug=books.slug page_id=1 %}" class="card-link other-listings">Go to Detail Page</a>
+                                {% if owner != "" %}
+                                    <form action="{% url 'books:update' book_id=books.id %}" id="{{ books.id }}">
+                                        {% csrf_token %}              
+                                        <button type="submit" class="form-control listing-updateBtn">Update</button>
+                                    </form>
+                                    <button name="listing-delete" class="form-control listing-deleteBtn"  id="myBtn{{books.id}}" data-name="{{books.title}}" onclick="show_modal('{{books.id}}')">Remove</button>    
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -38,8 +45,65 @@
         {% endfor %}
     {% endfor %}
 </div>
+<div class="modal" id="myModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p id="modal-p-content"></p>
+            <button id="modalbtn-delete">Proceed</button>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
+<script>   
+    $(document).ready(function() {
+        if(document.getElementById('modalbtn-delete') != null){
+            document.getElementById('modalbtn-delete').onclick = function(){
+                const book_id = $(this).attr('class')
+                const btnName = $(this).attr('name')
+                if(btnName == "listing-delete"){
+                    location.href = "../../../../books/delete/"+book_id;
+                }else{
+                    console.log("test")
+                }
+            };	
+        }
+    });
+    function show_modal(id){
+        var title =''
+        var btnName = ''
+        // Get the modal
+        var modal = document.getElementById("myModal");
+        //get button
+        var btn = document.getElementById("myBtn"+id);
+        title = btn.getAttribute("data-name");
+        btnName = btn.getAttribute("name");
+        
+        //add id to modalbtn-delete
+        document.getElementById('modalbtn-delete').setAttribute("class",id);
+        document.getElementById('modalbtn-delete').setAttribute("name", btnName);
+        //open modal
+        modal.style.display = "block";
+        document.getElementById('modal-p-content').innerHTML = "Are you sure you want to remove " +title +" from your Book Listings?";
+        
 
+        //Get span
+        var span = document.getElementsByClassName("close")[0];
+        //When the user clicks on the button, open the modal
+        span.onclick = function(){
+            modal.style.display = "none";
+        }
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(){
+            if(event.target == modal){
+                modal.style.display = "none";   
+            }
+        }
+    }
+</script>
 {% endblock %}

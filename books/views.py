@@ -236,20 +236,19 @@ def read_delete(request, book_id):
 	messages.info(request, ' go to tab2')
 	return redirect('books:library')
 
-def listings(request):
-	if request.method == 'POST':
-		if not request.POST.get('owner'):
-			owner = ""
-		else:
-			owner = User.objects.get(id = request.POST.get('owner'))
-		
-		book = Book.objects.get(id=request.POST.get('id'))
-		book_avail = BookAvailability.objects.all()
+def listings(request, book_id, owner_id):
+	if int(owner_id) == 0:
+		owner = ""
+	else:
+		owner = User.objects.get(id = int(owner_id))
+	
+	book = Book.objects.get(id= int(book_id))
+	book_avail = BookAvailability.objects.all()
 
-		if not owner:
-			similar = Book.objects.filter(title=book.title, author=book.author)
-		else:
-			similar = Book.objects.filter(title=book.title, author=book.author, owner = owner)
+	if not owner:
+		similar = Book.objects.filter(title=book.title, author=book.author)
+	else:
+		similar = Book.objects.filter(title=book.title, author=book.author, owner = owner)
 
 	return render(request, 'books/book_other_listings.html',{
 		'title':book.title,
