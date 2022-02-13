@@ -1,7 +1,7 @@
 {% extends 'base_layout.html' %}
 
+{% load post_tags %}
 {% block content %}
-
 <div class="col-lg-12 col-sm-12">
     <!-- profile card -->
     {% if messages %}
@@ -41,15 +41,38 @@
     <div class="tab-content" id="myTabContent" style="padding-top: 10px;">
         <div class="tab-pane fade show active" id="tab1"  role="tabpanel" aria-labelledby="tab1-tab">
             <div class="my-listings-library">
-                {% for book in my_listings %}
+                {% for book in listings %}
                     <div class="container-library">
                         <img class="list-thumb " src="{{ book.thumbnail.url }}">
-                        <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
-                        <form action="{% url 'books:update' book_id=book.id %}" class="form-library" id="{{ book.id }}">
-                            {% csrf_token %}
-                            <button type="submit" class="update-btn-library">Update</button>
-                        </form>
-                        <button name="listing-delete" class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal('{{book.id}}')">Remove</button> 
+                            {% if not listings_exist %}
+                                <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
+                                <form action="{% url 'books:update' book_id=book.id %}" class="form-library" id="{{ book.id }}">
+                                    {% csrf_token %}              
+                                    <button type="submit" class="update-btn-library">Update</button>
+                                </form>
+                                <button name="listing-delete" class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal('{{book.id}}')">Remove</button>                   
+                            {% else %}
+                                {% for listing_exist in listings_exist %}
+                                    {% if listing_exist.title == book.title and listing_exist.author == book.author %}
+                                        <form action="{% url 'books:listings' %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="text" name="id" value="{{ book.id }}" class="hidden-tags">
+                                            <input type="text" name="owner" value="{{ book.owner.id }}" class="hidden-tags">
+                                            <button type="submit" class="details-library">Show Details</button>
+                                        </form>
+                                        {% counter 1 as ctr %}
+                                    {% else %}
+                                        {% if counter == forloop.counter and ctr != "break" %}
+                                            <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
+                                            <form action="{% url 'books:update' book_id=book.id %}" class="form-library" id="{{ book.id }}">
+                                                {% csrf_token %}              
+                                                <button type="submit" class="update-btn-library">Update</button>
+                                            </form>
+                                            <button name="listing-delete" class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal('{{book.id}}')">Remove</button>       
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                     </div>
                 {% endfor %}
             </div>
@@ -113,7 +136,6 @@
     $(document).ready(function() {
         const tab_name = JSON.parse(document.getElementById('tab-name').textContent);
         // Jump to Have Read from "Book Detail page"
-        console.log(tab_name)
         if (tab_name === "tab2"){
             openTab(tab_name);
             $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
@@ -154,7 +176,6 @@
                 }
             };	
         }
-        
 
     });
 

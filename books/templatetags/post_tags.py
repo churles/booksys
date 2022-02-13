@@ -1,5 +1,7 @@
+from asyncio.windows_events import NULL
 from django import template
 from reviews.models import Review, ReviewLike
+from books.models import Book
 
 register=template.Library()
 
@@ -14,7 +16,8 @@ def total_like(args):
 
 @register.simple_tag
 def counter(args):
-	return args
+	if args == 1:
+		return "break"
 
 @register.simple_tag
 def checker(args, args1):

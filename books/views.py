@@ -1,4 +1,6 @@
 from curses.ascii import HT
+from enum import unique
+from pickle import TRUE
 from turtle import title
 from django import http
 from django.shortcuts import render, redirect
@@ -12,6 +14,7 @@ from array import array
 from django.http import JsonResponse
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
 
 @login_required(login_url="/accounts/login/")
 def books_create(request):
@@ -82,6 +85,7 @@ def books_list(request):
 def books_detail(request, slug, page_id):
 	review_id = ''
 	book = Book.objects.get(slug=slug)
+	book_avail = BookAvailability.objects.get(book=book)
 	reviews = Review.objects.filter(book=book).order_by('datetime')
 	reviewlike = ReviewLike.objects.all()
 	readlist = ReadList.objects.filter(owner=request.user)
@@ -96,6 +100,7 @@ def books_detail(request, slug, page_id):
 		
 	return render(request, 'books/book_detail.html',{
 		'book':book,
+		'book_avail':book_avail,
 		'reviews':reviews,
 		'count':paginator_review.count,
 		'reviewlike':reviewlike,
@@ -140,6 +145,9 @@ def reviewlike(request):
 def library(request):
 	tab = ''
 	books = []
+	listings = []
+	listings_exist = []
+	counter = 0
 	if request.method == 'POST':
 		tab = request.POST.get('tab_name')
 	my_listings = Book.objects.filter(owner=request.user)
@@ -147,9 +155,29 @@ def library(request):
 	profile = Profile.objects.get(account=request.user)
 	readlist = ReadList.objects.filter(owner=request.user)
 	bookrent = BookRent.objects.filter(owner=request.user)
+
+	for my_listing in my_listings:
+		ctr = False
+		# if listing is empty
+		if not listings: 
+			listings.append(my_listing)
+		# listing is not empty
+		else:
+			for listing in listings:
+				if listing.title == my_listing.title and listing.author == my_listing.author:
+					ctr = True
+					listings_exist.append(my_listing)
+					counter += 1
+					break
+				else:
+					ctr = False
+			if ctr == False:
+				listings.append(my_listing)
+
 	for rented in bookrent:
 		books.append(rented.books)
-	
+
+
 	return render(request, 'books/book_library.html',{
 		'my_listings':my_listings,
 		'username':username,
@@ -157,7 +185,10 @@ def library(request):
 		'readlist':readlist,
 		'bookrent':bookrent,
 		'tab':tab,
-		'books':books
+		'books':books,
+		'listings':listings,
+		'listings_exist':listings_exist,
+		'counter':counter
 	})
 
 def read(request):
@@ -207,10 +238,23 @@ def read_delete(request, book_id):
 
 def listings(request):
 	if request.method == 'POST':
+		if not request.POST.get('owner'):
+			owner = ""
+		else:
+			owner = User.objects.get(id = request.POST.get('owner'))
+		
 		book = Book.objects.get(id=request.POST.get('id'))
-		similar = Book.objects.filter(title=book.title, author=book.author)
+		book_avail = BookAvailability.objects.all()
+
+		if not owner:
+			similar = Book.objects.filter(title=book.title, author=book.author)
+		else:
+			similar = Book.objects.filter(title=book.title, author=book.author, owner = owner)
+
 	return render(request, 'books/book_other_listings.html',{
 		'title':book.title,
 		'original':book,
+		'book_avail':book_avail,
 		'similar':similar,
+		'owner':owner
 	})

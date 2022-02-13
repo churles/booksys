@@ -13,3 +13,19 @@ function myFunction() {
     moreText.style.display = "inline";
   }
 }
+
+function myFunctionNote() {
+  var dots = document.getElementById("dotsNote");
+  var moreText = document.getElementById("moreNote");
+  var btnText = document.getElementById("myBtnNote");
+
+  if (dots.style.display === "none") {
+    dots.style.display = "inline";
+    btnText.innerHTML = "Read more";
+    moreText.style.display = "none";
+  } else {
+    dots.style.display = "none";
+    btnText.innerHTML = "Read less";
+    moreText.style.display = "inline";
+  }
+}

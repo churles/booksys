@@ -11,12 +11,12 @@
 			<h1>{{ book.title }}
 				{% for read in readlist %}
 					{% for bookread in read.books.all %}
-						{% if book == bookread %}
+						{% if book.title == bookread.title and book.author == bookread.author %}
 						<form method="post" action="{% url 'books:library' %}" class="inline">
 							{% csrf_token %}
 							<input type="hidden" name="tab_name" value="tab2">
 							<button type="submit" name="submit_param" value="submit_value" class="read-link-btn">
-								<span><i class="fa fa-book-open"></i> Have Read</span>
+								<span><i class="fa fa-book-open"></i> Have Read </span>
 							</button>
 						</form>
 						{% endif %}
@@ -26,24 +26,31 @@
 			
 			<a href="#">By {{ book.author }}</a>
 			<hr>
-			<h4>Price: <span class="book-price">₱{{ book.price }}</span></h4>
+			<h4>Price: <span class="book-price">₱{{ book_avail.price }}</span></h4>
+			<h6>Condition: {{ book.condition }}</h6>
 			{% if not book.read_more %}
 				<p class="book-descriptions">{{book.synopsis}}</p>
 			{% else %}
 				<p class="book-descriptions">{{ book.snippet }}<span id="dots">...</span><span id="more">{{ book.read_more }}</span><a onClick="return myFunction()" id="myBtn">Read More</a></p>
 			{% endif %}
+			<hr>
+			{% if not book.note_read_more %}
+				<h6>Owner's Note: </h6> <p class="book-note">{{book.note}}</p>
+			{% else %}
+				<h6>Owner's Note: </h6> <p class="book-note">{{ book.note_snippet }}<span id="dotsNote">...</span><span id="moreNote">{{ book.note_read_more }}</span><a onClick="return myFunctionNote()" id="myBtnNote">Read More</a></p>
+			{% endif %}
 		</div>
 		<div class="col-xs-3 col-sm-3 col-md-3 border border-dark">
 			<div class="row book-info">
 				<div class="col book-availability">
-					<p>For {{ book.availability }}:</p>
+					<p>For {{ book_avail.availability }}:</p>
 				</div>
 				<div class="col book-price">
-					<p>₱{{ book.price }}</p>
+					<p>₱{{ book_avail.price }}</p>
 				</div>
 			</div>
-			{% if book.stock != 0 %}
-				<p class="in-stock">{{ book.stock }} in stock</p>
+			{% if book_avail.stock != 0 %}
+				<p class="in-stock">{{ book_avail.stock }} in stock</p>
 			{% else %}
 				<p class="out-stock">Out of stock</p>
 			{% endif %}
@@ -62,7 +69,7 @@
 				
 				{% for read in readlist %}
 					{% for bookread in read.books.all %}
-						{% if book == bookread %}
+						{% if book.title == bookread.title and book.author == bookread.author %}
 							<p id="control-read" hidden>true</p>
 						{% endif %}
 					{% endfor %}
@@ -73,6 +80,7 @@
 			<form action="{% url 'books:listings' %}" method="post">
 				{% csrf_token %}
 				<input type="text" name="id" value="{{ book.id }}" class="hidden-tags">
+				<input type="text" name="owner" value="" class="hidden-tags">
 				<button type="submit" class="other-listings">Other Listings</button>
 			</form>
 		</div>
