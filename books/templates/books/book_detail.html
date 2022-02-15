@@ -35,7 +35,9 @@
 			{% endif %}
 			<hr>
 			{% if not book.note_read_more %}
-				<h6>Owner's Note: </h6> <p class="book-note">{{book.note}}</p>
+				{% if book.note %}
+					<h6>Owner's Note: </h6> <p class="book-note">{{book.note}}</p>
+				{% endif %}
 			{% else %}
 				<h6>Owner's Note: </h6> <p class="book-note">{{ book.note_snippet }}<span id="dotsNote">...</span><span id="moreNote">{{ book.note_read_more }}</span><a onClick="return myFunctionNote()" id="myBtnNote">Read More</a></p>
 			{% endif %}
@@ -43,7 +45,13 @@
 		<div class="col-xs-3 col-sm-3 col-md-3 border border-dark">
 			<div class="row book-info">
 				<div class="col book-availability">
-					<p>For {{ book_avail.availability }}:</p>
+					<p>For 
+						{% if book_avail.availability == "sell" %}
+							sale:
+						{% else %}
+							{{ book_avail.availability }}:
+						{% endif %}
+					</p>
 				</div>
 				<div class="col book-price">
 					<p>₱{{ book_avail.price }}</p>
@@ -105,6 +113,7 @@
 					{% endif %}
 				{% else %}
 						<button type="button" id="update-reviewBtn" class="btn btn-primary">Edit my Review</button>
+						<button type="button" id="delete-reviewBtn" class="btn btn-primary" onclick="show_modal()">Remove my Review</button>   
 				{% endif %}
 			</span>
 		</h3>
@@ -190,6 +199,18 @@
 		</div>
 	</div>
 </div>
+<!-- Modal for Remove Button in Book Listing -->
+<div class="modal" id="myModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p id="modal-p-content"></p>
+            <button id="modalbtn-delete">Proceed</button>
+        </div>
+    </div>
+</div>
 {{ book.slug|json_script:"slug" }}
 {{ review_id|json_script:"rev_id" }}
 
@@ -198,23 +219,7 @@
 {% block scripts %}
 <script src="/static/read_more.js"></script>
 <script type="text/javascript">
-	// function showPage(page,slug){
-	// 	$.ajax({
-	// 		type:'POST',
-	// 		url: '../../pageReviews/',
-	// 		data:{
-	// 			'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
-	// 			'slug':slug,
-	// 			'page':page,
-	// 		},
-	// 		success: function(response){
-	// 			console.log('success', response)
-	// 		},
-	// 		error: function(response){
-	// 			console.log('error', response)
-	// 		},
-	// 	})
-	// }
+	
 	function showPage(page, slug){
         location.href = "../"+page +"/";
 	}
@@ -226,6 +231,29 @@
 	function showPagePrev(page){
 		const prevPage = parseInt(page) - 1;
         location.href = "../"+prevPage +"/";
+	}
+	
+	function show_modal(){
+		// Get the modal
+		var modal = document.getElementById("myModal");
+		
+		//open modal
+		modal.style.display = "block";
+		document.getElementById('modal-p-content').innerHTML = "Are you sure you want to remove your review?";
+		
+
+		//Get span
+		var span = document.getElementsByClassName("close")[0];
+		//When the user clicks on the button, open the modal
+		span.onclick = function(){
+			modal.style.display = "none";
+		}
+		// When the user clicks anywhere outside of the modal, close it
+		window.onclick = function(){
+			if(event.target == modal){
+				modal.style.display = "none";   
+			}
+		}
 	}
 
 	$(document).ready(function(){
@@ -307,6 +335,12 @@
 			document.getElementById('update-reviewBtn').onclick = function(){
 				location.href = "../../../reviews/update/"+rev_id+"/"+slug;
 			};	
+		}
+			
+		if(document.getElementById('modalbtn-delete') != null){
+			document.getElementById('modalbtn-delete').onclick = function(){
+				location.href = "../../../reviews/delete/"+rev_id+"/"+slug;
+			};
 		}
 	});
 </script>

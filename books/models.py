@@ -33,6 +33,7 @@ class Book(models.Model):
 	note = models.TextField(blank=True)
 	date = models.DateTimeField(auto_now_add=True)
 	thumbnail = models.ImageField(default='default.png', blank = True)
+	genre = models.ManyToManyField(Genre, blank=True)
 	condition = models.CharField(max_length=10, choices=CONDITION_CHOICES, default='new')
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
@@ -58,18 +59,8 @@ class BookAvailability(models.Model):
 	book = models.ForeignKey(Book, on_delete=models.CASCADE, default=None)
 	availability = models.CharField(max_length=10, choices=AVAIL_CHOICES, default='rent')
 	daterange = models.CharField(max_length=10, default="30", blank=True)
-	price = models.IntegerField(default=None)
+	price = models.IntegerField(default=None, blank=True)
 	stock = models.IntegerField(default=None)
-
-	class Meta:
-		ordering = ('book',)
-
-	def __str__(self):
-		return str(self.book)
-
-class BookGenre(models.Model):
-	book = models.ForeignKey(Book, on_delete=models.CASCADE, default=None)
-	genre = models.ForeignKey(Genre, on_delete=models.CASCADE, default=None)
 
 	class Meta:
 		ordering = ('book',)

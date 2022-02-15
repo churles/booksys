@@ -14,8 +14,3 @@ class CreateBook(forms.ModelForm):
 			'thumbnail': forms.FileInput(attrs={'class': 'form-control-file'}),
 			'condition': forms.Select(attrs={'class': 'form-control'})
 		}
-
-class CreateBookGenre(forms.ModelForm):
-	class Meta:
-		model = models.BookGenre
-		fields = ['book','genre']

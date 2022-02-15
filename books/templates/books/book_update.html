@@ -1,28 +1,82 @@
 {% extends 'base_layout.html' %}
 
 {% block content %}
-<div class="form-group-first" style="margin-top: 10px;">
-	<h1>Update bookname</h1>
-	<form action="" method="post">
-		{% csrf_token %}
-		{{ form.as_p }}
-		<br>
-		<input type="submit" name="" id="" value="Update" class="btn btn-secondary">
-	</form>
+<div class="form-group-first">
+	<h2 style="text-align: center; margin-top: 1%;">Update Book Listing</h2>
+    <p style="text-align: center;">Fill up all <span style="color: red;">*</span>required field</p>
+
+    <!-- progressbar -->
+    <div class="progressbar-div">
+        <ul id="progressbar">
+            <li class="active" id="book-details"><strong>Details</strong></li>
+            <li id="book-avail"><strong>Availability</strong></li>
+            <li id="finish"><strong>Finish</strong></li>
+        </ul> 
+    </div>
+	<div class="form-group">
+		<form action="{% url 'books:updatePrev' book_id=book.id status=status%}" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+            <div class="row">
+                <div class="col">
+                    Title:<span style="color: red;">*</span><input class="form-control" type="text" name="title" placeholder="Title" value="{{book.title}}">
+                </div>
+                <div class="col">
+                    Author:<span style="color: red;">*</span><input class="form-control" type="text" name="author" placeholder="Author" value="{{book.author}}">
+                </div>
+            </div>
+            <input type="text" name="slug" hidden value="{{book.slug}}">
+            Synopsis:<span style="color: red;">*</span><textarea class="form-control" name="synopsis" id="" cols="30" rows="10" placeholder="Synopsis">{{book.synopsis}}</textarea>
+            Leave a Note:<textarea class="form-control" name="note" id="" cols="30" rows="10" placeholder="Leave a Note">{{book.note}}</textarea>
+            <div class="row">
+                <div class="col">
+                    Thumbnail:<span style="color: red;">*</span><input class="form-control" type="file" name="thumbnail" placeholder="Thumbnail" value="{{book.thumbnail.url}}">
+                </div>
+                <div class="col">
+                    Related Pictures: <input class="form-control" type="file" name="relatedpic[]" placeholder="Related Pictures" multiple>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    Genre:<span style="color: red;">*</span>
+                    <select name="genre[]" id="choices-multiple-remove-button" placeholder="Select up to 5 tags" multiple>
+                        {% for genre in genres %}
+                        <option value="{{ genre.id }}">{{ genre.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col">
+                    Condition:<span style="color: red;">*</span> <select name="condition" class="form-control">
+                        <option value="new">New</option>
+                        <option value="good">Good</option>
+                        <option value="used">Used</option>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-10">
+                </div>
+                <div class="col-2">
+                    <input class="form-control nextBtn" type="submit" name="submit" value="Next">
+                </div>
+            </div>
+		</form>
+	</div>
 </div>
 {% endblock %}
-{% block scripts%}
-<script src="/static/slugify.js"></script>
-<script src="/static/select2.full.min.js"></script>
-<!-- <script>
-  $(function () {
-	    //Initialize Select2 Elements
-	    $('.select2').select2()
 
-	    //Initialize Select2 Elements
-	    $('.select2bs4').select2({
-	      theme: 'bootstrap4'
-    })
-	});
-</script> -->
-{% endblock%}
+{% block scripts %}
+<script src="/static/slugify.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+<script>
+    $(document).ready(function(){
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            maxItemCount:5,
+            searchResultLimit:5,
+            renderChoiceLimit:5
+        });
+    });
+</script>
+{% endblock %}

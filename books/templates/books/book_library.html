@@ -46,7 +46,7 @@
                         <img class="list-thumb " src="{{ book.thumbnail.url }}">
                             {% if not listings_exist %}
                                 <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
-                                <form action="{% url 'books:update' book_id=book.id %}" class="form-library" id="{{ book.id }}">
+                                <form action="{% url 'books:updatePrev' book_id=book.id status='next' %}" class="form-library" id="{{ book.id }}">
                                     {% csrf_token %}              
                                     <button type="submit" class="update-btn-library">Update</button>
                                 </form>
@@ -62,7 +62,7 @@
                                     {% else %}
                                         {% if counter == forloop.counter and ctr != "break" %}
                                             <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
-                                            <form action="{% url 'books:update' book_id=book.id %}" class="form-library" id="{{ book.id }}">
+                                            <form action="{% url 'books:updatePrev' book_id=book.id status='next' %}" class="form-library" id="{{ book.id }}">
                                                 {% csrf_token %}              
                                                 <button type="submit" class="update-btn-library">Update</button>
                                             </form>

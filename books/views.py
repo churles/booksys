@@ -4,7 +4,7 @@ from pickle import TRUE
 from turtle import title
 from django import http
 from django.shortcuts import render, redirect
-from .models import Book, BookRent, Genre, BookGenre, ReadList, BookAvailability
+from .models import Book, BookRent, Genre, ReadList, BookAvailability
 from reviews.models import Review, ReviewLike
 from accounts.models import Profile
 from django.http import HttpResponse
@@ -30,14 +30,12 @@ def books_create(request):
 			)
 		book.save()
 		book.slug = request.POST.get('slug') + str(book.id)
-		book.save()
 
 		bookgenres = request.POST.getlist('genre[]')
 		for element in range(len(bookgenres)):
-			bg = BookGenre()
-			bg.book = Book.objects.get(id = book.id)
-			bg.genre = Genre.objects.get(id=int(bookgenres[element]))
-			bg.save()
+			book.genre.add(Genre.objects.get(id=int(bookgenres[element])))
+
+		book.save()
 		
 		return redirect('books:availability', book_id=book.id)
 	else:
@@ -61,19 +59,20 @@ def books_availability(request, book_id):
 		if(book_avail.availability == "rent"):
 			book_avail.daterange = request.POST.get('daterange')
 			book_avail.save()
-		return redirect('books:finish', book_id=book.id, book_avail_id=book_avail.id)
+		return redirect('books:finish', book_id=book.id, book_avail_id=book_avail.id, status="create")
 
 	return render(request, 'books/book_availability.html',{
 		'book':book,
 	})
 
-def books_finish(request, book_id, book_avail_id):
+def books_finish(request, book_id, book_avail_id, status):
 	book = Book.objects.get(id=book_id)
 	book_avail = BookAvailability.objects.get(id=book_avail_id)
 
 	return render(request, 'books/book_finish.html',{
 		'book':book,
-		'book_avail':book_avail
+		'book_avail':book_avail,
+		'status':status
 	})
 
 def books_list(request):
@@ -207,17 +206,89 @@ def read(request):
 			read.books.add(book)
 			return redirect('books:detail', slug=slug, page_id=1)
 
+def book_update_prev(request, book_id, status):
+	book = Book.objects.get(id=book_id)
+	genres = Genre.objects.all()
+
+	if request.method == "POST":
+		book.title=request.POST.get('title')
+		book.author=request.POST.get('author')
+		book.synopsis=request.POST.get('synopsis')
+		book.note=request.POST.get('note')
+		book.thumbnail=request.FILES.get('thumbnail')
+		book.condition=request.POST.get('condition')
+		book.slug = ""
+		book.save()
+		book.slug = request.POST.get('slug') + str(book.id)
+		book.genre.clear()
+
+		bookgenres = request.POST.getlist('genre[]')
+		for element in range(len(bookgenres)):
+			book.genre.add(Genre.objects.get(id=int(bookgenres[element])))
+
+		book.save()
+
+		if status == "previous":
+			return redirect('books:availability', book_id=book_id)
+		else:
+			return redirect('books:avail_update', book_id=book.id)
+	return render(request, 'books/book_update.html',{
+		'book':book,
+		'genres':genres,
+		'status':status
+	})
+
 def book_update(request, book_id):
 	book = Book.objects.get(id=book_id)
-	form = forms.CreateBook(request.POST or None, instance=book)
-	
-	if form.is_valid():
-		form.save()
-		return redirect('books:detail', slug=book.slug, page_id=1)
+	genres = Genre.objects.all()
 
-	return render(request, 'reviews/review_update.html',{
+	if request.method == "POST":
+		book.title=request.POST.get('title')
+		book.author=request.POST.get('author')
+		book.synopsis=request.POST.get('synopsis')
+		book.note=request.POST.get('note')
+		book.thumbnail=request.FILES.get('thumbnail')
+		book.condition=request.POST.get('condition')
+		
+		book.save()
+		book.slug = request.POST.get('slug') + str(book.id)
+		book.genre.clear()
+
+		bookgenres = request.POST.getlist('genre[]')
+		for element in range(len(bookgenres)):
+			book.genre.add(Genre.objects.get(id=int(bookgenres[element])))
+
+		book.save()
+
+		
+		return redirect('books:avail_update', book_id=book.id)
+		
+
+	return render(request, 'books/book_update.html',{
 		'book':book,
-		'form':form
+		'genres':genres
+	})
+
+def book_availability_update(request, book_id):
+	book = Book.objects.get(id=book_id)
+	book_avail = BookAvailability.objects.get(book=book)
+
+	if request.method == 'POST':
+		book_avail.availability=request.POST.get('availability')
+		book_avail.price=request.POST.get('price')
+		book_avail.stock=request.POST.get('stock')
+		
+		book_avail.save()
+
+		if(book_avail.availability == "rent"):
+			book_avail.daterange = request.POST.get('daterange')
+			book_avail.save()
+
+		return redirect('books:finish', book_id=book.id, book_avail_id=book_avail.id, status="update")
+
+	return render(request, 'books/book_availability_update.html',{
+		'book':book,
+		'book_avail':book_avail
 	})
 
 def book_delete(request, book_id):

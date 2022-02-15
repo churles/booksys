@@ -46,7 +46,7 @@
                 <div class="col-8">
                 </div>
                 <div class="col-2">
-                    <input class="form-control prevBtn" type="button" value="Previous">
+                    <input class="form-control prevBtn" type="button" onclick="previous('{{book.id}}')" value="Previous">
                 </div>
                 <div class="col-2">
                     <input class="form-control nextBtn" type="submit" name="submit" value="Next">
@@ -67,6 +67,11 @@
         }else{
             document.getElementById('daterange').removeAttribute("disabled","disabled");
         }
+    }
+
+    function previous(book_id){
+        var url = "{% url 'books:updatePrev' book_id=1 status='previous' %}";
+        location.href = url.replace('1', book_id);
     }
 </script>
 {% endblock %}

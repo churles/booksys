@@ -19,7 +19,7 @@ def review_create(request, slug):
 
 			instance.slug = instance.slug +"-" +str(instance.id)
 			instance.save()
-			return redirect('books:detail', slug=slug)
+			return redirect('books:detail', slug=slug, page_id=1)
 	else:
 		form = forms.CreateReview()
 		return render(request, 'reviews/review_create.html',{
@@ -32,9 +32,14 @@ def review_update(request, review_id, slug):
 	form = forms.CreateReview(request.POST or None, instance=review)
 	if form.is_valid():
 		form.save()
-		return redirect('books:detail', slug=slug)
+		return redirect('books:detail', slug=slug, page_id=1)
 
 	return render(request, 'reviews/review_update.html',{
 		'review':review,
 		'form':form
 	})
+
+def review_delete(request, review_id, slug):
+	review = Review.objects.get(id=review_id)
+	review.delete()
+	return redirect('books:detail', slug=slug, page_id=1)
