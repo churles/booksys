@@ -132,7 +132,10 @@
 {% block scripts %}
 <script type="text/javascript">
     $(document).ready(function() {
-        const tab_name = JSON.parse(document.getElementById('tab-name').textContent);
+        var tab_name = ""
+        if(JSON.parse(document.getElementById('tab-name') != null)){
+            tab_name = JSON.parse(document.getElementById('tab-name').textContent);
+        }
         // Jump to Have Read from "Book Detail page"
         if (tab_name === "tab2"){
             openTab(tab_name);
@@ -161,20 +164,6 @@
             
         })
 
-        if(document.getElementById('modalbtn-delete') != null){
-            document.getElementById('modalbtn-delete').onclick = function(){
-                const book_id = $(this).attr('class')
-                const btnName = $(this).attr('name')
-                if(btnName == "listing-delete"){
-                    location.href = "../../books/delete/"+book_id;
-                }else if(btnName == "read-delete"){
-                    location.href = "../../books/read/delete/"+book_id;
-                }else{
-                    console.log("test")
-                }
-            };	
-        }
-
     });
 
     $(document).ready(function() {
@@ -183,6 +172,23 @@
             $(this).removeClass("btn-default").addClass("btn-primary"); 
         });
     });
+
+    
+    if(document.getElementById('modalbtn-delete') != null){
+        var deleteBtn = document.getElementById('modalbtn-delete');
+        deleteBtn.onclick = function(){
+            const book_id = deleteBtn.getAttribute('class')
+            const btnName = deleteBtn.getAttribute('name')
+            if(btnName == "listing-delete"){
+                location.href = "../../books/delete/"+book_id;
+            }else if(btnName == "read-delete"){
+                location.href = "../../books/read/delete/"+book_id;
+            }else{
+                console.log("test")
+            }
+        };
+    }
+    
     
     function show_modal(id){
         var title =''
