@@ -68,6 +68,17 @@ class BookAvailability(models.Model):
 	def __str__(self):
 		return str(self.book)
 
+class RelatedImage(models.Model):
+	book = models.ForeignKey(Book, on_delete=models.CASCADE, default=None)
+	image = models.ImageField(default=None, blank = True)
+
+	class Meta:
+		ordering = ('book',)
+
+	def __str__(self):
+		return str(self.book)
+
+
 class ReadList(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 	books = models.ManyToManyField(Book, blank=True, help_text="books user have read")

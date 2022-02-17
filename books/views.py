@@ -2,9 +2,10 @@ from curses.ascii import HT
 from enum import unique
 from pickle import TRUE
 from turtle import title
+from wsgiref.util import request_uri
 from django import http
 from django.shortcuts import render, redirect
-from .models import Book, BookRent, Genre, ReadList, BookAvailability
+from .models import Book, BookRent, Genre, ReadList, BookAvailability, RelatedImage
 from reviews.models import Review, ReviewLike
 from accounts.models import Profile
 from django.http import HttpResponse
@@ -36,6 +37,15 @@ def books_create(request):
 			book.genre.add(Genre.objects.get(id=int(bookgenres[element])))
 
 		book.save()
+
+		relatedpics = request.FILES.getlist('relatedpic[]')
+		for relatedpic in relatedpics:
+			pics = RelatedImage.objects.create(
+				book=book,
+				image=relatedpic 
+			)
+			pics.save()
+		
 		
 		return redirect('books:availability', book_id=book.id)
 	else:

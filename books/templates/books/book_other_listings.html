@@ -31,7 +31,7 @@
 
                                 <a href="{% url 'books:detail' slug=books.slug page_id=1 %}" class="card-link other-listings">Go to Detail Page</a>
                                 {% if owner != "" %}
-                                    <form action="{% url 'books:update' book_id=books.id %}" id="{{ books.id }}">
+                                    <form action="{% url 'books:updatePrev' book_id=books.id status='next' %}" id="{{ books.id }}">
                                         {% csrf_token %}              
                                         <button type="submit" class="form-control listing-updateBtn">Update</button>
                                     </form>
