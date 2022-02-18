@@ -1,15 +1,56 @@
 {% extends 'base_layout.html' %}
 
+{% block userprofile %}
+<button class="dropbtn-bar"><img src="{{profile.picture.url}}" alt="" class="super-useravatar"> {{user.username}}
+	<i class="fa fa-caret-down"></i>
+</button>
+{% endblock %}
+{% block myProfile %} nav-active {% endblock %}
 {% block content %}
-<div class="form-group-first">
-	<h2>Update Profile Information</h2>
-	<div class="form-group">
-		<form action="" method="post" enctype="multipart/form-data">
-			{% csrf_token %}
-			{{ form.as_p }}
-			<input type="text" hidden name="update" value="update">
-			<input type="submit" name="submit" value="Update">
-		</form>
-	</div>
+<div class="col-lg-12 col-sm-12">
+    <div class="card hovercard">
+        <div class="card-background">
+            <img class="card-bkimg" alt="" src="/media/default.png">
+        </div>
+        <div class="useravatar">
+            <img alt="" src="{{ profile.picture.url }}">
+        </div>
+        <div class="card-info"> <span class="card-title" style="font-weight: bolder;">{{ user.username }}</span>
+
+        </div>
+    </div>
 </div>
+<div class="container-fluid">
+    <div class="w3-bar w3-black">
+        <button class="w3-bar-item w3-button" onclick="openCity('London')">London</button>
+        <button class="w3-bar-item w3-button" onclick="openCity('Paris')">Paris</button>
+        <button class="w3-bar-item w3-button" onclick="openCity('Tokyo')">Tokyo</button>
+    </div>
+    <div id="London" class="city">
+        <h2>London</h2>
+        <p>London is the capital of England.</p>
+      </div>
+      
+      <div id="Paris" class="city" style="display:none">
+        <h2>Paris</h2>
+        <p>Paris is the capital of France.</p>
+      </div>
+      
+      <div id="Tokyo" class="city" style="display:none">
+        <h2>Tokyo</h2>
+        <p>Tokyo is the capital of Japan.</p>
+      </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    function openCity(cityName) {
+        var i;
+        var x = document.getElementsByClassName("city");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        document.getElementById(cityName).style.display = "block";
+    }
+</script>
 {% endblock %}

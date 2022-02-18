@@ -220,3 +220,94 @@
 /* ----------------------------------------------------------- */
 /* book_library */
 /* ----------------------------------------------------------- */
+.btnTabNone{
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    width: 100%;
+  
+}
+
+.btnTabListing, .btnTabRead, .btnTabLibrary, .btnTabNone{
+    background-color: transparent;
+    border-bottom-color: #009DDB;
+    color: black;
+}
+
+.btnTabListing:hover, .btnTabRead:hover, .btnTabLibrary:hover{
+        border-bottom-width: 5px;
+}
+
+.btnTabActive{
+    border-bottom-color: skyblue;
+    border-bottom-width: 5px;
+}
+
+
+.container-library{
+    position: relative;
+  }
+
+.form-library{
+    position: absolute;
+    display: none;
+    z-index: 2;
+    top: 41%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+}
+
+.details-library{
+    top: 30%;
+    left: 75px;
+    font-size: 14px;
+    padding: 12px 10px;
+}
+
+.update-library{
+    top: 51%;
+    left: 75px;
+    font-size: 14px;
+    padding: 12px 27px;
+}
+
+.delete-library{
+    top: 74%;
+    left: 75px;
+    font-size: 16px;
+    padding: 12px 22px;
+}
+
+.details-library, .delete-library, .update-library{
+    position: absolute;
+    display:none;
+    z-index: 2;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    background-color: skyblue;
+    color: black;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.list-thumb:hover~.details-library, .list-thumb:hover~.update-library, .list-thumb:hover~.delete-library{
+    display: block;
+}
+/* 
+.container-library:hover .details-library, .container-library:hover .update-library, .container-library:hover .delete-library, .container-library:hover .update-btn-library, .container-library:hover .form-library{
+    display: block;
+} */
+
+.details-library:hover, .delete-library:hover, .update-library:hover{
+    background-color: #009DDB;
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+.delete-library:hover{
+    background-color: red;
+}

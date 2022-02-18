@@ -79,4 +79,5 @@ def update_view(request):
 			
 		return render(request, 'accounts/profile_update.html',{
 			'form':form,
+			'profile':profile
 		})

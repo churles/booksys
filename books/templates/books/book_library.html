@@ -1,6 +1,13 @@
 {% extends 'base_layout.html' %}
 
 {% load post_tags %}
+
+{% block userprofile %}
+<button class="dropbtn-bar"><img src="{{profile.picture.url}}" alt="" class="super-useravatar"> {{user.username}}
+	<i class="fa fa-caret-down"></i>
+</button>
+{% endblock %}
+{% block library %} nav-active {% endblock %}
 {% block content %}
 <div class="col-lg-12 col-sm-12">
     <!-- profile card -->
@@ -21,19 +28,19 @@
         <div class="card-info"> <span class="card-title">{{ username }}</span>
 
         </div>
-    </div>
+    </div><br>
     <!-- navigation tabs -->
     <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
         <div class="btn-group" role="group">
-            <button type="button" id="tab1-tab" class="btn btn-primary" onclick="openTab('tab1')" data-toggle="tab"><span class="fas fa-list" aria-hidden="true"> My Listings</span>
+            <button type="button" id="tab1-tab" class="btn btn-default btnTabListing btnTabActive" onclick="openTab('tab1')" data-toggle="tab"><span class="fas fa-list" aria-hidden="true"> My Listings</span>
             </button>
         </div>
         <div class="btn-group" role="group">
-            <button type="button" id="tab2-tab" class="btn btn-default" onclick="openTab('tab2')" data-toggle="tab"><span class="fa fa-book-open" aria-hidden="true"> Have Read</span>
+            <button type="button" id="tab2-tab" class="btn btn-default btnTabRead" onclick="openTab('tab2')" data-toggle="tab"><span class="fa fa-book-open" aria-hidden="true"> Have Read</span>
             </button>
         </div>
         <div class="btn-group" role="group">
-            <button type="button" id="tab3-tab" class="btn btn-default" onclick="openTab('tab3')" data-toggle="tab"><span class="fa fa-book" aria-hidden="true"> Library</span>
+            <button type="button" id="tab3-tab" class="btn btn-default btnTabLibrary" onclick="openTab('tab3')" data-toggle="tab"><span class="fa fa-book" aria-hidden="true"> Library</span>
             </button>
         </div>
     </div>
@@ -46,26 +53,17 @@
                         <img class="list-thumb " src="{{ book.thumbnail.url }}">
                             {% if not listings_exist %}
                                 <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
-                                <form action="{% url 'books:updatePrev' book_id=book.id status='next' %}" class="form-library" id="{{ book.id }}">
-                                    {% csrf_token %}              
-                                    <button type="submit" class="update-btn-library">Update</button>
-                                </form>
+                                <button class="update-library" onclick="updateLibrary('{{book.id}}')"></button>
                                 <button name="listing-delete" class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal('{{book.id}}')">Remove</button>                   
                             {% else %}
                                 {% for listing_exist in listings_exist %}
                                     {% if listing_exist.title == book.title and listing_exist.author == book.author %}
-                                        <form action="{% url 'books:listings' book_id=book.id owner_id=book.owner.id %}" method="post">
-                                            {% csrf_token %}
-                                            <button type="submit" class="details-library">Show Details</button>
-                                        </form>
+                                        <button class="details-library" onclick="detailLibrary('{{book.id}}','{{book.owner.id}}')">Show Details</button>
                                         {% counter 1 as ctr %}
                                     {% else %}
                                         {% if counter == forloop.counter and ctr != "break" %}
                                             <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
-                                            <form action="{% url 'books:updatePrev' book_id=book.id status='next' %}" class="form-library" id="{{ book.id }}">
-                                                {% csrf_token %}              
-                                                <button type="submit" class="update-btn-library">Update</button>
-                                            </form>
+                                            <button class="update-library" onclick="updateLibrary('{{book.id}}')">Update</button>
                                             <button name="listing-delete" class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal('{{book.id}}')">Remove</button>       
                                         {% endif %}
                                     {% endif %}
@@ -139,8 +137,8 @@
         // Jump to Have Read from "Book Detail page"
         if (tab_name === "tab2"){
             openTab(tab_name);
-            $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
-            $("#tab2-tab").removeClass("btn-default").addClass("btn-primary"); 
+            $(".btn-pref .btn").removeClass("btnTabActive");
+            $("#tab2-tab").addClass("btnTabActive"); 
         }
 
         // Open Update page for book listing
@@ -168,8 +166,8 @@
 
     $(document).ready(function() {
         $(".btn-pref .btn").click(function () {
-            $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
-            $(this).removeClass("btn-default").addClass("btn-primary"); 
+            $(".btn-pref .btn").removeClass("btnTabActive");
+            $(this).addClass("btnTabActive"); 
         });
     });
 
@@ -187,6 +185,17 @@
                 console.log("test")
             }
         };
+    }
+
+    function updateLibrary(book_id){
+        const url = "{% url 'books:updatePrev' book_id=1 status='next' %}";
+        location.href = url.replace('1', book_id);
+    }
+
+    function detailLibrary(book_id, owner_id){
+        var url = "{% url 'books:listings' book_id=1 owner_id=2 %}";
+        url = url.replace('1', book_id);
+        location.href = url.replace('2', owner_id);
     }
     
     

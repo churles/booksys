@@ -87,8 +87,12 @@ def books_finish(request, book_id, book_avail_id, status):
 
 def books_list(request):
 	books = Book.objects.all().order_by('date')
+	profile = ""
+	if request.user.is_authenticated:
+		profile = Profile.objects.get(account = request.user)
 	return render(request, 'books/book_list.html',{
-		'books':books
+		'books':books,
+		'profile':profile
 	})
 
 def books_detail(request, slug, page_id):
