@@ -71,13 +71,20 @@ def create_view(request):
 
 def update_view(request):
 		profile = Profile.objects.get(account=request.user)
-		form = forms.CreateProfile(request.POST or None, request.FILES or None, instance=profile)
+		user = request.user
 		if request.method == 'POST':
-			if form.is_valid():
-				form.save()
-				return redirect('books:list')
+			profile.location = request.POST.get('location')
+			profile.facebook = request.POST.get('facebook')
+			profile.twitter = request.POST.get('twitter')
+			profile.save()
+
+			user.first_name = request.POST.get('fname')
+			user.last_name = request.POST.get('lname')
+			user.username = request.POST.get('uname')
+			user.email = request.POST.get('email')
+			user.save()
+			
 			
 		return render(request, 'accounts/profile_update.html',{
-			'form':form,
 			'profile':profile
 		})

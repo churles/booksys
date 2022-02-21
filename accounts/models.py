@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
 	location = models.CharField(max_length=60)
+	facebook = models.CharField(max_length=60, blank=True)
+	twitter = models.CharField(max_length=60, blank=True)
 	picture = models.ImageField(default='default.png', blank = True)
 	account = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 

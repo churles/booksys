@@ -30,7 +30,7 @@
         </div>
     </div><br>
     <!-- navigation tabs -->
-    <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
+    <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="..." style="display: flex; justify-content: center;">
         <div class="btn-group" role="group">
             <button type="button" id="tab1-tab" class="btn btn-default btnTabListing btnTabActive" onclick="openTab('tab1')" data-toggle="tab"><span class="fas fa-list" aria-hidden="true"> My Listings</span>
             </button>
@@ -90,11 +90,15 @@
         <!-- Library Tab -->
         <div class="tab-pane fade" id="tab3"  role="tabpanel" aria-labelledby="tab3-tab">
             <div class="my-listings-library">
-                {% for book in books %}
-                    <div class="rent-listings">
-                        <img class="list-thumb" src="{{ book.thumbnail.url }}">
-                    </div>
-                {% endfor %}
+                {% if not books %}
+                    <h2 style="text-align: center; font-size: xx-large;">No Entry</h2>
+                {% else %}
+                    {% for book in books %}
+                        <div class="rent-listings">
+                            <img class="list-thumb" src="{{ book.thumbnail.url }}">
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>

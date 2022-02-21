@@ -1,0 +1,64 @@
+/* ----------------------------------------------------------- */
+/* profile */
+/* ----------------------------------------------------------- */
+.personalInfo{
+    background-color: #26272b;
+    color: white;
+    padding: 5px;
+    padding-bottom: -5px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.personalInfo h5{
+    margin-bottom: 1px;
+}
+
+.edit-icon, .label-header{
+    float: right;
+}
+
+.edit-icon:hover{
+    color: gray;
+    cursor: pointer;
+}
+
+.personalInfo-content{
+    clear: both;
+    padding-bottom: 10px;
+}
+
+.label-header, .label-header-content{
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.label-header-content-edit{
+    padding-top: 10px;
+}
+
+.label-header label{
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.label-header-content label{
+    margin-top: 2px;
+}
+
+.label-header-content-edit input{
+    margin-top: 5px;
+    width: 80%;
+}
+
+#cancelBtn, #saveBtn{
+    color: black;
+    background-color: skyblue;
+    border-radius: 5px;
+    border: none;
+}
+
+#cancelBtn:hover, #saveBtn:hover{
+    background-color: #009DDB;
+    color: white;
+}

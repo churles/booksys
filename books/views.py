@@ -97,6 +97,10 @@ def books_list(request):
 
 def books_detail(request, slug, page_id):
 	review_id = ''
+	profile = ""
+	if request.user.is_authenticated:
+		profile = Profile.objects.get(account = request.user)
+
 	book = Book.objects.get(slug=slug)
 	book_avail = BookAvailability.objects.get(book=book)
 	reviews = Review.objects.filter(book=book).order_by('datetime')
@@ -122,6 +126,7 @@ def books_detail(request, slug, page_id):
 		'review_exist':review_exist,
 		'review_id':review_id,
 		'page':page,
+		'profile':profile
 	})
 
 def reviewlike(request):
@@ -132,7 +137,6 @@ def reviewlike(request):
 		slug = request.POST.get('slug')
 		review_instance = Review.objects.get(id=int(review))
 		owner_instance = request.user
-
 		rl = ReviewLike.objects.all()
 
 		if not rl:
