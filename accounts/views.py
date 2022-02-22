@@ -83,8 +83,17 @@ def update_view(request):
 			user.username = request.POST.get('uname')
 			user.email = request.POST.get('email')
 			user.save()
+
 			
-			
-		return render(request, 'accounts/profile_update.html',{
+		return render(request, 'accounts/personalinfo_update.html',{
 			'profile':profile
 		})
+
+def profile_update(request, profile_id):
+	profile = Profile.objects.get(id=profile_id)
+	if request.method == "POST":
+		profile.picture = request.FILES.get('picture')
+		profile.coverphoto = request.FILES.get('coverpicture')
+		profile.save()
+
+	return redirect('accounts:update')

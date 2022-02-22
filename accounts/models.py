@@ -6,6 +6,7 @@ class Profile(models.Model):
 	facebook = models.CharField(max_length=60, blank=True)
 	twitter = models.CharField(max_length=60, blank=True)
 	picture = models.ImageField(default='default.png', blank = True)
+	coverphoto = models.ImageField(default='default.png', blank = True)
 	account = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
 	class Meta:

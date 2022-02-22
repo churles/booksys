@@ -1,6 +1,18 @@
 /* ----------------------------------------------------------- */
 /* profile */
 /* ----------------------------------------------------------- */
+#profile-edit{
+    position: absolute;
+    color: white;
+    background-color: #26272b;
+    text-decoration: none;
+    border: none;
+    border-radius: 50%;
+    z-index: 2;
+    transform: translate(-50%, 250%);
+    -ms-transform: translate(-50%, 250%);
+}
+
 .personalInfo{
     background-color: #26272b;
     color: white;
@@ -18,7 +30,7 @@
     float: right;
 }
 
-.edit-icon:hover{
+.edit-icon:hover, #profile-edit:hover{
     color: gray;
     cursor: pointer;
 }
@@ -58,7 +70,39 @@
     border: none;
 }
 
-#cancelBtn:hover, #saveBtn:hover{
+#saveBtn-modal{
+    float: right;
+    color: black;
+    background-color: skyblue;
+    text-decoration: none;
+    margin-bottom: 5px;
+    font-size: 16px;
+    padding: 12px 24px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#cancelBtn:hover, #saveBtn:hover, #saveBtn-modal:hover{
     background-color: #009DDB;
     color: white;
+}
+
+.modal-headerInfo{
+    background-color: #26272b;
+    padding: 2px 16px;
+    color: white;
+}
+
+.closeInfo {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.closeInfo:hover,
+.closeInfo:focus {
+  color: red;
+  text-decoration: none;
+  cursor: pointer;
 }

@@ -9,5 +9,6 @@ urlpatterns = [
 	url(r'^logout/$', views.logout_view, name="logout"),
 	url(r'^create/$', views.create_view, name="create"),
 	url(r'^update/$', views.update_view, name="update"),
+	url(r'^profile/update/(?P<profile_id>\d{1,10})/$', views.profile_update, name="profile_update"),
 
 ]

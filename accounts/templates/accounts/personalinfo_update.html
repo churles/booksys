@@ -1,0 +1,169 @@
+{% extends 'base_layout.html' %}
+
+{% block userprofile %}
+<button class="dropbtn-bar"><img src="{{profile.picture.url}}" alt="" class="super-useravatar"> {{user.username}}
+	<i class="fa fa-caret-down"></i>
+</button>
+{% endblock %}
+{% block myProfile %} nav-active {% endblock %}
+{% block content %}
+<div class="col-lg-12 col-sm-12">
+    <div class="card hovercard">
+        <div class="card-background">
+            <img class="card-bkimg" alt="" src="{{ profile.coverphoto.url }}">
+        </div>
+        <div class="useravatar">
+            <img alt="" id="profilepic" src="{{ profile.picture.url }}">
+            <button onclick="profileEdit('{{profile.id}}')" id="profile-edit"><i class="fas fa-edit"></i></button>
+        </div>
+        <div class="card-info"> <span class="card-title" style="font-weight: bolder;">{{ user.username }}</span>
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <!-- navigation tabs -->
+    <!-- css file in book_styles || book_library -->
+    <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="..." style="display: flex; justify-content: center;">
+        <div class="btn-group" role="group">
+            <button type="button" id="tab1-tab" class="btn btn-default btnTabListing btnTabActive" onclick="openTab('tab1')" data-toggle="tab"><span class="fas fa-book-open" aria-hidden="true"> Overview</span>
+            </button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" id="tab2-tab" class="btn btn-default btnTabRead" onclick="openTab('tab2')" data-toggle="tab"><span class="fas fa-list" aria-hidden="true"> Listings</span>
+            </button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" id="tab3-tab" class="btn btn-default btnTabLibrary" onclick="openTab('tab3')" data-toggle="tab"><span class="fa-solid fa-user-check" aria-hidden="true"> Following</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- My Listings Tab -->
+    <div class="tab-content" id="myTabContent" style="padding-top: 10px;">
+        <div class="tab-pane fade show active" id="tab1"  role="tabpanel" aria-labelledby="tab1-tab" >
+            <div class="personalInfo">
+                <h5>Personal Information <span id="fill-text" style="font-size: 15px;" hidden>(Fill up all required <span style="color: red;">*</span> fields.)</span> <span class="updateBtn-personal edit-icon" onclick="edit()"><i class="fas fa-edit"></i></span></h5>
+            </div>
+            <div class="personalInfo-content">
+                <div class="row">
+                    <div class="col col-xs-1 col-sm-1"></div>
+                    <div class="col-4 col-xs-3 col-sm-3">
+                        <div class="label-header">
+                            <label for="first_name">First Name:<span style="color: red;">*</span></label><br />
+                            <label for="last_name">Last Name:<span style="color: red;">*</span></label><br />
+                            <label for="first_name">Username:<span style="color: red;">*</span></label><br />
+                            <label for="last_name">Email Address:<span style="color: red;">*</span></label><br />
+                            <label for="location">Location:<span style="color: red;">*</span></label><br />
+                            <label for="facebook">Facebook:</label><br />
+                            <label for="twitter">Twitter:</label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-xs-7 col-sm-7">
+                        <div class="label-header-content" id="header-content">
+                            <label for="first_name">{{user.first_name}}</label><br />
+                            <label for="last_name">{{user.last_name}}</label><br />
+                            <label for="first_name">{{user.username}}</label><br />
+                            <label for="last_name">{{user.email}}</label><br />
+                            <label for="location">{{profile.location}}</label><br />
+                            <label for="facebook">{{profile.facebook}}</label><br />
+                            <label for="twitter">{{profile.twitter}}</label>
+                        </div>
+                        <div class="label-header-content-edit" id="header-content-edit" hidden="true">
+                            <form action="{% url 'accounts:update' %}" method="post">
+                                {% csrf_token %}
+                                <input type="text" name="fname" value="{{user.first_name}}"><br />
+                                <input type="text" name="lname" value="{{user.last_name}}"><br />
+                                <input type="text" name="uname" value="{{user.username}}"><br />
+                                <input type="text" name="email" value="{{user.email}}"><br />
+                                <input type="text" name="location" value="{{profile.location}}"><br />
+                                <input type="text" name="facebook" value="{{profile.facebook}}"><br />
+                                <input type="text" name="twitter" value="{{profile.twitter}}">
+                                <input type="button" id="cancelBtn" value="Cancel" onclick="cancel()">
+                                <input type="submit" id="saveBtn" value="Save">
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col col-xs-1 col-sm-1"></div>
+                </div>
+            </div>
+            <div class="personalInfo">
+                <h5>Popular Listings</h5>
+            </div>
+        </div><br>
+        <!-- Have Read Tab -->
+        <div class="tab-pane fade" id="tab2"  role="tabpanel" aria-labelledby="tab2-tab">
+            <div class="my-listings-library">
+               
+            </div>
+        </div>
+        <!-- Library Tab -->
+        <div class="tab-pane fade" id="tab3"  role="tabpanel" aria-labelledby="tab3-tab">
+            <div class="my-listings-library">
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="myModal">
+    <div class="modal-content">
+        <div class="modal-headerInfo">
+            <span class="closeInfo">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form method="post" enctype="multipart/form-data" id="modalForm">
+                {% csrf_token %}
+                New Profile Picture: <input type="file" class="form-control" name="picture"><br />
+                New Cover Picture: <input type="file" class="form-control" name="coverpicture"><br />
+                <button type="submit" id="saveBtn-modal">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function edit(){
+        document.getElementById('header-content').setAttribute('hidden', true);
+        document.getElementById('header-content-edit').removeAttribute('hidden', false);
+        document.getElementById('fill-text').removeAttribute('hidden', false);
+    }
+    
+    function cancel(){
+        document.getElementById('header-content').removeAttribute('hidden', false);
+        document.getElementById('header-content-edit').setAttribute('hidden', true);
+        document.getElementById('fill-text').setAttribute('hidden', true);
+    }
+
+    function profileEdit(profile_id){
+        //get modal
+        var modal = document.getElementById("myModal");
+
+        // set action of form
+        var url = "{% url 'accounts:profile_update' profile_id=1 %}"
+        document.getElementById('modalForm').setAttribute('action', url.replace('1',profile_id))
+
+        //set profile.id to save btn class
+        document.getElementById('saveBtn-modal').setAttribute('class', profile_id);
+
+        //open modal
+        modal.style.display = "block";
+        
+        //Get span
+        var span = document.getElementsByClassName("closeInfo")[0];
+
+        //When the user clicks on the button, open the modal
+        span.onclick = function(){
+            modal.style.display = "none";
+        }   
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(){
+            if(event.target == modal){
+                modal.style.display = "none";   
+            }
+        }
+    }
+</script>
+{% endblock %}
