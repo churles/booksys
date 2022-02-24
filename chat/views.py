@@ -13,7 +13,7 @@ def index(request):
 		book = Book.objects.get(id=book_id)		
 		room_name = 'room' +str(book_id) +str(user_id)
 		user = [request.user, book.owner]
-		chat_room = PublicChatRoom(title=room_name)
+		chat_room = PublicChatRoom(title=room_name, book=book)
 		chat_room.save()
 		chat_room.users.add(request.user)
 		chat_room.users.add(book.owner)
@@ -21,6 +21,13 @@ def index(request):
 		chat_messages = PublicChatRoomMessage(content="Hello, I would like to rent " + book.title, user=request.user, room=chat_room)
 		chat_messages.save()
 	return redirect('chat:room', room_name=room_name)
+
+def book_messages(request):
+	if request.method == 'GET':
+		book = Book.objects.get(id=request.GET.get('book'))
+		chat_room = PublicChatRoom.objects.filter(book=book, users__in=[request.user, book.owner])[0]
+
+	return redirect('chat:room', room_name=chat_room.title)
 
 @login_required(login_url="/accounts/login/")
 def room(request, room_name):

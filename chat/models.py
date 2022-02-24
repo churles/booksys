@@ -1,10 +1,12 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from books.models import Book
 
 class PublicChatRoom(models.Model):
 	title = models.CharField(max_length=255, unique=True, blank=False)
 	users = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, help_text="users connected to chat")
+	book = models.ForeignKey(Book, on_delete=models.CASCADE, default=None)
 	deleted_by = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="user_delete")
 
 	def __str__(self):

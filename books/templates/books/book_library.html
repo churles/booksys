@@ -133,7 +133,12 @@
                                                 {% endif %}
                                             {% endfor %}
                                             <a href="{% url 'books:detail' slug=rent.books.slug page_id=1 %}" class="card-link other-listings">Go to Detail Page</a>
-                                            <button class="form-control" id="messageBtn">Message Owner</button>    
+                                            <form action="{% url 'chat:bookmessages' %}" method="get">
+                                                {% csrf_token %}
+                                                <input type="text" name="book" value="{{rent.books.id}}" hidden>
+                                                <input type="text" name="owner" value="{{rent.books.owner}}" hidden>
+                                                <button type="submit" class="form-control" id="messageBtn">Message Owner</button>    
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
