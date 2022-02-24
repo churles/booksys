@@ -133,7 +133,7 @@
   text-align: right;
 }
 
-.book-descriptions{
+.book-descriptions, .descriptions{
   white-space: pre-line;
 }
 
@@ -310,4 +310,27 @@
 
 .delete-library:hover{
     background-color: red;
+}
+.separator{
+    background-color: #26272b;
+    color: white;
+    padding: 5px;
+    padding-bottom: -5px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.separator h5{
+    margin-bottom: 1px;
+}
+
+#messageBtn{
+    margin-top: 10px;
+    background-color: skyblue;
+    color: black;
+}
+
+#messageBtn:hover{
+    background-color: #009DDB;
+    color: white;
 }

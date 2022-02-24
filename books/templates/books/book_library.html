@@ -20,7 +20,7 @@
     {% endif %}
     <div class="card hovercard">
         <div class="card-background">
-            <img class="card-bkimg" alt="" src="/media/default.png">
+            <img class="card-bkimg" alt="" src="{{ profile.coverphoto.url }}">
         </div>
         <div class="useravatar">
             <img alt="" src="{{ profile.picture.url }}">
@@ -53,7 +53,7 @@
                         <img class="list-thumb " src="{{ book.thumbnail.url }}">
                             {% if not listings_exist %}
                                 <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
-                                <button class="update-library" onclick="updateLibrary('{{book.id}}')"></button>
+                                <button class="update-library" onclick="updateLibrary('{{book.id}}')">Update</button>
                                 <button name="listing-delete" class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal('{{book.id}}')">Remove</button>                   
                             {% else %}
                                 {% for listing_exist in listings_exist %}
@@ -89,17 +89,59 @@
         </div>
         <!-- Library Tab -->
         <div class="tab-pane fade" id="tab3"  role="tabpanel" aria-labelledby="tab3-tab">
-            <div class="my-listings-library">
-                {% if not books %}
+            <!-- <div class="my-listings-library">
+                {% if not bookrent %}
                     <h2 style="text-align: center; font-size: xx-large;">No Entry</h2>
                 {% else %}
-                    {% for book in books %}
-                        <div class="rent-listings">
-                            <img class="list-thumb" src="{{ book.thumbnail.url }}">
-                        </div>
+                    {% for rent in bookrent %}  
+                            <div class="rent-listings">
+                                <img class="list-thumb" src="{{ rent.books.thumbnail.url }}">
+                                {% for book in books %}
+                                    {% if rent.books == book.book %}
+                                        <p>{{book.daterange}}</p>
+                                        <p>{{rent.daterented}}</p>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                     {% endfor %}
                 {% endif %}
-            </div>
+            </div> -->
+            {% if not bookrent %}
+                <h2 style="text-align: center; font-size: xx-large;">No Entry</h2>
+            {% else %}
+                <div class="separator">
+                    <h5>Currently Renting Books</h5>
+                </div>  
+                <div class="row"> 
+                    {% for rent in bookrent %} 
+                        <div class="col-12 col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                            <div class="card similar-card" style="width: 100%; margin-bottom: 10px;">
+                                <div class="card-body similar-body">
+                                    <div class="row similar-div"> 
+                                        <div class="col-4 col-xs-3 col-sm-4 col-md-2 col-lg-3">
+                                            <img class="book-thumbnail similar-thumb" src="{{ rent.books.thumbnail.url }}">
+                                        </div>
+                                        <div class="col-8 col-xs-9 col-sm-8 col-md-8 col-lg-9">
+                                            <h5 class="card-title">{{rent.books.title}}</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">By {{rent.books.author}}</h6>
+                                            <h6 class="card-subtitle mb-2 text-muted">Posted by {{rent.books.owner}}</h6>
+                                            <p class="card-text">Date Rented: {% dateRented rent.daterented %}</p>
+                                            {% for book in books %}
+                                                {% if rent.books == book.book %}
+                                                    <p class="card-text">Return Date (on or before): {% returnDate rent.daterented book.daterange %}</p>
+                                                    <p class="card-text">Remaining Days: <span style="color: green;">{% dateCounter rent.daterented book.daterange %}</span></p>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <a href="{% url 'books:detail' slug=rent.books.slug page_id=1 %}" class="card-link other-listings">Go to Detail Page</a>
+                                            <button class="form-control" id="messageBtn">Message Owner</button>    
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

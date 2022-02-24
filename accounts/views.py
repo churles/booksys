@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login, logout
 from . import forms
 from .models import Profile
+from books.models import Book
 from django.contrib import messages
 
 import accounts
@@ -72,6 +73,31 @@ def create_view(request):
 def update_view(request):
 		profile = Profile.objects.get(account=request.user)
 		user = request.user
+
+		listings_exist = []
+		listings = []
+		counter=0
+
+		my_listings = Book.objects.filter(owner=request.user)
+		for my_listing in my_listings:
+			ctr = False
+			# if listing is empty
+			if not listings: 
+				listings.append(my_listing)
+			# listing is not empty
+			else:
+				for listing in listings:
+					if listing.title == my_listing.title and listing.author == my_listing.author:
+						ctr = True
+						listings_exist.append(my_listing)
+						counter += 1
+						break
+					else:
+						ctr = False
+				if ctr == False:
+					listings.append(my_listing)
+
+
 		if request.method == 'POST':
 			profile.location = request.POST.get('location')
 			profile.facebook = request.POST.get('facebook')
@@ -86,7 +112,9 @@ def update_view(request):
 
 			
 		return render(request, 'accounts/personalinfo_update.html',{
-			'profile':profile
+			'profile':profile,
+			'listings':listings,
+			'listings_exist':listings_exist
 		})
 
 def profile_update(request, profile_id):

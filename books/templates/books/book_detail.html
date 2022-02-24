@@ -30,7 +30,8 @@
 				{% endfor %}
 			</h1>
 			
-			<a href="#">By {{ book.author }}</a>
+			<a href="#">By {{ book.author }}</a><br>
+			<a href="#">Posted by {{ book.owner.username }}</a>
 			<hr>
 			<h4>Price: <span class="book-price">₱{{ book_avail.price }}</span></h4>
 			<h6>Condition: {{ book.condition }}</h6>
@@ -48,7 +49,7 @@
 				<h6>Owner's Note: </h6> <p class="book-note">{{ book.note_snippet }}<span id="dotsNote">...</span><span id="moreNote">{{ book.note_read_more }}</span><a onClick="return myFunctionNote()" id="myBtnNote">Read More</a></p>
 			{% endif %}
 		</div>
-		<div class="col-xs-3 col-sm-3 col-md-3 border border-dark">
+		<div class="col-xs-3 col-sm-3 col-md-3 border border-dark" style="border-radius: 10px;">
 			<div class="row book-info">
 				<div class="col book-availability">
 					<p>For 
@@ -64,7 +65,7 @@
 				</div>
 			</div>
 			{% if book_avail.stock != 0 %}
-				<p class="in-stock">{{ book_avail.stock }} in stock</p>
+				<p class="in-stock" style="margin-top: -20px;">{{ book_avail.stock }} in stock</p>
 			{% else %}
 				<p class="out-stock">Out of stock</p>
 			{% endif %}
@@ -91,6 +92,10 @@
 				{{read_exist_book}}
 
 			</form>
+			<p style="font-weight: bolder; margin-top: 20px;">Return Policy:</p>
+			{% if book_avail.availability == 'rent' %}
+				<p style="margin-left: 10px; margin-top: -20px;">Return within 7 days after <span style="color: green; font-weight: bolder;">{{book_avail.daterange}}</span> days. </p>
+			{% endif %}
 			<a href="{% url 'books:listings' book_id=book.id owner_id=0 %}" class="card-link other-listings">Other Listings</a>
 		</div>
 	</div>

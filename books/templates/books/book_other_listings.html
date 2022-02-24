@@ -1,5 +1,11 @@
 {% extends 'base_layout.html' %}
 
+{% block userprofile %}
+<button class="dropbtn-bar"><img src="{{profile.picture.url}}" alt="" class="super-useravatar"> {{user.username}}
+	<i class="fa fa-caret-down"></i>
+</button>
+{% endblock %}
+
 {% block content %}
 {% if not owner %}
     <h1 style="text-align: center;">Other Listings for {{title}}</h1>

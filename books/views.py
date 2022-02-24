@@ -19,6 +19,10 @@ from django.contrib.auth.models import User
 
 @login_required(login_url="/accounts/login/")
 def books_create(request):
+	profile = ""
+	if request.user.is_authenticated:
+		profile = Profile.objects.get(account = request.user)
+
 	if request.method == 'POST':
 		book = Book.objects.create(
 			title=request.POST.get('title'), 
@@ -53,7 +57,8 @@ def books_create(request):
 		form = forms.CreateBook()
 	return render(request, 'books/book_create.html',{
 		'form':form,
-		'genres':genres
+		'genres':genres,
+		'profile':profile
 	})
 
 def books_availability(request, book_id):
@@ -192,7 +197,7 @@ def library(request):
 				listings.append(my_listing)
 
 	for rented in bookrent:
-		books.append(rented.books)
+		books.append(BookAvailability.objects.get(book = rented.books))
 
 
 	return render(request, 'books/book_library.html',{
@@ -326,6 +331,10 @@ def read_delete(request, book_id):
 	return redirect('books:library')
 
 def listings(request, book_id, owner_id):
+	profile = ""
+	if request.user.is_authenticated:
+		profile = Profile.objects.get(account = request.user)
+
 	if int(owner_id) == 0:
 		owner = ""
 	else:
@@ -344,5 +353,6 @@ def listings(request, book_id, owner_id):
 		'original':book,
 		'book_avail':book_avail,
 		'similar':similar,
-		'owner':owner
+		'owner':owner,
+		'profile':profile
 	})
