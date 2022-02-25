@@ -43,5 +43,19 @@ def returnDate(args, args1):
 def dateCounter(args, args1):
 	date_1 = datetime.datetime.strptime(str(args), "%Y-%m-%d %H:%M:%S%z")
 	end_date = date_1 + datetime.timedelta(days=int(args1)+7)
-	counter = end_date - date_1
+
+	# get date and time now
+	today = datetime.datetime.now()
+	today = datetime.datetime.strptime(str(today), "%Y-%m-%d %H:%M:%S.%f")
+
+	# convert to string
+	today = today.strftime("%Y-%m-%d")
+	end_date = end_date.strftime("%Y-%m-%d")
+
+	# convert to datetime
+	today =  datetime.datetime.strptime(str(today), "%Y-%m-%d")
+	end_date =  datetime.datetime.strptime(str(end_date), "%Y-%m-%d")
+	
+	counter = end_date - today
+
 	return str(counter).strip(', 0:00:00')
