@@ -10,7 +10,17 @@ class Profile(models.Model):
 	account = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
 	class Meta:
-		ordering = ('location',)
+		ordering = ('account',)
 
 	def __str__(self):
-		return self.location
+		return str(self.account)
+
+class Following(models.Model):
+	account = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+	following = models.ManyToManyField(User, blank=True, related_name="users_following")
+
+	class Meta:
+		ordering = ('account',)
+
+	def __str__(self):
+		return str(self.account)

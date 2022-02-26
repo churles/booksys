@@ -106,3 +106,15 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+/* ----------------------------------------------------------- */
+/* view_profile */
+/* ----------------------------------------------------------- */
+.statistics-num, .statistics-label{
+    color: black;
+    font-weight: bold;
+}
+
+.statistics-num{
+    font-size: large;
+}

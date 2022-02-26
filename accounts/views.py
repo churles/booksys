@@ -4,9 +4,10 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponse
 from django.contrib.auth import login, logout
 from . import forms
-from .models import Profile
-from books.models import Book
+from .models import Following, Profile
+from books.models import Book, ReadList
 from django.contrib import messages
+from django.contrib.auth.models import User
 
 import accounts
 
@@ -72,6 +73,11 @@ def create_view(request):
 
 def update_view(request):
 		profile = Profile.objects.get(account=request.user)
+		
+		followers = Following.objects.filter(following=request.user)
+		read = ReadList.objects.get(owner=request.user)
+		listing = Book.objects.filter(owner=request.user)
+
 		user = request.user
 
 		listings_exist = []
@@ -114,14 +120,36 @@ def update_view(request):
 		return render(request, 'accounts/personalinfo_update.html',{
 			'profile':profile,
 			'listings':listings,
-			'listings_exist':listings_exist
+			'listings_exist':listings_exist,
+			'followers':followers,
+			'read':read,
+			'listing':listing
 		})
 
 def profile_update(request, profile_id):
 	profile = Profile.objects.get(id=profile_id)
+
 	if request.method == "POST":
 		profile.picture = request.FILES.get('picture')
 		profile.coverphoto = request.FILES.get('coverpicture')
 		profile.save()
 
 	return redirect('accounts:update')
+
+def view_profile(request, user_id):
+	owner = User.objects.get(id=user_id)
+	owner_profile = Profile.objects.get(account=owner)
+	profile = Profile.objects.get(account=request.user)
+
+	followers = Following.objects.filter(following=owner)
+	read = ReadList.objects.get(owner=owner)
+	listing = Book.objects.filter(owner=owner)
+
+	return render(request, 'accounts/view_profile.html',{
+		'owner':owner,
+		'owner_profile':owner_profile,
+		'profile':profile,
+		'followers':followers,
+		'read':read,
+		'listing':listing
+	})
