@@ -1,4 +1,5 @@
 from curses.ascii import HT
+from tkinter import E
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponse
@@ -75,6 +76,11 @@ def update_view(request):
 		profile = Profile.objects.get(account=request.user)
 		
 		followers = Following.objects.filter(following=request.user)
+		
+		count = 0
+		if Following.objects.filter(account=request.user):
+			count = Following.objects.filter(account=request.user)[0].following.count()
+
 		read = ReadList.objects.get(owner=request.user)
 		listing = Book.objects.filter(owner=request.user)
 
@@ -123,7 +129,8 @@ def update_view(request):
 			'listings_exist':listings_exist,
 			'followers':followers,
 			'read':read,
-			'listing':listing
+			'listing':listing,
+			'count':count,
 		})
 
 def profile_update(request, profile_id):
@@ -141,9 +148,20 @@ def view_profile(request, user_id):
 	owner_profile = Profile.objects.get(account=owner)
 	profile = Profile.objects.get(account=request.user)
 
+	follow = False
+
 	followers = Following.objects.filter(following=owner)
 	read = ReadList.objects.get(owner=owner)
 	listing = Book.objects.filter(owner=owner)
+
+	if not Following.objects.filter(account=request.user):
+		follow = False
+	else:
+		user_following = Following.objects.get(account=request.user)
+		for following in user_following.following.all():
+			if following == owner:
+				follow = True
+	
 
 	return render(request, 'accounts/view_profile.html',{
 		'owner':owner,
@@ -151,5 +169,25 @@ def view_profile(request, user_id):
 		'profile':profile,
 		'followers':followers,
 		'read':read,
-		'listing':listing
+		'listing':listing,
+		'follow':follow
 	})
+
+def follow_view(request):
+	ctr = False
+	if request.method == 'POST':
+		owner = User.objects.get(id=request.POST.get('user_id'))
+
+		if not Following.objects.filter(account=request.user):
+			user_following = Following.objects.create(account=request.user)
+			user_following.save()
+			user_following.following.add(owner)
+		else:
+			user_following = Following.objects.get(account=request.user)
+			for following in user_following.following.all():
+				if following == owner:
+					user_following.following.remove(owner)
+					ctr = True
+			if ctr == False:
+				user_following.following.add(owner)
+		return redirect('accounts:view', user_id=owner.id)

@@ -7,14 +7,14 @@
 {% endblock %}
 {% block content %}
 <div class="col-lg-12 col-sm-12">
-    <div class="card hovercard" style="height: 220px;">
-        <div class="card-background" style="height: 220px;">
+    <div class="card hovercard" style="height: 230px;">
+        <div class="card-background" style="height: 230px;">
             <img class="card-bkimg" alt="" src="{{ owner_profile.coverphoto.url }}">
         </div>
         <div class="useravatar">
             <img alt="" id="profilepic" src="{{ owner_profile.picture.url }}">
         </div>
-        <div class="card-info" style="bottom: 25px;"> 
+        <div class="card-info" style="bottom: 10px;"> 
             <span class="card-title" style="font-weight: bolder;">{{ owner.username }}</span><br>
             <div class="row statistics-num">
                 <div class="col col-xs col-sm col-md-3"></div>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="col col-xs col-sm col-md"></div>
                 <div class="col-3 col-xs-2 col-sm-2 col-md">
-                    <span>{{ followers.count }}</span>
+                    <span id="followerCount">{{ followers.count }}</span>
                 </div>
                 <div class="col col-xs col-sm col-md-3"></div>
             </div>
@@ -46,10 +46,46 @@
                 </div>
                 <div class="col col-xs col-sm col-md-3"></div>
             </div>
+                <button class="follow" id="followBtn" onclick="follow('{{owner.id}}')">
+                {% if follow == True %}
+                    Unfollow
+                {% else %}
+                    Follow
+                {% endif %}
+                </button>
         </div>
     </div>
 </div>
 {% endblock %}
 {% block scripts %}
+<script>
+    function follow(id){
+        var url = "{% url 'accounts:follow' %}"
 
+        const btnText = $(`#followBtn`).text()
+        const trim = $.trim(btnText)
+        var count =  $(`#followerCount`).text()
+
+        $.ajax({
+            type:'POST',
+            url: url,
+            data:{
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                'user_id':id
+            },
+            success: function(response){
+                if(trim == "Follow"){
+					$(`#followBtn`).text('Unfollow')
+					$(`#followerCount`).text(parseInt(count)+1)
+                }else{
+					$(`#followBtn`).text('Follow')
+					$(`#followerCount`).text(parseInt(count)-1)
+                }
+            },
+            error: function(response){
+                console.log('error', response)
+            },
+        })
+}
+</script>
 {% endblock %}

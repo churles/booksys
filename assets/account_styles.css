@@ -118,3 +118,19 @@
 .statistics-num{
     font-size: large;
 }
+
+.follow{
+    background-color: skyblue;
+    color: black;
+    text-decoration: none;
+    border-radius: 5px;
+    border: none;
+    width: 250px;
+    height: 35px;
+    font-weight: bolder;
+}
+
+.follow:hover{
+    background-color: #009DDB;
+    color: white;
+}
