@@ -79,7 +79,10 @@ def update_view(request):
 		
 		count = 0
 		if Following.objects.filter(account=request.user):
-			count = Following.objects.filter(account=request.user)[0].following.count()
+			following = Following.objects.filter(account=request.user)[0]
+			count = following.following.count()
+			follows = following.following.all()
+		
 
 		read = ReadList.objects.get(owner=request.user)
 		listing = Book.objects.filter(owner=request.user)
@@ -121,7 +124,6 @@ def update_view(request):
 			user.username = request.POST.get('uname')
 			user.email = request.POST.get('email')
 			user.save()
-
 			
 		return render(request, 'accounts/personalinfo_update.html',{
 			'profile':profile,
@@ -131,6 +133,7 @@ def update_view(request):
 			'read':read,
 			'listing':listing,
 			'count':count,
+			'follows':follows
 		})
 
 def profile_update(request, profile_id):
@@ -190,4 +193,7 @@ def follow_view(request):
 					ctr = True
 			if ctr == False:
 				user_following.following.add(owner)
-		return redirect('accounts:view', user_id=owner.id)
+		if request.POST.get('personalInfo') == 'true':
+			return redirect('accounts:update')
+		else:
+			return redirect('accounts:view', user_id=owner.id)

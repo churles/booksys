@@ -1,6 +1,6 @@
 {% extends 'base_layout.html' %}
 
-{% load post_tags %}
+{% load post_tags_account %}
 
 {% block userprofile %}
 <button class="dropbtn-bar"><img src="{{profile.picture.url}}" alt="" class="super-useravatar"> {{user.username}}
@@ -157,9 +157,33 @@
         <!-- Library Tab -->
         <div class="tab-pane fade" id="tab3"  role="tabpanel" aria-labelledby="tab3-tab">
             <div class="my-listings-library">
-                
+                <div style="width: 80%; margin: 0 auto;">
+                    <div class="row"> 
+                        {% for follow in follows %}
+                        <div class="col-12 col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="card similar-card" style="width: 100%;">
+                                <div class="card-body similar-body">
+                                    <div class="row similar-div"> 
+                                        <div class="col-2 col-xs-2 col-sm-2 col-md-1">
+                                            <img style="width: 50px; height: 50px; border-radius: 50%;" src="{% profile follow %}">
+                                        </div>
+                                        <div class="col-6 col-xs-6 col-sm-6 col-md-7">
+                                            <h5 class="card-title">{{follow.username}}</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">{{follow.first_name}} {{follow.last_name}}</h6>
+                                            <p class="card-text"></p>
+                                        </div>
+                                        <div class="col-4 col-xs-4 col-sm-4 col-md-3">
+                                            <button class="follow" style="width: 100%;" id="followBtn{{follow.id}}" onclick="unfollow('{{follow.id}}')">Unfollow</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-        </div>
+        </div><br>
     </div>
 </div>
 <div class="modal" id="myModal">
@@ -241,5 +265,33 @@
         document.getElementById(name).classList.add("show");
         document.getElementById(name).classList.add("active");
     }
+
+    function unfollow(id){
+        var url = "{% url 'accounts:follow' %}"
+
+        const btnText = $(`#followBtn`+id).text()
+        const trim = $.trim(btnText)
+
+        $.ajax({
+            type:'POST',
+            url: url,
+            data:{
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                'user_id':id,
+                'personalInfo':'true'
+            },
+            success: function(response){
+                if(trim == "Follow"){
+					$(`#followBtn`+id).text('Unfollow')
+                }else{
+					$(`#followBtn`+id).text('Follow')
+                }
+            },
+            error: function(response){
+                console.log('error', response)
+            },
+        })
+    }
+
 </script>
 {% endblock %}
