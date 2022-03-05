@@ -9,6 +9,7 @@ urlpatterns=[
 	url(r'^reviewlike/$', views.reviewlike, name="reviewlike"),
 	url(r'^library/$', views.library, name="library"),
 	url(r'^read/$', views.read, name="read"),
+	url(r'^bookinfo/(?P<book_id>\d{1,10})/$', views.render_bookInfoView, name="bookInfo"),
 	url(r'^listings/(?P<book_id>\d{1,10})/(?P<owner_id>\d{1,10})/$', views.listings, name="listings"),
 	url(r'^availability/(?P<book_id>\d{1,10})/$', views.books_availability, name="availability"),
     url(r'^availability/update/(?P<book_id>\d{1,10})/$', views.book_availability_update, name="avail_update"),

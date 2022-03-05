@@ -1,7 +1,12 @@
+from distutils.command.upload import upload
 from pickle import TRUE
 from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import User
+import qrcode
+from io import BytesIO
+from django.core.files import File
+from PIL import Image, ImageDraw
 # from autoslug import AutoSlugField
 
 
@@ -28,13 +33,14 @@ AVAIL_CHOICES = (
 class Book(models.Model):
 	title = models.CharField(max_length=60)
 	author = models.CharField(max_length=60, default=None)
-	slug = models.SlugField(blank=TRUE)
+	slug = models.SlugField(blank=TRUE, max_length=200)
 	synopsis = models.TextField()
 	note = models.TextField(blank=True)
 	date = models.DateTimeField(auto_now_add=True)
 	thumbnail = models.ImageField(default='default.png', blank = True)
 	genre = models.ManyToManyField(Genre, blank=True)
 	condition = models.CharField(max_length=10, choices=CONDITION_CHOICES, default='new')
+	qr_code = models.ImageField(upload_to='qr_codes', blank=True)
 	owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
 	class Meta:
@@ -54,6 +60,18 @@ class Book(models.Model):
 
 	def note_read_more(self):
 		return self.note[500:]
+		
+	def save(self, *args, **kwargs):
+		qrcode_img = qrcode.make(self.slug)
+		canvas = Image.new('RGB', (qrcode_img.pixel_size, qrcode_img.pixel_size), 'white')
+		draw = ImageDraw.Draw(canvas)
+		canvas.paste(qrcode_img)
+		fname = f'qr_code-{self.slug}'+'.png'
+		buffer = BytesIO()
+		canvas.save(buffer,'PNG')
+		self.qr_code.save(fname, File(buffer), save=False)
+		canvas.close()
+		super().save(*args, **kwargs)
 
 class BookAvailability(models.Model):
 	book = models.ForeignKey(Book, on_delete=models.CASCADE, default=None)

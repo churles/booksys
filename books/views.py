@@ -1,21 +1,17 @@
-from curses.ascii import HT
-from enum import unique
-from pickle import TRUE
-from turtle import title
-from wsgiref.util import request_uri
-from django import http
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import Book, BookRent, Genre, ReadList, BookAvailability, RelatedImage
 from reviews.models import Review, ReviewLike
 from accounts.models import Profile
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from . import forms
-from array import array
 from django.http import JsonResponse
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.views.generic import ListView
 
 @login_required(login_url="/accounts/login/")
 def books_create(request):
@@ -356,3 +352,32 @@ def listings(request, book_id, owner_id):
 		'owner':owner,
 		'profile':profile
 	})
+
+def render_bookInfoView(request, *args, **kwargs):
+	pk = kwargs.get('book_id')
+	book = get_object_or_404(Book, pk=pk)
+	avail = BookAvailability.objects.get(book=book)
+	counter = []
+	ctr = 1
+	while ctr < avail.stock:
+		counter.append(ctr)
+		ctr = ctr + 1
+
+
+	template_path = 'books/book_info.html'
+	context = {'book': book, 'avail':avail,'counter':counter}
+	# Create a Django response object, and specify content_type as pdf
+	response = HttpResponse(content_type='application/pdf')
+	# if download response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+	response['Content-Disposition'] = 'filename="report.pdf"'
+	# find the template and render it.
+	template = get_template(template_path)
+	html = template.render(context)
+
+	# create a pdf
+	pisa_status = pisa.CreatePDF(
+	html, dest=response)
+	# if error then show some funy view
+	if pisa_status.err:
+		return HttpResponse('We had some errors <pre>' + html + '</pre>')
+	return response

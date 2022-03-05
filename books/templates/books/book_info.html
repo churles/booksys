@@ -1,0 +1,24 @@
+{% load static %}
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>{{book}}</title>
+	</head>
+	<body>
+		Book Title: {{book.title}}<br>
+		Author: {{book.author}}<br>
+		Condition: {{book.condition}}<br>
+		Availability: {{avail.availability}}<br>
+		Stock: {{avail.stock}}<br>
+		Price: {{avail.price}}
+		<hr>
+		Print the QR code and attach it to the books under this listing.
+		<hr>
+		{% for i in counter %}
+			<img src="{{book.qr_code.path}}" alt="" width="150px" height="150px">
+			{% if forloop.counter|divisibleby:6 %}
+				<br>
+			{% endif %}
+		{% endfor %}
+	</body>
+</html>
