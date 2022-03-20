@@ -1,0 +1,27 @@
+{% extends 'base_layout.html' %}
+{% block content %}
+<center>
+    {% if searched %}
+        <h1>You searched for {{searched}}</h1>
+        {% if books %}
+            {% for book in books %}
+                <img src="{{book.thumbnail.url}}" class="fyp-book" alt="{{book.title}}">
+            {% endfor %}
+        {% endif %}
+        {% if authors %}
+            {% for author in authors %}
+                <img src="{{author.thumbnail.url}}" class="fyp-book" alt="{{book.title}}">
+            {% endfor %}
+        {% endif %}
+        {% if genres %}
+            {% for genre in genres %}
+                <img src="{{genre.thumbnail.url}}" class="fyp-book" alt="{{book.title}}">
+            {% endfor %}
+        {% endif %}
+    {% else %}
+        <h1>No search result.</h1>
+    {% endif %}
+</center>
+{% endblock %}
+{% block scripts %}
+{% endblock %}

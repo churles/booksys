@@ -334,3 +334,37 @@
     background-color: #009DDB;
     color: white;
 }
+
+/* ----------------------------------------------------------- */
+/* book_homepage_list */
+/* ----------------------------------------------------------- */
+.fyp-container{
+    margin-left: 10%;
+    margin-right: 10%;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.fyp-container h5{
+    margin-left: 20px;
+}
+
+.fyp-list{
+    padding:20px;
+    white-space:nowrap;
+    overflow-x:auto;
+    margin-bottom: 5px;
+}
+
+.fyp-book{
+    width:120px;
+    height:180px;
+    margin:10px;
+    display:inline-block;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.fyp-book:hover{
+    box-shadow: 0 0 4px 2px #05386b;
+}

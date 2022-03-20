@@ -111,3 +111,14 @@ class BookRent(models.Model):
 
 	def __str__(self):
 		return str(self.owner)
+
+class Banner(models.Model):
+	name =  models.CharField(max_length=10, blank=True)
+	picture = models.ImageField(default=None, blank = True)
+	caption_title =  models.CharField(max_length=100, blank=True)
+	caption = models.TextField(blank=True)
+	priority = models.CharField(max_length=10, blank=True)
+	active = models.CharField(max_length=10, blank=True, default="false")
+
+	def __str__(self):
+		return str(self.name)

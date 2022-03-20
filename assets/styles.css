@@ -1,3 +1,5 @@
+
+
 .list-thumb{
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -69,14 +71,12 @@ nav li{
 
 /* Navbar container */
 .navi {
-  overflow: hidden;
   font-family: Arial;
   }
 
 /* The dropdown container */
   .dropdown-bar {
   float: right;
-  overflow: hidden;
   }
 
 /* Dropdown button */
@@ -99,7 +99,7 @@ nav li{
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index: 2;
   }
 
 /* Links inside the dropdown */
@@ -113,7 +113,7 @@ nav li{
   }
 
 /* Add a grey background color to dropdown links on hover */
-  .dropdown-content-bar a:hover {
+  .dropdown-content-bar a:hover, .dropdown-content-bar form:hover {
   background-color: #ddd;
   }
 
@@ -126,11 +126,11 @@ nav li{
 /* Footer */
 .site-footer
 {
-  background-color:#26272b;
+  background-color:#379683;
   padding:45px 0 20px;
   font-size:15px;
   line-height:24px;
-  color:#737373;
+  color:black;
 }
 .site-footer hr
 {
@@ -151,11 +151,11 @@ nav li{
 }
 .site-footer a
 {
-  color:#737373;
+  color:black;
 }
 .site-footer a:hover
 {
-  color:#3366cc;
+  color:#05386b;
   text-decoration:none;
 }
 .footer-links
@@ -169,11 +169,11 @@ nav li{
 }
 .footer-links a
 {
-  color:#737373
+  color:black
 }
 .footer-links a:active,.footer-links a:focus,.footer-links a:hover
 {
-  color:#3366cc;
+  color:#05386b;
   text-decoration:none;
 }
 .footer-links.inline li
@@ -192,7 +192,7 @@ nav li{
   margin-left:6px;
   margin-right:0;
   border-radius:100%;
-  background-color:#33353d
+  background-color:#379683
 }
 .copyright-text
 {
@@ -237,7 +237,7 @@ nav li{
 }
 .social-icons a{
   background-color:#eceeef;
-  color:#818a91;
+  color:black;
   font-size:16px;
   display:inline-block;
   line-height:44px;
@@ -440,3 +440,5 @@ nav li{
 .rent-listings{
   border: black;
 }
+
+/* -------------------------------- */

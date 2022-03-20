@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import Book, BookRent, Genre, ReadList, BookAvailability, RelatedImage
+from .models import Book, BookRent, Genre, ReadList, BookAvailability, RelatedImage, Banner
 from reviews.models import Review, ReviewLike
 from accounts.models import Profile
 from django.http import HttpResponse
@@ -89,11 +89,20 @@ def books_finish(request, book_id, book_avail_id, status):
 def books_list(request):
 	books = Book.objects.all().order_by('date')
 	profile = ""
+	banners = Banner.objects.filter(active="true").order_by('priority')
+	counter = []
+	ctr = 0
+	while ctr < banners.count():
+		counter.append(ctr)
+		ctr = ctr + 1
+
 	if request.user.is_authenticated:
 		profile = Profile.objects.get(account = request.user)
 	return render(request, 'books/book_list.html',{
 		'books':books,
-		'profile':profile
+		'profile':profile,
+		'banners':banners,
+		'counter':counter,
 	})
 
 def books_detail(request, slug, page_id):
