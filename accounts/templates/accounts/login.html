@@ -2,11 +2,21 @@
 
 {% block content %}
 <h1>Login</h1>
-<form action="{% url 'accounts:login' %}" method="post">
+<!-- <form action="{% url 'accounts:login' %}" method="post">
 	{% csrf_token %}
 	{{ form }}
-	<!-- <input class="btn-black" type="submit" name="" value="Login"> -->
 	<button type="submit" class="btn btn-black">Login</button>
+</form> -->
+<form id="loginForm" method="POST" action="{% url 'accounts:login' %}" novalidate="novalidate">
+	{% csrf_token %}
+	{{form}}
+	<div id="loginErrorMsg" class="alert alert-error hide">Wrong username og password</div>
+	<div class="checkbox">
+		<label>
+			<input type="checkbox" name="remember" id="remember"> Remember login
+		</label>
+		<p class="help-block">(if this is a private computer)</p>
+	</div>
+	<button type="submit" class="btn btn-success btn-block">Login</button>
 </form>
-
 {% endblock %}

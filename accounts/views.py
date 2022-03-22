@@ -5,10 +5,11 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponse
 from django.contrib.auth import login, logout
 from . import forms
-from .models import Following, Profile
+from .models import Following, Profile, UserPreference
 from books.models import Book, ReadList
 from django.contrib import messages
 from django.contrib.auth.models import User
+from books.models import Genre
 
 import accounts
 
@@ -197,3 +198,22 @@ def follow_view(request):
 			return redirect('accounts:update')
 		else:
 			return redirect('accounts:view', user_id=owner.id)
+
+def preference_view(request):
+	if request.method == 'POST':
+		genre = request.POST.getlist('genre[]')
+		if UserPreference.objects.get(account=request.user):
+			pref = UserPreference.objects.get(account=request.user)
+			pref.genre.clear()
+			for element in range(len(genre)):
+				pref.genre.add(Genre.objects.get(id=int(genre[element])))
+			pref.save()
+		else:
+			userPref = UserPreference.create(
+				account=request.user
+			)
+			userPref.save()
+			for element in range(len(genre)):
+				userPref.genre.add(Genre.objects.get(id=int(genre[element])))
+			userPref.save()
+	return redirect('books:list')

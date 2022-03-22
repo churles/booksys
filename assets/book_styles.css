@@ -1,4 +1,28 @@
 /* ----------------------------------------------------------- */
+/* general */
+/* ----------------------------------------------------------- */
+.generalModal-header{
+    background-color: #379683;
+    padding: 2px 16px;
+    color: white;
+}
+.generalBtn, .generalSubmitInput{
+    background-color: #05386b;
+    color: #5cdb95;
+    font-size: large;
+    font-weight: bold;
+    border-radius: 10%;
+    padding: 0.5em 1em 0.5em 1em;
+    border: none;
+    
+}
+
+.generalBtn:hover, .generalSubmitInput:hover{
+    background-color: #379683;
+    color: #edf5e1;
+}
+
+/* ----------------------------------------------------------- */
 /* book-create */
 /* ----------------------------------------------------------- */
 .nextBtn, .prevBtn, .listing-deleteBtn{
@@ -356,7 +380,7 @@
     margin-bottom: 5px;
 }
 
-.fyp-book{
+.fyp-book, .fyp-bookPref{
     width:120px;
     height:180px;
     margin:10px;

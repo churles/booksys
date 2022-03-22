@@ -1,29 +1,46 @@
-{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<title>Book System</title>
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-	<link rel="stylesheet" type="text/css" href="{% static 'login_styles.css' %}">
-	<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+	<!------ Include the above in your HEAD tag ---------->
 </head>
-<body>
-	<div class="sidenav">
-	    <div class="login-main-text">
-	        <h2>Book Rental System<br> Login Page</h2>
-	        <p>Don't have an account? Register <a href="{% url 'accounts:signup' %}">here</a> to access.</p>
-	    </div>
-	</div>
-    <div class="main">
-        <div class="col-md-4 col-sm-12">
-         	<div class="login-form">
-				{% block content %}
-
-				{% endblock %}
-            </div>
-         </div>
+<body style="background-color: #edf5e1;">
+    <div id="login-overlay" class="modal-dialog" style="margin-top: 5%;">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+              <h4 class="modal-title" id="myModalLabel">Login to site.com</h4>
+          </div>
+          <div class="modal-body">
+              <div class="row">
+                  <div class="col-xs-6">
+                      <div class="well">
+							{% block content %}
+			
+							{% endblock %}
+                      </div>
+                  </div>
+                  <div class="col-xs-6">
+                      <p class="lead">Don't have an account? Register now for <span class="text-success">FREE</span></p>
+                      <ul class="list-unstyled" style="line-height: 2">
+                          <li><span class="fa fa-check text-success"></span> Create your own book listing</li>
+                          <li><span class="fa fa-check text-success"></span> Rent books</li>
+                          <!-- <li><span class="fa fa-check text-success"></span> </li>
+                          <li><span class="fa fa-check text-success"></span> Fast checkout</li>
+                          <li><span class="fa fa-check text-success"></span> Get a gift <small>(only new customers)</small></li> -->
+                          <!-- <li><a href="/read-more/"><u>Read more</u></a></li> -->
+                      </ul>
+                      <p><a href="{% url 'accounts:signup' %}" class="btn btn-info btn-block">Yes please, register now!</a></p>
+                  </div>
+              </div>
+          </div>
       </div>
+  </div>
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 </body>
 </html>

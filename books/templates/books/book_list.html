@@ -1,5 +1,8 @@
 {% extends 'base_layout.html' %}
+
 {% load static %}
+{% load post_tags %}
+
 {% block userprofile %}
 <button class="dropbtn-bar"><img src="{{profile.picture.url}}" alt="" class="super-useravatar"> {{user.username}}
 	<i class="fa fa-caret-down"></i>
@@ -55,14 +58,23 @@
 	<h5>Recommended For You</h5>
 	<div class="fyp-list">
 		{% for book in books %}
-			<a href="{% url 'books:detail' slug=book.slug page_id=1 %}" >
-				<img src="{{book.thumbnail.url}}" class="fyp-book" alt="{{book.title}}">
-			</a>
+			{% for genre in book.genre.all %}
+				<!-- check if book genres is in user preference and if book is not yet in the list-->
+				{% if genre in fyp and ctr != "break" %}
+					<a href="{% url 'books:detail' slug=book.slug page_id=1 %}" >
+						<img src="{{book.thumbnail.url}}" class="fyp-bookPref" alt="{{book.title}}">
+					</a>
+					{% counter 1 as ctr %}
+				{% endif %}
+			{% endfor %}
 		{% endfor %}
+		<center id="preference">
+			<p>Set your preferences to get recommendation.</p>
+			<button class="generalBtn" onclick="setPreference()">Set Now</button>
+		</center>
 	</div>
 </div>
-
-<div class="fyp-container">
+<div class="fyp-container" id="fyp">
 	<h5>New</h5>
 	<div class="fyp-list">
 		{% for book in books %}
@@ -72,8 +84,64 @@
 		{% endfor %}
 	</div>
 </div>
+
+<div class="modal" id="myModal">
+    <div class="modal-content">
+        <div class="generalModal-header">
+            <span class="closeInfo">&times;</span>
+        </div>
+        <div class="modal-body">
+			<form action="{% url 'accounts:preference' %}" method="post">
+				{% csrf_token %}
+				Genre:<span style="color: red;">*</span>
+				<select name="genre[]" id="choices-multiple-remove-button" placeholder="Select your preferences" multiple>
+					{% for genre in genres %}
+					<option value="{{ genre.id }}">{{ genre.title }}</option>
+					{% endfor %}
+				</select>
+				<input type="submit" value="Save" class="generalSubmitInput" style="float: right;">
+			</form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+<script>
+    $(document).ready(function(){
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            searchResultLimit:5,
+            renderChoiceLimit:5
+        });
 
+		if(document.getElementsByClassName('fyp-bookPref') != null){
+			document.getElementById('preference').setAttribute('hidden',true);
+		}
+    });
+    function setPreference(){
+        //get modal
+        var modal = document.getElementById("myModal");
+
+        //open modal
+        modal.style.display = "block";
+        
+        //Get span
+        var span = document.getElementsByClassName("closeInfo")[0];
+
+        //When the user clicks on the button, open the modal
+        span.onclick = function(){
+            modal.style.display = "none";
+        }   
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(){
+            if(event.target == modal){
+                modal.style.display = "none";   
+            }
+        }
+    }
+</script>
 {% endblock %}

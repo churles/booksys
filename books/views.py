@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from .models import Book, BookRent, Genre, ReadList, BookAvailability, RelatedImage, Banner
 from reviews.models import Review, ReviewLike
-from accounts.models import Profile
+from accounts.models import Profile, UserPreference
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from . import forms
@@ -89,20 +89,36 @@ def books_finish(request, book_id, book_avail_id, status):
 def books_list(request):
 	books = Book.objects.all().order_by('date')
 	profile = ""
+	fyp = []
 	banners = Banner.objects.filter(active="true").order_by('priority')
 	counter = []
 	ctr = 0
+	
 	while ctr < banners.count():
 		counter.append(ctr)
 		ctr = ctr + 1
+	
+	# check userpreference in terms of genre
+	if request.user.is_authenticated:
+		if UserPreference.objects.get(account=request.user):
+			preference = UserPreference.objects.get(account=request.user)
+			for p in preference.genre.all():
+				fyp.append(p)
 
+	# get all genre for setting preference 
+	genres = Genre.objects.all()
+
+	# check if user is authenticated
 	if request.user.is_authenticated:
 		profile = Profile.objects.get(account = request.user)
+
 	return render(request, 'books/book_list.html',{
 		'books':books,
 		'profile':profile,
 		'banners':banners,
 		'counter':counter,
+		'fyp':fyp,
+		'genres':genres,
 	})
 
 def books_detail(request, slug, page_id):
