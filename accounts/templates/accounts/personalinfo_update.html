@@ -122,6 +122,33 @@
                     <div class="col col-xs-1 col-sm-1"></div>
                 </div>
             </div>
+            {% if pref %}
+                <div class="personalInfo">
+                    <h5>My Preference <span class="updateBtn-personal edit-icon" onclick="editPref()"><i class="fas fa-edit"></i></span></h5>
+                </div>
+                <div class="tags" id="tags">
+                    <br>
+                    {% for p in pref %}
+                        <a href="" id="prefctr{{forloop.counter}}">{{p}}</a>
+                    {% endfor %}
+                </div>
+                <p id="pref" hidden> {{pref.count}}</p>
+                <div id="editPref" hidden="true">
+                    <form action="{% url 'accounts:preference' %}" method="post">
+                        {% csrf_token %}
+                        Genre:<span style="color: red;">*</span>
+                        <select name="genre[]" id="choices-multiple-remove-button" placeholder="Select your preferences" multiple>
+                            {% for genre in genres %}
+                            <option value="{{ genre.id }}">{{ genre.title }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="text" name="ctr" value="ctr" hidden>
+                        <input type="submit" value="Save" class="generalSubmitInput" style="float: right;">
+                        <input type="button" class="generalSubmitInput" value="Cancel" onclick="cancelPref()" style="float: right; margin-right: 0.5%;">
+                    </form>
+                </div>
+            {% endif %}
+            <br>
             <div class="personalInfo">
                 <h5>Popular Listings</h5>
             </div>
@@ -204,7 +231,9 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+<script type="text/javascript">
     function edit(){
         document.getElementById('header-content').setAttribute('hidden', true);
         document.getElementById('header-content-edit').removeAttribute('hidden', false);
@@ -247,11 +276,45 @@
         }
     }
 
+    function editPref(){
+        document.getElementById('tags').setAttribute('hidden', true);
+        document.getElementById('editPref').removeAttribute('hidden', false);
+    }
+
+    function cancelPref(){
+        document.getElementById('tags').removeAttribute('hidden', false);  
+        document.getElementById('editPref').setAttribute('hidden', true);
+    }
+
     $(document).ready(function() {
+
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            searchResultLimit:5,
+            renderChoiceLimit:5
+        });
+
         $(".btn-pref .btn").click(function () {
             $(".btn-pref .btn").removeClass("btnTabActive");
             $(this).addClass("btnTabActive"); 
         });
+        if(document.getElementById('pref') != null ){
+            const prefClasses = ["primary","success","info","warning","danger"];
+            var classCtr = 0;
+            var counter = document.getElementById('pref').innerText;
+            // add classes to tags
+            for (let i = 1; i <= counter; i++) {
+                if(classCtr < prefClasses.length){
+                    document.getElementById('prefctr'+i).classList.add(prefClasses[classCtr])
+                    classCtr++;
+                }else{
+                    classCtr = 0;
+                    document.getElementById('prefctr'+i).classList.add(prefClasses[classCtr])
+                    classCtr++;
+                }
+            }
+        }
+
     });
 
 

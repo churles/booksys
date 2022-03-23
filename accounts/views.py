@@ -10,6 +10,7 @@ from books.models import Book, ReadList
 from django.contrib import messages
 from django.contrib.auth.models import User
 from books.models import Genre
+from django.http import JsonResponse
 
 import accounts
 
@@ -125,7 +126,16 @@ def update_view(request):
 			user.username = request.POST.get('uname')
 			user.email = request.POST.get('email')
 			user.save()
+
+		# get user preference
+		pref = ''
+		if UserPreference.objects.get(account=request.user):
+			pref = UserPreference.objects.get(account=request.user).genre.all()
 			
+		
+		#get genre
+		genres = Genre.objects.all()
+
 		return render(request, 'accounts/personalinfo_update.html',{
 			'profile':profile,
 			'listings':listings,
@@ -134,7 +144,9 @@ def update_view(request):
 			'read':read,
 			'listing':listing,
 			'count':count,
-			'follows':follows
+			'follows':follows,
+			'pref':pref,
+			'genres':genres,
 		})
 
 def profile_update(request, profile_id):
@@ -216,4 +228,7 @@ def preference_view(request):
 			for element in range(len(genre)):
 				userPref.genre.add(Genre.objects.get(id=int(genre[element])))
 			userPref.save()
-	return redirect('books:list')
+	if request.POST.get('ctr'):
+		return redirect('accounts:update')
+	else:
+		return redirect('books:list')

@@ -14,7 +14,7 @@
 }
 
 .personalInfo{
-    background-color: #26272b;
+    background-color: #379683;
     color: white;
     padding: 5px;
     padding-bottom: -5px;
@@ -106,6 +106,58 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+.tags{
+    margin: 0.5% 10% 0.5% 10%;
+    display:flex;                 
+    justify-content:center;                 
+    flex-flow:row wrap;         
+}
+
+#editPref{
+    margin: 0.5% 10% 3% 10%;
+}
+
+.tags a{
+    padding:10px; 
+    display: inline-block;
+    margin:5px;
+    width:auto;
+    vertical-align: top;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    pointer-events: none;
+    cursor: default;
+}
+.tags a.primary{
+    color:#FFF;
+    background-color:#428BCA;
+    border-color:#357EBD
+}
+.tags a.success{
+    color:#FFF;
+    background-color:#5CB85C;
+    border-color:#4CAE4C
+}
+.tags a.info{
+    color:#FFF;
+    background-color:#5BC0DE;
+    border-color:#46B8DA
+}
+.tags a.warning{
+    color:#FFF;
+    background-color:#F0AD4E;
+    border-color:#EEA236
+}
+.tags a.danger{
+    color:#FFF;
+    background-color:#D9534F;
+    border-color:#D43F3A
+}
+
+
+
 
 /* ----------------------------------------------------------- */
 /* view_profile */
