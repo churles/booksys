@@ -87,7 +87,6 @@ def update_view(request):
 		
 
 		read = ReadList.objects.get(owner=request.user)
-		listing = Book.objects.filter(owner=request.user)
 
 		user = request.user
 
@@ -140,6 +139,7 @@ def update_view(request):
 			'profile':profile,
 			'listings':listings,
 			'listings_exist':listings_exist,
+			'my_listings':my_listings,
 			'followers':followers,
 			'read':read,
 			'listing':listing,

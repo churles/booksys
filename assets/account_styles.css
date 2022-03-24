@@ -110,12 +110,12 @@
 .tags{
     margin: 0.5% 10% 0.5% 10%;
     display:flex;                 
-    justify-content:center;                 
+    justify-content:center; 
     flex-flow:row wrap;         
 }
 
 #editPref{
-    margin: 0.5% 10% 3% 10%;
+    margin: 0.5% 10% 0.5% 10%;
 }
 
 .tags a{

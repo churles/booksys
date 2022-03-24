@@ -109,7 +109,7 @@
     z-index: 0;
     border: none;
     border-radius: 0.5rem;
-    position: relative
+    position: relative; 
 }
 
 .fs-title {
@@ -254,7 +254,7 @@
 
 .btnTabListing, .btnTabRead, .btnTabLibrary, .btnTabNone{
     background-color: transparent;
-    border-bottom-color: #009DDB;
+    border-bottom-color: #8ee4af;
     color: black;
 }
 
@@ -263,7 +263,7 @@
 }
 
 .btnTabActive{
-    border-bottom-color: skyblue;
+    border-bottom-color: #5cdb95;
     border-bottom-width: 5px;
 }
 

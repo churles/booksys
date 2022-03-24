@@ -16,7 +16,7 @@
     {% for books in similar %}
         {% for avail in book_avail %}
             {% if avail.book == books %}
-                <div class="card similar-card" style="width: 100%;">
+                <div class="card similar-card" style="width: 100%; background-color: white;">
                     <div class="card-body similar-body">
                         <div class="row similar-div"> 
                             <div class="col-4 col-xs-2 col-sm-2 col-md-2">
@@ -35,7 +35,7 @@
                                 </p>
                                 <p class="card-text">Condition: <span style="color: green;">{{books.condition}}</span></p><br>
 
-                                <a href="{% url 'books:detail' slug=books.slug page_id=1 %}" class="card-link other-listings">Go to Detail Page</a>
+                                <a href="{% url 'books:bookInfo' book_id=books.id %}" class="card-link other-listings">View Detail Page</a>
                                 {% if owner != "" %}
                                     <form action="{% url 'books:updatePrev' book_id=books.id status='next' %}" id="{{ books.id }}">
                                         {% csrf_token %}              

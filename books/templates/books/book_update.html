@@ -1,5 +1,11 @@
 {% extends 'base_layout.html' %}
 
+{% block userprofile %}
+<button class="dropbtn-bar"><img src="{{profile.picture.url}}" alt="" class="super-useravatar"> {{user.username}}
+	<i class="fa fa-caret-down"></i>
+</button>
+{% endblock %}
+
 {% block content %}
 <div class="form-group-first">
 	<h2 style="text-align: center; margin-top: 1%;">Update Book Listing</h2>
@@ -40,7 +46,11 @@
                     Genre:<span style="color: red;">*</span>
                     <select name="genre[]" id="choices-multiple-remove-button" placeholder="Select up to 5 tags" multiple>
                         {% for genre in genres %}
-                        <option value="{{ genre.id }}">{{ genre.title }}</option>
+                            {% if genre  in book.genre.all %}
+                                <option value="{{ genre.id }}" selected="selected">{{ genre.title }}</option>
+                            {% else %}
+                                <option value="{{ genre.id }}">{{ genre.title }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>

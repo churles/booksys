@@ -23,7 +23,7 @@
             <div class="row statistics-num">
                 <div class="col col-xs col-sm col-md-3"></div>
                 <div class="col-3 col-xs-2 col-sm-2 col-md">
-                    <span>{{ listing.count }}</span>
+                    <span>{{ my_listings.count }}</span>
                 </div>
                 <div class="col col-xs col-sm col-md"></div>
                 <div class="col-3 col-xs-2 col-sm-2 col-md">
@@ -62,13 +62,16 @@
             </button>
         </div>
         <div class="btn-group" role="group">
-            <button type="button" id="tab2-tab" class="btn btn-default btnTabRead" onclick="openTab('tab2')" data-toggle="tab"><span class="fas fa-list" aria-hidden="true"> Listings</span>
+            <button type="button" id="tab2-tab" class="btn btn-default btnTabRead" onclick="openTab('tab2')" data-toggle="tab">
+                <span class="fas fa-list" aria-hidden="true"> Listings
+                    <span style="background-color: red; border-radius: 5px; color: white; padding: 2px;">{{my_listings.count}}</span>
+                </span>
             </button>
         </div>
         <div class="btn-group" role="group">
             <button type="button" id="tab3-tab" class="btn btn-default btnTabLibrary" onclick="openTab('tab3')" data-toggle="tab">
                 <span class="fa-solid fa-user-check" aria-hidden="true"> Following 
-                   <span style="background-color: red; border-radius: 5px; color: white; padding-left: 2px; padding-right: 2px;">{{count}}</span>
+                   <span style="background-color: red; border-radius: 5px; color: white; padding: 2px;">{{count}}</span>
                 </span>
             </button>
         </div>
@@ -139,16 +142,19 @@
                         Genre:<span style="color: red;">*</span>
                         <select name="genre[]" id="choices-multiple-remove-button" placeholder="Select your preferences" multiple>
                             {% for genre in genres %}
-                            <option value="{{ genre.id }}">{{ genre.title }}</option>
+                                {% if genre in pref %}
+                                    <option value="{{ genre.id }}" selected="selected">{{ genre.title }}</option>
+                                {% else %}
+                                    <option value="{{ genre.id }}">{{ genre.title }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                         <input type="text" name="ctr" value="ctr" hidden>
                         <input type="submit" value="Save" class="generalSubmitInput" style="float: right;">
-                        <input type="button" class="generalSubmitInput" value="Cancel" onclick="cancelPref()" style="float: right; margin-right: 0.5%;">
+                        <input type="button" class="generalSubmitInput" value="Cancel" onclick="cancelPref()" style="float: right; margin-right: 0.5%;"><br>
                     </form>
                 </div>
             {% endif %}
-            <br>
             <div class="personalInfo">
                 <h5>Popular Listings</h5>
             </div>
@@ -188,7 +194,7 @@
                     <div class="row"> 
                         {% for follow in follows %}
                         <div class="col-12 col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div class="card similar-card" style="width: 100%;">
+                            <div class="card similar-card" style="width: 100%; background-color: white;">
                                 <div class="card-body similar-body">
                                     <div class="row similar-div"> 
                                         <div class="col-2 col-xs-2 col-sm-2 col-md-1">

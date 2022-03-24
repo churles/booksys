@@ -253,6 +253,7 @@ def read(request):
 def book_update_prev(request, book_id, status):
 	book = Book.objects.get(id=book_id)
 	genres = Genre.objects.all()
+	profile = Profile.objects.get(account=request.user)
 
 	if request.method == "POST":
 		book.title=request.POST.get('title')
@@ -279,12 +280,14 @@ def book_update_prev(request, book_id, status):
 	return render(request, 'books/book_update.html',{
 		'book':book,
 		'genres':genres,
-		'status':status
+		'status':status,
+		'profile':profile
 	})
 
 def book_update(request, book_id):
 	book = Book.objects.get(id=book_id)
 	genres = Genre.objects.all()
+	profile = Profile.objects.get(account=request.user)
 
 	if request.method == "POST":
 		book.title=request.POST.get('title')
@@ -310,7 +313,8 @@ def book_update(request, book_id):
 
 	return render(request, 'books/book_update.html',{
 		'book':book,
-		'genres':genres
+		'genres':genres,
+		'profile':profile,
 	})
 
 def book_availability_update(request, book_id):
@@ -384,7 +388,7 @@ def render_bookInfoView(request, *args, **kwargs):
 	avail = BookAvailability.objects.get(book=book)
 	counter = []
 	ctr = 1
-	while ctr < avail.stock:
+	while ctr <= avail.stock:
 		counter.append(ctr)
 		ctr = ctr + 1
 

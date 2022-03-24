@@ -62,7 +62,7 @@
                                         {% counter 1 as ctr %}
                                     {% else %}
                                         {% if counter == forloop.counter and ctr != "break" %}
-                                            <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
+                                            <a class="details-library" href="{% url 'books:bookInfo' book_id=book.id %}">Show Details</a>
                                             <button class="update-library" onclick="updateLibrary('{{book.id}}')">Update</button>
                                             <button name="listing-delete" class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal('{{book.id}}')">Remove</button>       
                                         {% endif %}
