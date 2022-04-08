@@ -9,6 +9,10 @@
 </button>
 {% endblock %}
 
+{% block messagecount %}
+	<span class="number-tag">{{roomcount}}</span>
+{% endblock %}
+
 {% block content %}
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style=" margin-top: 0.5%; margin-bottom: 0.5%; margin-right: 10%; margin-left: 10%;">
 	<ol class="carousel-indicators">
@@ -68,10 +72,12 @@
 				{% endif %}
 			{% endfor %}
 		{% endfor %}
-		<center id="preference">
-			<p>Set your preferences to get recommendation.</p>
-			<button class="generalBtn" onclick="setPreference()">Set Now</button>
-		</center>
+		{% if not fyp %}
+			<center id="preference">
+				<p>Set your preferences to get recommendation.</p>
+				<button class="generalBtn" onclick="setPreference()">Set Now</button>
+			</center>
+		{% endif %}
 	</div>
 </div>
 <div class="fyp-container" id="fyp">
@@ -117,9 +123,6 @@
             renderChoiceLimit:5
         });
 
-		if(document.getElementsByClassName('fyp-bookPref') != null){
-			document.getElementById('preference').setAttribute('hidden',true);
-		}
     });
     function setPreference(){
         //get modal

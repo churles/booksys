@@ -7,19 +7,35 @@
     color: white;
 }
 .generalBtn, .generalSubmitInput{
-    background-color: #05386b;
-    color: #5cdb95;
+    background-color: #24a0ed;
+    color: white;
     font-size: large;
     font-weight: bold;
     border-radius: 10%;
     padding: 0.5em 1em 0.5em 1em;
-    border: none;
+    border: 1px solid #24a0ed;
     
 }
 
+.generalCancel{
+    background-color: white;
+    color: gray;
+    font-size: large;
+    font-weight: bold;
+    border-radius: 10%;
+    padding: 0.5em 1em 0.5em 1em;
+    border: 1px solid gray;
+}
+
 .generalBtn:hover, .generalSubmitInput:hover{
-    background-color: #379683;
-    color: #edf5e1;
+    background-color: #63bbf2;
+    color: black;
+    border: 1px solid #63bbf2;
+}
+
+.generalCancel:hover{
+    color: black;
+    border: 1px solid black;
 }
 
 /* ----------------------------------------------------------- */
@@ -389,6 +405,6 @@
     border-radius: 4px;
 }
 
-.fyp-book:hover{
+.fyp-book:hover, .fyp-bookPref:hover{
     box-shadow: 0 0 4px 2px #05386b;
 }

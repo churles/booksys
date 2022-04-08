@@ -7,6 +7,7 @@ from django.contrib.auth import login, logout
 from . import forms
 from .models import Following, Profile, UserPreference
 from books.models import Book, ReadList
+from chat.models import PublicChatRoom
 from django.contrib import messages
 from django.contrib.auth.models import User
 from books.models import Genre
@@ -135,6 +136,16 @@ def update_view(request):
 		#get genre
 		genres = Genre.objects.all()
 
+		
+		# get messages
+		chat_room = PublicChatRoom.objects.filter(users=request.user)
+		room = chat_room.exclude(deleted_by=request.user)
+		roomcount = 0
+		if not room:
+			roomcount = 0
+		else:
+			roomcount = room.count()
+
 		return render(request, 'accounts/personalinfo_update.html',{
 			'profile':profile,
 			'listings':listings,
@@ -147,6 +158,7 @@ def update_view(request):
 			'follows':follows,
 			'pref':pref,
 			'genres':genres,
+			'roomcount':roomcount,
 		})
 
 def profile_update(request, profile_id):
@@ -214,14 +226,14 @@ def follow_view(request):
 def preference_view(request):
 	if request.method == 'POST':
 		genre = request.POST.getlist('genre[]')
-		if UserPreference.objects.get(account=request.user):
+		if UserPreference.objects.filter(account=request.user):
 			pref = UserPreference.objects.get(account=request.user)
 			pref.genre.clear()
 			for element in range(len(genre)):
 				pref.genre.add(Genre.objects.get(id=int(genre[element])))
 			pref.save()
 		else:
-			userPref = UserPreference.create(
+			userPref = UserPreference.objects.create(
 				account=request.user
 			)
 			userPref.save()

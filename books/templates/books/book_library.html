@@ -8,6 +8,11 @@
 </button>
 {% endblock %}
 {% block library %} nav-active {% endblock %}
+
+{% block messagecount %}
+	<span class="number-tag">{{roomcount}}</span>
+{% endblock %}
+
 {% block content %}
 <div class="col-lg-12 col-sm-12">
     <!-- profile card -->

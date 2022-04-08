@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from .models import Book, BookRent, Genre, ReadList, BookAvailability, RelatedImage, Banner
 from reviews.models import Review, ReviewLike
 from accounts.models import Profile, UserPreference
+from chat.models import PublicChatRoom
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from . import forms
@@ -100,7 +101,7 @@ def books_list(request):
 	
 	# check userpreference in terms of genre
 	if request.user.is_authenticated:
-		if UserPreference.objects.get(account=request.user):
+		if UserPreference.objects.filter(account=request.user):
 			preference = UserPreference.objects.get(account=request.user)
 			for p in preference.genre.all():
 				fyp.append(p)
@@ -112,6 +113,15 @@ def books_list(request):
 	if request.user.is_authenticated:
 		profile = Profile.objects.get(account = request.user)
 
+	# get messages
+	chat_room = PublicChatRoom.objects.filter(users=request.user)
+	room = chat_room.exclude(deleted_by=request.user)
+	roomcount = 0
+	if not room:
+		roomcount = 0
+	else:
+		roomcount = room.count()
+
 	return render(request, 'books/book_list.html',{
 		'books':books,
 		'profile':profile,
@@ -119,6 +129,7 @@ def books_list(request):
 		'counter':counter,
 		'fyp':fyp,
 		'genres':genres,
+		'roomcount':roomcount,
 	})
 
 def books_detail(request, slug, page_id):
@@ -220,6 +231,14 @@ def library(request):
 	for rented in bookrent:
 		books.append(BookAvailability.objects.get(book = rented.books))
 
+	# get messages
+	chat_room = PublicChatRoom.objects.filter(users=request.user)
+	room = chat_room.exclude(deleted_by=request.user)
+	roomcount = 0
+	if not room:
+		roomcount = 0
+	else:
+		roomcount = room.count()
 
 	return render(request, 'books/book_library.html',{
 		'my_listings':my_listings,
@@ -231,7 +250,8 @@ def library(request):
 		'books':books,
 		'listings':listings,
 		'listings_exist':listings_exist,
-		'counter':counter
+		'counter':counter,
+		'roomcount':roomcount,
 	})
 
 def read(request):

@@ -8,6 +8,11 @@
 </button>
 {% endblock %}
 {% block myProfile %} nav-active {% endblock %}
+
+{% block messagecount %}
+	<span class="number-tag">{{roomcount}}</span>
+{% endblock %}
+
 {% block content %}
 <div class="col-lg-12 col-sm-12">
     <div class="card hovercard" style="height: 220px;">
@@ -62,14 +67,7 @@
             </button>
         </div>
         <div class="btn-group" role="group">
-            <button type="button" id="tab2-tab" class="btn btn-default btnTabRead" onclick="openTab('tab2')" data-toggle="tab">
-                <span class="fas fa-list" aria-hidden="true"> Listings
-                    <span style="background-color: red; border-radius: 5px; color: white; padding: 2px;">{{my_listings.count}}</span>
-                </span>
-            </button>
-        </div>
-        <div class="btn-group" role="group">
-            <button type="button" id="tab3-tab" class="btn btn-default btnTabLibrary" onclick="openTab('tab3')" data-toggle="tab">
+            <button type="button" id="tab2-tab" class="btn btn-default btnTabLibrary" onclick="openTab('tab2')" data-toggle="tab">
                 <span class="fa-solid fa-user-check" aria-hidden="true"> Following 
                    <span style="background-color: red; border-radius: 5px; color: white; padding: 2px;">{{count}}</span>
                 </span>
@@ -151,7 +149,7 @@
                         </select>
                         <input type="text" name="ctr" value="ctr" hidden>
                         <input type="submit" value="Save" class="generalSubmitInput" style="float: right;">
-                        <input type="button" class="generalSubmitInput" value="Cancel" onclick="cancelPref()" style="float: right; margin-right: 0.5%;"><br>
+                        <input type="button" class="generalCancel" value="Cancel" onclick="cancelPref()" style="float: right; margin-right: 0.5%;"></br></br>
                     </form>
                 </div>
             {% endif %}
@@ -159,36 +157,8 @@
                 <h5>Popular Listings</h5>
             </div>
         </div><br>
-        <!-- Have Read Tab -->
-        <div class="tab-pane fade" id="tab2"  role="tabpanel" aria-labelledby="tab2-tab">
-            <div class="my-listings-library">
-                {% for book in listings %}
-                    <div class="container-library">
-                        <img class="list-thumb " src="{{ book.thumbnail.url }}">
-                            {% if not listings_exist %}
-                                <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
-                                <button class="update-library" onclick="updateLibrary('{{book.id}}')">Update</button>
-                                <button name="listing-delete" class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal('{{book.id}}')">Remove</button>                   
-                            {% else %}
-                                {% for listing_exist in listings_exist %}
-                                    {% if listing_exist.title == book.title and listing_exist.author == book.author %}
-                                        <button class="details-library" onclick="detailLibrary('{{book.id}}','{{book.owner.id}}')">Show Details</button>
-                                        {% counter 1 as ctr %}
-                                    {% else %}
-                                        {% if counter == forloop.counter and ctr != "break" %}
-                                            <a class="details-library" href="{% url 'books:detail' slug=book.slug page_id=1 %}">Show Details</a>
-                                            <button class="update-library" onclick="updateLibrary('{{book.id}}')">Update</button>
-                                            <button name="listing-delete" class="delete-library" id="myBtn{{book.id}}" data-name="{{book.title}}" onclick="show_modal('{{book.id}}')">Remove</button>       
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
         <!-- Library Tab -->
-        <div class="tab-pane fade" id="tab3"  role="tabpanel" aria-labelledby="tab3-tab">
+        <div class="tab-pane fade" id="tab2"  role="tabpanel" aria-labelledby="tab2-tab">
             <div class="my-listings-library">
                 <div style="width: 80%; margin: 0 auto;">
                     <div class="row"> 
@@ -216,7 +186,7 @@
                     </div>
                 </div>
             </div>
-        </div><br>
+        </div>
     </div>
 </div>
 <div class="modal" id="myModal">
